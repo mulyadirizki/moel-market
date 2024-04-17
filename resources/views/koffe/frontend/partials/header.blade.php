@@ -190,7 +190,7 @@
                         <div class="dropdown-menu dropdown-notification dropdown-menu-end pc-h-dropdown">
                             <div class="dropdown-header d-flex align-items-center justify-content-between">
                                 <h5 class="m-0">Cart</h5>
-                                <a href="#!" class="pc-head-link bg-transparent"><i class="ti ti-shopping-cart text-success"></i></a>
+                                <button class="btn link-primary" onclick="btnclearsale()"><i class="ti ti-trash text-danger"></i></button>
                             </div>
                             <div class="dropdown-divider"></div>
                                 <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative" style="max-height: calc(100vh - 215px)">
@@ -207,7 +207,9 @@
                                 <span style="margin-right: 48px;" id="total">Rp. 0</span>
                             </div>
                             <div class="text-center py-2">
-                                <button class="btn link-primary" onclick="btnclearsale()">Clear Sale</button>
+                                <a href="{{ route('payment.order') }}">
+                                    <button class="btn btn-shadow link-primary" id="btnAddCharge"></button>
+                                </a>
                             </div>
                         </div>
                         </li>
@@ -436,6 +438,8 @@
 
                     $('#subtotal').text('Rp. ' + subtotal.toFixed(3));
                     $('#total').text('Rp. ' + subtotal.toFixed(3));
+
+                    $('#btnAddCharge').text('Pay Rp. '+ subtotal.toFixed(3))
                 });
             } else {
                 $('#countCart').text('0');

@@ -7,7 +7,11 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\Variant;
+use App\Models\Penjualan;
+use App\Models\PenjualanDet;
 use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+use Ramsey\Uuid\Uuid as Generator;
 
 class FrontController extends Controller
 {
@@ -63,6 +67,63 @@ class FrontController extends Controller
             return response()->json([
                 'data' => $itemVariant
             ], 200);
+        }
+    }
+
+    public function paymentOrder()
+    {
+        return view('koffe.frontend.payment');
+    }
+
+    public function paymentOrderAdd(Request $request)
+    {
+        try {
+            DB::transaction(function () use ($request) {
+                $data = json_decode($request->getContent(), true);
+
+                $id_penjualan = Generator::uuid4()->toString();
+                Penjualan::updateOrCreate(
+                    [
+                        'id_penjualan'  => $id_penjualan,
+                    ],
+                    [
+                         'toko_id'        => auth()->user()->noregistrasi,
+                        'norec_user'     => auth()->user()->noregistrasi,
+                        'no_nota'       => $data['dataObj']['nonota'],
+                        'tgl_nota'      => $data['dataObj']['tgl_nota'],
+                        'total'         => $data['dataObj']['total'],
+                        'uang_bayar'    => $data['dataObj']['cash'],
+                        'uang_kembali'  => $data['dataObj']['uang_kembali'],
+                        'status'        => $data['dataObj']['status'],
+                        'nm_pelanggan'  => $data['dataObj']['nm_pelanggan']
+                    ]
+                );
+                foreach ($data['dataObj']['item'] as $list) {
+                    PenjualanDet::updateOrCreate(
+                        [
+                            'id_penjualan_det'  => $request->id_penjualan_det,
+                        ],
+                        [
+                            'id_penjualan'   => $id_penjualan,
+                            'tgl_penjualan'  => $list['tgl_penjualan'],
+                            'id_item'        => $list['id_item'],
+                            'qty'            => $list['qty'],
+                            'harga_peritem'  => $list['harga_peritem'],
+                            'sub_total'      => $list['subtotal'],
+                        ]
+                    );
+                }
+            });
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment Successful'
+            ], 200);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
         }
     }
 

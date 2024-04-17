@@ -57,15 +57,18 @@ Route::group([ 'prefix' => 'admin/koffe', 'middleware' => ['auth', 'checkrole:1'
 Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2']], function() {
     Route::get('/', [FrontController::class, 'index'])->name('kasir');
 
-    Route::get('/item-category/{id}', [FrontController::class, 'categoryItem'])->name('category.item');
-    Route::get('/item-variant/{id}', [FrontController::class, 'variantItem'])->name('varian.item');
-
     Route::get('/create-item', [ItemController::class, 'createItem'])->name('create.item');
     Route::post('/create-item/add', [ItemController::class, 'createItemAdd'])->name('create.item.add');
 
     Route::get('/manage-category', [CategoryController::class, 'manageCategory'])->name('manage.category');
     Route::post('/manage-category/add', [CategoryController::class, 'manageCategoryAdd'])->name('manage.category.add');
     Route::delete('/manage-category/delete/{id}', [CategoryController::class, 'manageCategoryDelete'])->name('manage.category.delete');
+
+    Route::get('/item-category/{id}', [FrontController::class, 'categoryItem'])->name('category.item');
+    Route::get('/item-variant/{id}', [FrontController::class, 'variantItem'])->name('varian.item');
+
+    Route::get('/payment-order', [FrontController::class, 'paymentOrder'])->name('payment.order');
+    Route::post('/payment-order/add', [FrontController::class, 'paymentOrderAdd'])->name('payment.order.add');
 });
 // Route::group(['middleware' => 'guest'], function() {
 //     Route::get('/', [LoginController::class, 'pageLogin'])->name('pageLogin');

@@ -56,7 +56,7 @@
 							@csrf
 							<div class="d-flex justify-content-between align-items-end mb-4">
 								<h3 class="mb-0"><b>Login</b></h3>
-								<a href="#" class="link-primary">Don't have an account?</a>
+								<a href="{{ route('register') }}" class="link-primary">Don't have an account?</a>
 							</div>
 							<div class="form-group mb-3">
 								<label class="form-label">Username</label>

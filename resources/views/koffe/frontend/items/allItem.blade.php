@@ -86,7 +86,7 @@
 
         getAllItem = () => {
             var id = window.location.pathname.split('/').pop();
-            $.get(`/front/koffe/all-item`, function (items) {
+            $.get("{{ route('all.item') }}", function (items) {
                 var uniqueNames = {};
                 var uniqueItems = items.data.filter(function(item) {
                     if (!uniqueNames[item.item_name]) {

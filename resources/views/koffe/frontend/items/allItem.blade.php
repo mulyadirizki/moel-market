@@ -10,12 +10,12 @@
                         <ul class="breadcrumb">
                             <li class="breadcrumb-item"><a href="../dashboard/index.html">Home</a></li>
                             <li class="breadcrumb-item"><a href="javascript: void(0)">Koffea</a></li>
-                            <li class="breadcrumb-item" aria-current="page" id="category1"></li>
+                            <li class="breadcrumb-item" aria-current="page" id="category1">All Item</li>
                         </ul>
                     </div>
                     <div class="col-md-12">
                         <div class="page-header-title">
-                            <h2 class="mb-0" id="category2"></h2>
+                            <h2 class="mb-0" id="category2">All Item</h2>
                         </div>
                     </div>
                 </div>
@@ -24,10 +24,7 @@
         <!-- [ breadcrumb ] end -->
 
         <!-- [ Main Content ] start -->
-        <div class="row">
-            <div id="items-container">
-                <!-- Items will be appended here -->
-            </div>
+        <div class="row" id="items-container">
         </div>
         <!-- [ Main Content ] end -->
     </div>

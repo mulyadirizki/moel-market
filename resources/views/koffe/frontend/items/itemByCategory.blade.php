@@ -24,10 +24,8 @@
         <!-- [ breadcrumb ] end -->
 
         <!-- [ Main Content ] start -->
-        <div class="row">
-            <div id="items-container">
-                <!-- Items will be appended here -->
-            </div>
+        <div class="row" id="items-container">
+            <!-- Items will be appended here -->
         </div>
         <!-- [ Main Content ] end -->
     </div>

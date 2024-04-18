@@ -9,7 +9,7 @@
         <div class="navbar-content">
             <ul class="pc-navbar">
                 <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-dashboard"></i></span><span
+                    <a href="{{ route('kasir') }}" class="pc-link"><span class="pc-micon"><i class="ti ti-dashboard"></i></span><span
                     class="pc-mtext">Point Of Sale</span><span class="pc-arrow"></span></a>
                 </li>
                 <li class="pc-item pc-hasmenu">

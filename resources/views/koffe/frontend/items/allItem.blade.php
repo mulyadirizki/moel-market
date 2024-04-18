@@ -84,7 +84,7 @@
 @push('script')
     <script>
 
-        function getAllItem() {
+        getAllItem = () => {
             var id = window.location.pathname.split('/').pop();
             $.get(`/front/koffe/all-item`, function (items) {
                 var uniqueNames = {};

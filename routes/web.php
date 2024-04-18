@@ -35,7 +35,7 @@ use App\Http\Controllers\Koffe\Frontend\ItemController;
 Route::group(['middleware' => 'guest'], function() {
     // Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/', [LoginController::class, 'login'])->name('login');
-    Route::post('/', [LoginController::class, 'dologin'])->name('dologin');
+    Route::post('/login-store', [LoginController::class, 'dologin'])->name('dologin');
     Route::get('/id/sign-up', [RegisterController::class, 'register'])->name('register');
     Route::post('/register', [RegisterController::class, 'doregister'])->name('doregister');
 

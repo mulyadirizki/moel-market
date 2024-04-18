@@ -64,6 +64,7 @@ Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2'
     Route::post('/manage-category/add', [CategoryController::class, 'manageCategoryAdd'])->name('manage.category.add');
     Route::delete('/manage-category/delete/{id}', [CategoryController::class, 'manageCategoryDelete'])->name('manage.category.delete');
 
+    Route::get('/all-item', [FrontController::class, 'allItem'])->name('all.item');
     Route::get('/item-category/{id}', [FrontController::class, 'categoryItem'])->name('category.item');
     Route::get('/item-variant/{id}', [FrontController::class, 'variantItem'])->name('varian.item');
 

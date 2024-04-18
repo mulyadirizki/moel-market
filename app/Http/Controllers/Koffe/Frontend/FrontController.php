@@ -23,6 +23,30 @@ class FrontController extends Controller
         return view('koffe.frontend.home', compact('category'));
     }
 
+    public function allItem()
+    {
+        $allItem = Variant::leftJoin('m_item', 'm_variant.id_item', '=', 'm_item.id_item')
+            ->select(
+                'm_variant.id_variant',
+                'm_variant.variant_name',
+                'm_variant.price',
+                'm_variant.sku',
+                'm_variant.id_item',
+                'm_item.item_name',
+                'm_item.toko_id'
+            )
+            ->where('m_item.toko_id', auth()->user()->toko_id)
+            ->get();
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'data' => $allItem
+            ], 200);
+        } else {
+            return view('koffe.frontend.items.allItem', compact('allItem'));
+        }
+    }
+
     public function categoryItem($id_category)
     {
 

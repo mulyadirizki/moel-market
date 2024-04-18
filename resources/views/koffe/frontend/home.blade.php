@@ -79,7 +79,7 @@
                     </div>
                   </div>
                   <div class="col">
-                    <a href="#!">
+                    <a href="{{ route('all.item') }}">
                       <h5 class="m-b-5">All Items</h5>
                     </a>
                   </div>

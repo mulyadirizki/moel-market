@@ -84,9 +84,9 @@
 @push('script')
     <script>
 
-        function getItemByCategory() {
+        function getAllItem() {
             var id = window.location.pathname.split('/').pop();
-            $.get(`/front/koffe/item-category/${id}`, function (items) {
+            $.get(`/front/koffe/all-item`, function (items) {
                 var uniqueNames = {};
                 var uniqueItems = items.data.filter(function(item) {
                     if (!uniqueNames[item.item_name]) {
@@ -268,7 +268,7 @@
         }
 
         $(document).ready(function() {
-            getItemByCategory();
+            getAllItem();
         });
     </script>
 @endpush

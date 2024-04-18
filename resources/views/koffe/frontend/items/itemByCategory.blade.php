@@ -86,7 +86,7 @@
 
         function getItemByCategory() {
             var id = window.location.pathname.split('/').pop();
-            $.get(`/front/koffe/item-category/${id}`, function (items) {
+            $.get("{{ route('category.item', ['id' => ':id']) }}".replace(':id', id), function (items) {
                 var uniqueNames = {};
                 var uniqueItems = items.data.filter(function(item) {
                     if (!uniqueNames[item.item_name]) {
@@ -136,7 +136,7 @@
         function choseVariant(id_item) {
             $('#menuitemvariant').empty();
             $('#modalAddVariant').modal('show');
-            $.get(`/front/koffe/item-variant/${id_item}`, function (items) {
+            $.get("{{ route('varian.item', ['id' => ':id']) }}".replace(':id', id_item), function (items) {
                 items.data.forEach(function(itm) {
                     var count = items.data.filter(function(item) {
                         return item.item_name === itm.item_name;

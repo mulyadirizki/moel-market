@@ -136,7 +136,7 @@
         function choseVariant(id_item) {
             $('#menuitemvariant').empty();
             $('#modalAddVariant').modal('show');
-            $.get(`/front/koffe/item-variant/${id_item}`, function (items) {
+            $.get("{{ route('varian.item', ['id' => ':id']) }}".replace(':id', id_item), function (items) {
                 items.data.forEach(function(itm) {
                     var count = items.data.filter(function(item) {
                         return item.item_name === itm.item_name;

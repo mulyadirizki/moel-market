@@ -36,6 +36,7 @@ class FrontController extends Controller
                 'm_item.toko_id'
             )
             ->where('m_item.toko_id', auth()->user()->toko_id)
+            ->orderBy('m_item.item_name', 'asc')
             ->get();
 
         if (request()->expectsJson()) {
@@ -62,6 +63,7 @@ class FrontController extends Controller
                 'm_variant.id_item',
                 'm_item.item_name',
             )
+            ->orderBy('m_item.item_name', 'asc')
             ->get();
 
         if (request()->expectsJson()) {

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Auth;
 use App\Models\Toko;
 use App\Models\User;
+use Illuminate\Support\Facades\Redirect;
 
 class LoginController extends Controller
 {
@@ -32,16 +33,18 @@ class LoginController extends Controller
         if (auth()->attempt($credentials)) {
             $request->session()->regenerate();
 
+            $redirectUrlAdmin = Redirect::route('admin')->getTargetUrl();
+            $redirectUrlKasir = Redirect::route('kasir')->getTargetUrl();
             if (auth()->user()->roles === 1 && $dat->bisnis_id === 2) {
                 return response()->json([
                     'success'   => true,
-                    'redirect'  => '/ma-pos/public/admin/koffe',
+                    'redirect' => $redirectUrlAdmin,
                     'message'   => 'Login berhasil'
                 ]);
             } else if(auth()->user()->roles === 2 && $dat->bisnis_id === 2) {
                 return response()->json([
                     'success'   => true,
-                    'redirect'  => '/ma-pos/public/front/koffe',
+                    'redirect'  => $redirectUrlKasir,
                     'message'   => 'Login berhasil'
                 ]);
             }

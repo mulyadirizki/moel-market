@@ -427,7 +427,7 @@
                     itemElement += '</div>';
                     itemElement += '<div class="flex-grow-1 ms-1" >';
                     itemElement += '<button class="btn btn-sm float-end text-muted" style="margin-left: 10px;" onclick="deleteItem()"><i class="ti ti-x text-danger"></i></button>';
-                    itemElement += '<span class="float-end text-muted"><span style="margin-right: 5px;">x'+ itm.qty +'</span>'+' Rp. '+ (itm.price * itm.qty).toFixed(3) +'</span>';
+                    itemElement += '<span class="float-end text-muted"><span style="margin-right: 5px;">x'+ itm.qty +'</span>'+' Rp. '+ (itm.price * itm.qty).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +'</span>';
                     itemElement += '<p class="text-body mb-1"><b>'+ itm.item_name +'</b></p>';
                     itemElement += '<span class="text-muted">'+ itm.variant_name +'</span>';
                     itemElement += '</div>';
@@ -436,10 +436,10 @@
 
                     $('#datacart').append(itemElement);
 
-                    $('#subtotal').text('Rp. ' + subtotal.toFixed(3));
-                    $('#total').text('Rp. ' + subtotal.toFixed(3));
+                    $('#subtotal').text('Rp. ' + subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('#total').text('Rp. ' + subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
 
-                    $('#btnAddCharge').text('Pay Rp. '+ subtotal.toFixed(3))
+                    $('#btnAddCharge').text('Pay Rp. '+ subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
                 });
             } else {
                 $('#countCart').text('0');

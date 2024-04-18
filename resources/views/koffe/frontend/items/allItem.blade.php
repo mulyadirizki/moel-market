@@ -25,6 +25,40 @@
 
         <!-- [ Main Content ] start -->
         <div class="row" id="items-container">
+            <div class="ecom-content">
+                <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-sm-flex align-items-center">
+                    <ul class="list-inline me-auto my-1">
+                        <li class="list-inline-item align-bottom">
+                        <a href="#" class="d-xxl-none btn btn-link-secondary" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvas_mail_filter">
+                            <i class="ti ti-filter f-16"></i> Filter
+                        </a>
+                        <a href="#" class="d-none d-xxl-inline-flex btn btn-link-secondary"
+                            data-bs-toggle="collapse" data-bs-target="#ecom-filter">
+                            <i class="ti ti-filter f-16"></i> Filter
+                        </a>
+                        </li>
+                        <li class="list-inline-item">
+                        <div class="form-search">
+                            <i class="ti ti-search"></i>
+                            <input type="search" class="form-control" placeholder="Search Products" style="width: 320px;">
+                        </div>
+                        </li>
+                    </ul>
+                    <ul class="list-inline ms-auto my-1">
+                        <a href="{{ route('create.item') }}">
+                        <button type="button" class="btn btn-primary">Create Item</button>
+                        </a>
+                        <a href="{{ route('manage.category') }}">
+                        <button type="button" class="btn btn-primary">Manage Categories</button>
+                        </a>
+                    </ul>
+                    </div>
+                </div>
+                </div>
+            </div>
         </div>
         <!-- [ Main Content ] end -->
     </div>

@@ -15,7 +15,7 @@
         <div class="row align-items-center">
           <div class="col-md-12">
             <ul class="breadcrumb">
-              <li class="breadcrumb-item"><a href="../dashboard/index.html">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('kasir') }}">Home</a></li>
               <li class="breadcrumb-item"><a href="javascript: void(0)">Koffea</a></li>
               <li class="breadcrumb-item" aria-current="page">Payment</li>
             </ul>
@@ -120,7 +120,7 @@
           dataOrderArr.forEach(function(itm) {
             total += parseFloat(itm.price) * parseInt(itm.qty);
 
-              $('#totalbayar').text('Rp. '+ total.toFixed(3))
+              $('#totalbayar').text('Rp. '+ total.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
           });
       } else {
           $('#totalbayar').text('Rp. 0');
@@ -138,6 +138,7 @@
 
     $('#cash').on('keyup', function() {
       var cash = $('#cash').val();
+      console.log(cash)
 
       var dataOrder = sessionStorage.getItem('dataOrderTemp');
       var dataOrderArr = JSON.parse(dataOrder);
@@ -146,11 +147,11 @@
           dataOrderArr.forEach(function(pay) {
               total += parseFloat(pay.price) * parseInt(pay.qty);
           });
-          var totalString = total.toString();
-          var totalWithZeros = totalString + '000';
-          var totalWithThreeDecimals = parseFloat(totalWithZeros);
+          // var totalString = total.toString();
+          // var totalWithZeros = totalString + '000';
+          // var totalWithThreeDecimals = parseFloat(totalWithZeros);
 
-          if (cash >= totalWithThreeDecimals) {
+          if (cash >= total) {
               $('.btn-bayar').removeAttr('disabled');
           } else {
               $('.btn-bayar').attr('disabled', 'disabled');
@@ -185,8 +186,8 @@
           barang.push({
             id_item: e.item_id,
             qty: e.qty,
-            subtotal: (e.price * e.qty).toFixed(3),
-            total: (e.price * e.qty).toFixed(3),
+            subtotal: (e.price * e.qty),
+            total: (e.price * e.qty),
             harga_peritem: e.price,
             tgl_penjualan: dateTime,
           })
@@ -195,17 +196,13 @@
 
         // let arrSave = []
 
-        var totalString = total.toString();
-        var totalWithZeros = totalString + '000';
-        var totalWithThreeDecimals = parseFloat(totalWithZeros);
-
-        var kembali = cash - totalWithThreeDecimals
+        var kembali = cash - total
 
         var jsonSave =
           {
             nonota: nonota,
             tgl_nota: dateTime,
-            total: totalWithThreeDecimals,
+            total: total,
             item: barang,
             cash: cash,
             status: statusbayar,
@@ -239,9 +236,14 @@
               });
               setTimeout(function() {
                   $('#modaluangkembali').modal('show');
-                  $('#iduangkembali').text('Rp. ' + kembali.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+                  if (kembali == 0) {
+                    $('#iduangkembali').text('Kembalian Pas')
+                  } else {
+                    $('#iduangkembali').text('Rp. ' + kembali.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+                  }
                   sessionStorage.removeItem('dataOrderTemp');
                   countCart();
+                  window.location = "{{ route('kasir') }}";
               }, 1000);
           },
           error: function(err) {

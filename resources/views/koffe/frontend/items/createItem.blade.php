@@ -9,7 +9,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-12">
                         <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="../dashboard/index.html">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('kasir') }}">Home</a></li>
                             <li class="breadcrumb-item"><a href="javascript: void(0)">Koffea</a></li>
                             <li class="breadcrumb-item" aria-current="page">Add New Item</li>
                         </ul>
@@ -338,9 +338,10 @@
                             width: 150,
                         });
                         setTimeout(function() {
+                            sessionStorage.removeItem('storedVariants');
                             risetInputItem();
                             initializeDataVariant();
-                            sessionStorage.clear();
+                            window.location = "{{ route('category.item', ['id' => ':id']) }}".replace(':id', category);
                         }, 1000);
                     }
                 },

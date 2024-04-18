@@ -10,8 +10,8 @@ class RedirectController extends Controller
     public function cek() {
         if (auth()->user()->roles === 1) {
             return redirect('/admin/koffe');
-        } else  {
-            return redirect('/');
+        } else if(auth()->user()->roles === 2)  {
+            return redirect('/front/koffe');
         }
     }
 }

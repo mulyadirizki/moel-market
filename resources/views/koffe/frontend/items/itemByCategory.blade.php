@@ -8,7 +8,7 @@
                 <div class="row align-items-center">
                     <div class="col-md-12">
                         <ul class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="../dashboard/index.html">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('kasir') }}">Home</a></li>
                             <li class="breadcrumb-item"><a href="javascript: void(0)">Koffea</a></li>
                             <li class="breadcrumb-item" aria-current="page" id="category1"></li>
                         </ul>
@@ -25,6 +25,40 @@
 
         <!-- [ Main Content ] start -->
         <div class="row" id="items-container">
+            <div class="ecom-content">
+                <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-sm-flex align-items-center">
+                    <ul class="list-inline me-auto my-1">
+                        <li class="list-inline-item align-bottom">
+                        <a href="#" class="d-xxl-none btn btn-link-secondary" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvas_mail_filter">
+                            <i class="ti ti-filter f-16"></i> Filter
+                        </a>
+                        <a href="#" class="d-none d-xxl-inline-flex btn btn-link-secondary"
+                            data-bs-toggle="collapse" data-bs-target="#ecom-filter">
+                            <i class="ti ti-filter f-16"></i> Filter
+                        </a>
+                        </li>
+                        <li class="list-inline-item">
+                        <div class="form-search">
+                            <i class="ti ti-search"></i>
+                            <input type="search" class="form-control" placeholder="Search Products" style="width: 320px;">
+                        </div>
+                        </li>
+                    </ul>
+                    <ul class="list-inline ms-auto my-1">
+                        <a href="{{ route('create.item') }}">
+                        <button type="button" class="btn btn-primary">Create Item</button>
+                        </a>
+                        <a href="{{ route('manage.category') }}">
+                        <button type="button" class="btn btn-primary">Manage Categories</button>
+                        </a>
+                    </ul>
+                    </div>
+                </div>
+                </div>
+            </div>
             <!-- Items will be appended here -->
         </div>
         <!-- [ Main Content ] end -->
@@ -85,51 +119,60 @@
         function getItemByCategory() {
             var id = window.location.pathname.split('/').pop();
             $.get("{{ route('category.item', ['id' => ':id']) }}".replace(':id', id), function (items) {
-                var uniqueNames = {};
-                var uniqueItems = items.data.filter(function(item) {
-                    if (!uniqueNames[item.item_name]) {
-                        uniqueNames[item.item_name] = true;
-                        return true;
-                    }
-                    return false;
-                });
-                uniqueItems.forEach(function(itm) {
-                    var count = items.data.filter(function(item) {
-                        return item.item_name === itm.item_name;
-                    }).length;
+                if (items.data.length == 0) {
+                    $('#category2').text('No Data to Display')
+                    console.log('No data')
+                } else {
+                    var uniqueNames = {};
+                    var uniqueItems = items.data.filter(function(item) {
+                        if (!uniqueNames[item.item_name]) {
+                            uniqueNames[item.item_name] = true;
+                            return true;
+                        }
+                        return false;
+                    });
+                    uniqueItems.forEach(function(itm) {
+                        var count = items.data.filter(function(item) {
+                            return item.item_name === itm.item_name;
+                        }).length;
 
-                    var itemElement = '<div class="col-sm-6 col-xl-3">';
-                    itemElement += '<div class="card product-card">';
-                    itemElement += '<div style="padding: 10px;">';
-                    itemElement += '<div class="row align-items-center">';
-                    itemElement += '<div class="col-auto p-r-0">';
-                    itemElement += '<div class="u-img">';
-                    itemElement += '<img src="https://png.pngtree.com/template/20191104/ourmid/pngtree-kf-letter-logo-image_326979.jpg" alt="user image" class="" style="width: 50px">';
-                    itemElement += '</div>';
-                    itemElement += '</div>';
-                    itemElement += '<div class="col">';
-                    itemElement += '<a href="javascript:void(0);" onclick="choseVariant(\'' + itm.id_item + '\')">';
-                    itemElement += '<h5 class="m-b-5">' + itm.item_name + '</h5>';
-                    itemElement += '</a>';
-                    itemElement += '</div>';
-                    itemElement += '<div class="col-auto">';
-                    if (count > 1) {
-                        itemElement += '<span class="pc-arrow">' + count + ' Prices</span>';
-                    } else {
-                        itemElement += '<span class="pc-arrow">Rp. ' + itm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' </span>';
-                    }
-                    itemElement += '</div>';
-                    itemElement += '</div>';
-                    itemElement += '</div>';
-                    itemElement += '</div>';
-                    itemElement += '</div>';
+                        var itemElement = '<div class="col-sm-6 col-xl-3">';
+                        itemElement += '<div class="card product-card">';
+                        itemElement += '<div style="padding: 10px;">';
+                        itemElement += '<div class="row align-items-center">';
+                        itemElement += '<div class="col-auto p-r-0">';
+                        itemElement += '<div class="u-img">';
+                        itemElement += '<img src="https://png.pngtree.com/template/20191104/ourmid/pngtree-kf-letter-logo-image_326979.jpg" alt="user image" class="" style="width: 50px">';
+                        itemElement += '</div>';
+                        itemElement += '</div>';
+                        itemElement += '<div class="col">';
+                        itemElement += '<a href="javascript:void(0);" onclick="choseVariant(\'' + itm.id_item + '\')">';
+                        itemElement += '<h5 class="m-b-5">' + itm.item_name + '</h5>';
+                        itemElement += '</a>';
+                        itemElement += '</div>';
+                        itemElement += '<div class="col-auto">';
+                        if (count > 1) {
+                            itemElement += '<span class="pc-arrow">' + count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' Prices</span>';
+                        } else {
+                            itemElement += '<span class="pc-arrow">Rp. ' + itm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' </span>';
+                        }
+                        itemElement += '</div>';
+                        itemElement += '</div>';
+                        itemElement += '</div>';
+                        itemElement += '</div>';
+                        itemElement += '</div>';
 
-                    $('#items-container').append(itemElement);
-                    $('#category1').text(itm.category_name);
-                    $('#category2').text(itm.category_name);
-                });
+                        $('#items-container').append(itemElement);
+                        $('#category1').text(itm.category_name);
+                        $('#category2').text(itm.category_name);
+                    });
+                }
             });
         }
+
+        $(document).ready(function() {
+            getItemByCategory();
+        });
 
         function choseVariant(id_item) {
             $('#menuitemvariant').empty();
@@ -152,9 +195,9 @@
                         var itemElement = '<div class="btn-group" role="group" style="width: 320px; margin-bottom: 10px;">';
                         itemElement += '<input type="radio" class="btn-check btn-variant" id="'+ itm.id_variant +'" name="btnvarian">';
                         if (itm.variant_name != null) {
-                            itemElement += '<label class="btn btn-light-primary" for="'+ itm.id_variant +'"><span style="text-align: left;">'+ itm.variant_name + '</span>' + ' Rp. ' + itm.price + '</label>';
+                            itemElement += '<label class="btn btn-light-primary" for="'+ itm.id_variant +'"><span style="text-align: left;">'+ itm.variant_name + '</span>' + ' Rp. ' + itm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '</label>';
                         } else {
-                            itemElement += '<label class="btn btn-light-primary" for="'+ itm.id_variant +'"><span style="text-align: left;">'+ itm.item_name + '</span>' + ' Rp. ' + itm.price + '</label>';
+                            itemElement += '<label class="btn btn-light-primary" for="'+ itm.id_variant +'"><span style="text-align: left;">'+ itm.item_name + '</span>' + ' Rp. ' + itm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '</label>';
                         }
                         itemElement += '</div><br>';
 
@@ -264,9 +307,5 @@
                 });
             }
         }
-
-        $(document).ready(function() {
-            getItemByCategory();
-        });
     </script>
 @endpush

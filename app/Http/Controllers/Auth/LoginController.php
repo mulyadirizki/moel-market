@@ -35,13 +35,13 @@ class LoginController extends Controller
             if (auth()->user()->roles === 1 && $dat->bisnis_id === 2) {
                 return response()->json([
                     'success'   => true,
-                    'redirect'  => '/admin/koffe',
+                    'redirect'  => '/ma-pos/public/admin/koffe',
                     'message'   => 'Login berhasil'
                 ]);
             } else if(auth()->user()->roles === 2 && $dat->bisnis_id === 2) {
                 return response()->json([
                     'success'   => true,
-                    'redirect'  => '/front/koffe',
+                    'redirect'  => '/ma-pos/public/front/koffe',
                     'message'   => 'Login berhasil'
                 ]);
             }

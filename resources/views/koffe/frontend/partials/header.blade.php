@@ -207,8 +207,8 @@
                                 <span style="margin-right: 48px;" id="total">Rp. 0</span>
                             </div>
                             <div class="text-center py-2">
-                                <a href="{{ route('payment.order') }}">
-                                    <button class="btn btn-shadow link-primary" id="btnAddCharge"></button>
+                                <a href="{{ route('payment.order') }}" id="idRoutePayment">
+                                    <button class="btn btn-shadow link-success" id="btnAddCharge" disabled>Charger Rp. 0</button>
                                 </a>
                             </div>
                         </div>
@@ -412,7 +412,10 @@
 
             $('#datacart').empty();
 
+            var link = document.getElementById('idRoutePayment');
+
             if (dataOrderArr) {
+                link.setAttribute('href', '{{ route('payment.order') }}');
                 $('#countCart').text(dataOrderArr.length);
                 var subtotal = 0;
                 dataOrderArr.forEach(function(itm) {
@@ -426,7 +429,7 @@
                     itemElement += '</div>';
                     itemElement += '</div>';
                     itemElement += '<div class="flex-grow-1 ms-1" >';
-                    itemElement += '<button class="btn btn-sm float-end text-muted" style="margin-left: 10px;" onclick="deleteItem()"><i class="ti ti-x text-danger"></i></button>';
+                    itemElement += '<button class="btn btn-sm float-end text-muted" style="margin-left: 5px;" onclick="deleteItem()"><i class="ti ti-x text-danger"></i></button>';
                     itemElement += '<span class="float-end text-muted"><span style="margin-right: 5px;">x'+ itm.qty +'</span>'+' Rp. '+ (itm.price * itm.qty).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +'</span>';
                     itemElement += '<p class="text-body mb-1"><b>'+ itm.item_name +'</b></p>';
                     itemElement += '<span class="text-muted">'+ itm.variant_name +'</span>';
@@ -442,6 +445,18 @@
                     $('#btnAddCharge').text('Pay Rp. '+ subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
                 });
             } else {
+                link.setAttribute('href', 'javascript:void(0);');
+                link.style.pointerEvents = 'none';
+                link.style.color = '#999';
+
+                var itemElementEmpty = '<a class="list-group-item list-group-item-action">'
+                    itemElementEmpty += '<div class="d-flex">';
+                    itemElementEmpty += '<div class="flex-grow-1 ms-1" >';
+                    itemElementEmpty += '<p class="text-body mb-1"><b>Cart Empty</b></p>';
+                    itemElementEmpty += '</div>';
+                    itemElementEmpty += '</div>';
+                    itemElementEmpty += '</a>';
+                $('#datacart').append(itemElementEmpty);
                 $('#countCart').text('0');
             }
         }
@@ -479,6 +494,11 @@
                 position_class: "toast-top-right",
                 width: 150,
             });
+            $('#subtotal').text('Rp. 0');
+            $('#total').text('Rp. 0');
+
+            $('#btnAddCharge').text('Pay Rp. 0')
+            $('.btn-bayar').removeAttr('disabled');
         }
 
         $(document).ready(function() {

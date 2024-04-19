@@ -52,7 +52,7 @@
               <div class="col-lg-4" id="priceitem">
                 <div class="form-group">
                   <label class="form-label" for="nonota">No Nota</label>
-                  <input type="text" class="form-control" id="nonota">
+                  <input type="text" class="form-control" id="nonota" disabled>
                 </div>
               </div>
               <div class="col-lg-4">
@@ -73,7 +73,7 @@
               <div class="col-lg-4" id="priceitem">
                 <div class="form-group">
                   <label class="form-label" for="cash">Cash</label>
-                  <input type="text" class="form-control" placeholder="Enter Cash" id="cash">
+                  <input type="number" class="form-control" placeholder="Enter Cash" id="cash">
                 </div>
               </div>
               <div class="text-end btn-page mb-0 mt-4">

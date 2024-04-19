@@ -131,7 +131,7 @@
                         return item.item_name === itm.item_name;
                     }).length;
 
-                    var itemElement = '<div class="col-sm-6 col-xl-3">';
+                    var itemElement = '<div class="col-sm-6 col-xl-3" style="margin-top: -10px;">';
                     itemElement += '<div class="card product-card">';
                     itemElement += '<div style="padding: 10px;">';
                     itemElement += '<div class="row align-items-center">';

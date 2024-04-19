@@ -63,7 +63,7 @@
                                         <div class="row align-items-center">
                                             <div class="col">
                                                 <a href="">
-                                                    <h5 class="m-b-5">Rp. {{ $trans->total}}</h5>
+                                                    <h5 class="m-b-5">Rp. {{ number_format($trans->total, 0, ',', '.') }}</h5>
                                                     <span>{{ $trans->item_names }}</span>
                                                 </a>
                                             </div>

@@ -153,4 +153,76 @@ class FrontController extends Controller
         }
     }
 
+    public function billingPrint()
+    {
+        return view('koffe.frontend.cetakan.billing');
+    }
+
+    public function activity()
+    {
+        $dataPenjualan = DB::table('t_penjualan_det AS pjd')
+            ->join('t_penjualan AS pj', 'pjd.id_penjualan', '=', 'pj.id_penjualan')
+            ->join('m_item AS itm', 'pjd.id_item', '=', 'itm.id_item')
+            ->select(
+                DB::raw("DATE_FORMAT(pj.tgl_nota, '%Y-%m-%d') AS tanggal_nota"),
+                DB::raw("DATE_FORMAT(pj.tgl_nota, '%H:%i') AS jam_nota"),
+                'pj.id_penjualan',
+                'pj.total',
+                DB::raw('GROUP_CONCAT(itm.item_name) AS item_names'),
+                DB::raw('GROUP_CONCAT(pj.total) AS totals')
+            )
+            ->groupBy('tanggal_nota', 'jam_nota', 'pj.id_penjualan')
+            ->orderBy('tanggal_nota', 'asc')
+            ->orderBy('jam_nota', 'asc')
+            ->get();
+
+        $groupedData = [];
+
+        foreach($dataPenjualan as $penjualan) {
+            $tanggal = $penjualan->tanggal_nota;
+
+            if (!isset($groupedData[$tanggal])) {
+                $groupedData[$tanggal] = [];
+            }
+
+            $groupedData[$tanggal][] = $penjualan;
+
+            // $groupedData[] = $penjualan;
+        }
+        // foreach ($dataPenjualan as $penjualan) {
+        //     $tanggal = $penjualan->tanggal_nota;
+        //     $jam = $penjualan->jam_nota;
+
+        //     // Create a key using the date and time
+        //     $key = "$tanggal $jam";
+
+        //     // Check if the key exists in groupedData
+        //     if (!isset($groupedData[$key])) {
+        //         // If not, create an empty array for that key
+        //         $groupedData[$key] = [
+        //             'tanggal_nota' => $tanggal,
+        //             'jam_nota' => $jam,
+        //             'transactions' => [],
+        //         ];
+        //     }
+
+        //     // Add the transaction details to the transactions array
+        //     $groupedData[$key]['transactions'][] = [
+        //         'id_penjualan' => $penjualan->id_penjualan,
+        //         'item_names' => explode(',', $penjualan->item_names),
+        //         'totals' => explode(',', $penjualan->totals),
+        //     ];
+        // }
+
+        // dd($groupedData);
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'data' => $groupedData
+            ], 200);
+        } else {
+            return view('koffe.frontend.activity.activityIndex', compact('groupedData'));
+        }
+    }
+
 }

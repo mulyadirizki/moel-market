@@ -38,4 +38,18 @@ class PenjualanDet extends Model
             }
         });
     }
+
+    public function getCasts()
+    {
+        if ($this->incrementing) {
+            return array_merge([
+                $this->getKeyName() => 'int',
+            ], $this->casts);
+        }
+        return $this->casts;
+    }
+
+    protected $casts = [
+        'id_penjualan_det' => 'string'
+    ];
 }

@@ -70,6 +70,10 @@ Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2'
 
     Route::get('/payment-order', [FrontController::class, 'paymentOrder'])->name('payment.order');
     Route::post('/payment-order/add', [FrontController::class, 'paymentOrderAdd'])->name('payment.order.add');
+
+    Route::get('/billing-print', [FrontController::class, 'billingPrint'])->name('billing.print');
+
+    Route::get('/activity', [FrontController::class, 'activity'])->name('activity');
 });
 // Route::group(['middleware' => 'guest'], function() {
 //     Route::get('/', [LoginController::class, 'pageLogin'])->name('pageLogin');

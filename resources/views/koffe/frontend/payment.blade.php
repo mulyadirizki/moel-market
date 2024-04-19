@@ -234,17 +234,15 @@
                   position_class: "toast-top-right",
                   width: 250,
               });
-              setTimeout(function() {
-                  $('#modaluangkembali').modal('show');
-                  if (kembali == 0) {
-                    $('#iduangkembali').text('Kembalian Pas')
-                  } else {
-                    $('#iduangkembali').text('Rp. ' + kembali.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
-                  }
-                  sessionStorage.removeItem('dataOrderTemp');
-                  countCart();
-                  window.location = "{{ route('kasir') }}";
-              }, 1000);
+
+              $('#modaluangkembali').modal('show');
+              if (kembali == 0) {
+                $('#iduangkembali').text('Kembalian Pas')
+              } else {
+                $('#iduangkembali').text('Rp. ' + kembali.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+              }
+              sessionStorage.removeItem('dataOrderTemp');
+              countCart();
           },
           error: function(err) {
               err.responseJSON.error.map((e) => {
@@ -270,7 +268,7 @@
 
     function btnClose() {
       $('#modaluangkembali').modal('hide');
-      window.location.reload();
+      window.location = "{{ route('kasir') }}";
     }
 
     $(document).ready(function() {

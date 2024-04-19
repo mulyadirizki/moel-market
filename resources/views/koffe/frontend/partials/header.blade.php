@@ -415,7 +415,7 @@
             var link = document.getElementById('idRoutePayment');
 
             if (dataOrderArr) {
-                link.setAttribute('href', '{{ route('payment.order') }}');
+                link.setAttribute('href', "{{ route('payment.order') }}");
                 $('#countCart').text(dataOrderArr.length);
                 var subtotal = 0;
                 dataOrderArr.forEach(function(itm) {
@@ -445,9 +445,6 @@
                     $('#btnAddCharge').text('Pay Rp. '+ subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
                 });
             } else {
-                link.setAttribute('href', 'javascript:void(0);');
-                link.style.pointerEvents = 'none';
-                link.style.color = '#999';
 
                 var itemElementEmpty = '<a class="list-group-item list-group-item-action">'
                     itemElementEmpty += '<div class="d-flex">';
@@ -458,6 +455,10 @@
                     itemElementEmpty += '</a>';
                 $('#datacart').append(itemElementEmpty);
                 $('#countCart').text('0');
+
+                link.setAttribute('href', 'javascript:void(0);');
+                link.style.pointerEvents = 'none';
+                link.style.color = '#999';
             }
         }
 

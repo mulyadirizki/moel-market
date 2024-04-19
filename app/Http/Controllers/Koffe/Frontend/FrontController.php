@@ -186,35 +186,7 @@ class FrontController extends Controller
             }
 
             $groupedData[$tanggal][] = $penjualan;
-
-            // $groupedData[] = $penjualan;
         }
-        // foreach ($dataPenjualan as $penjualan) {
-        //     $tanggal = $penjualan->tanggal_nota;
-        //     $jam = $penjualan->jam_nota;
-
-        //     // Create a key using the date and time
-        //     $key = "$tanggal $jam";
-
-        //     // Check if the key exists in groupedData
-        //     if (!isset($groupedData[$key])) {
-        //         // If not, create an empty array for that key
-        //         $groupedData[$key] = [
-        //             'tanggal_nota' => $tanggal,
-        //             'jam_nota' => $jam,
-        //             'transactions' => [],
-        //         ];
-        //     }
-
-        //     // Add the transaction details to the transactions array
-        //     $groupedData[$key]['transactions'][] = [
-        //         'id_penjualan' => $penjualan->id_penjualan,
-        //         'item_names' => explode(',', $penjualan->item_names),
-        //         'totals' => explode(',', $penjualan->totals),
-        //     ];
-        // }
-
-        // dd($groupedData);
 
         if (request()->expectsJson()) {
             return response()->json([

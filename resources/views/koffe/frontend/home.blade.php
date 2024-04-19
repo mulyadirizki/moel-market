@@ -91,7 +91,7 @@
             </div>
           </div>
           @foreach($category as $ct)
-            <div class="col-xl-3 col-md-6">
+            <div class="col-xl-3 col-md-6" style="margin-top: -10px;">
               <div class="card product-card">
                 <div style="padding: 10px;">
                   <div class="row align-items-center">

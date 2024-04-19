@@ -173,7 +173,7 @@ class FrontController extends Controller
             )
             ->groupBy('tanggal_nota', 'jam_nota', 'pj.id_penjualan')
             ->orderBy('tanggal_nota', 'desc')
-            ->orderBy('jam_nota', 'asc')s
+            ->orderBy('jam_nota', 'asc')
             ->get();
 
         $groupedData = [];

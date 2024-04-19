@@ -172,8 +172,8 @@ class FrontController extends Controller
                 DB::raw('GROUP_CONCAT(pj.total) AS totals')
             )
             ->groupBy('tanggal_nota', 'jam_nota', 'pj.id_penjualan')
-            ->orderBy('tanggal_nota', 'asc')
-            ->orderBy('jam_nota', 'asc')
+            ->orderBy('tanggal_nota', 'desc')
+            ->orderBy('jam_nota', 'asc')s
             ->get();
 
         $groupedData = [];

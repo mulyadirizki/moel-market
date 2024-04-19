@@ -57,6 +57,7 @@
                             <div class="card product-card">
                                 <div class="card-header d-flex align-items-center justify-content-between">
                                     <h5>{{ $tanggal }}</h5>
+                                    <h4 style="font-weight: bold; font-size: 18px;">Total Rp. {{ number_format(array_sum(array_column($transactions, 'total')), 0, ',', '.') }}</h4>
                                 </div>
                                 @foreach($transactions as $trans)
                                     <div style="padding: 10px;">
@@ -77,7 +78,6 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
         <!-- [ sample-page ] end -->
         </div>
       <!-- [ Main Content ] end -->
@@ -86,14 +86,14 @@
 @push('script')
     <script>
 
-        // getAllActivity = () => {
-        //     $.get("{{ route('activity') }}", function (items) {
-        //         console.log(items)
-        //     });
-        // }
+        getAllActivity = () => {
+            $.get("{{ route('activity') }}", function (items) {
+                console.log(items)
+            });
+        }
 
-        // $(document).ready(function() {
-        //     getAllActivity();
-        // });
+        $(document).ready(function() {
+            getAllActivity();
+        });
     </script>
 @endpush

@@ -49,7 +49,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-lg-4" id="priceitem">
+              <div class="col-lg-4">
                 <div class="form-group">
                   <label class="form-label" for="nonota">No Nota</label>
                   <input type="text" class="form-control" id="nonota" disabled>
@@ -57,10 +57,11 @@
               </div>
               <div class="col-lg-4">
                 <div class="form-group">
-                    <label class="form-label" for="statusbayar">Payment Status</label>
+                    <label class="form-label" for="statusbayar">Payment Method</label>
                     <select class="form-select" id="statusbayar" onchange="changePembayaran()">
                         <option selected value="1">Lunas</option>
                         <option value="2">Pay Later</option>
+                        <option value="3">QRIS</option>
                     </select>
                 </div>
               </div>
@@ -100,7 +101,11 @@
                   <p id="iduangkembali">Rp. 0</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary btn-submit" onclick="btnClose()">Oke</button>
+                  <a href="{{ route('kasir') }}">
+                    <button class="btn btn-info">Kembali</button>
+                  </a>
+                  <button class="btn btn-success" id="printBillingBtn" onclick="printBilling()">Cetak</button>
+                  <button type="button" class="btn btn-primary btn-submit" onclick="btnClose()">Oke</button>
                 </div>
             </div>
         </div>
@@ -131,8 +136,10 @@
       let statusbayar = $('#statusbayar').val();
       if (statusbayar == 2) {
           $('#nmpiutang')[0].removeAttribute("hidden")
+          $('#priceitem')[0].setAttribute("hidden", true)
       } else {
           $('#nmpiutang')[0].setAttribute("hidden", true)
+          $('#priceitem')[0].removeAttribute("hidden")
       }
     }
 
@@ -222,6 +229,8 @@
             "_token": token
           }),
           success: function(response) {
+              $('#printBillingBtn').data('id-penjualan', response.id_penjualan);
+
               $.Toast("Success", "Transaksi berhasil", "success", {
                   has_icon:true,
                   has_close_btn:true,
@@ -245,20 +254,21 @@
               countCart();
           },
           error: function(err) {
-              err.responseJSON.error.map((e) => {
-                  $.Toast("Gagal", e, "warning", {
-                      has_icon:true,
-                      has_close_btn:true,
-                      stack: true,
-                      fullscreen:false,
-                      timeout:8000,
-                      sticky:false,
-                      has_progress:true,
-                      rtl:false,
-                      position_class: "toast-top-right",
-                      width: 250,
-                  });
-              })
+            console.log(err)
+              // err.responseJSON.error.map((e) => {
+              //     $.Toast("Gagal", e, "warning", {
+              //         has_icon:true,
+              //         has_close_btn:true,
+              //         stack: true,
+              //         fullscreen:false,
+              //         timeout:8000,
+              //         sticky:false,
+              //         has_progress:true,
+              //         rtl:false,
+              //         position_class: "toast-top-right",
+              //         width: 250,
+              //     });
+              // })
           }
         })
       } else {
@@ -269,6 +279,20 @@
     function btnClose() {
       $('#modaluangkembali').modal('hide');
       window.location = "{{ route('kasir') }}";
+    }
+
+    function printBilling() {
+        var id_penjualan = $('#printBillingBtn').data('id-penjualan');
+        var url = "{{ route('billing.print', ['id' => ':id']) }}".replace(':id', id_penjualan);
+        console.log(url)
+
+        var popupWindow = window.open(url, "_blank", "width=110");
+        // Tunggu sampai jendela baru dimuat
+        popupWindow.onload = function() {
+            // Memicu pencetakan setelah halaman eksternal dimuat
+            popupWindow.print();
+        };
+        popupWindow.document.head.insertAdjacentHTML("beforeend", "<style>@page { size: 58mm; }</style>");
     }
 
     $(document).ready(function() {

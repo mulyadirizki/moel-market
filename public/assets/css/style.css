@@ -8026,6 +8026,7 @@ textarea.is-invalid.dataTable-input {
 [data-pc-direction=ltr] .mb-5 {
   margin-bottom: 3rem !important;
 }
+
 [data-pc-direction=ltr] .mb-auto {
   margin-bottom: auto !important;
 }
@@ -17963,6 +17964,10 @@ textarea.is-invalid.dataTable-input {
 
 .text-sm {
   font-size: 0.75rem !important;
+}
+
+.text-xsm {
+  font-size: 0.65rem !important;
 }
 
 .text-md {

@@ -34,6 +34,12 @@
     <link rel="stylesheet" href="{{ url('assets/css/plugins/dataTables.bootstrap5.min.css') }}">
     <link href="{{ url('assets/css/toast.style.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url('assets/css/toast.style.min.css') }}" rel="stylesheet" type="text/css">
+    <style>
+        .dashed-line {
+            border-top: 1px dashed #000;
+            /* margin: 10px 0; */
+        }
+    </style>
   </head>
   <!-- [Head] end -->
 
@@ -57,49 +63,147 @@
                     <div class="col-sm-12">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-xl-4" style="padding: 10px;">
-                                    <ul class="list-group list-group-flush">
-                                        <li class="list-group-item px-0">
-                                            <div class="media align-items-start">
-                                                <img class="bg-light rounded img-fluid wid-60" src="{{ url('assets/images/store/koffea.jpeg') }}" alt="User image"><br>
-                                                <div class="media-body mx-2">
-                                                    <h4 class="mb-1">Koffea</h4>
-                                                    <p class="text-truncate text-muted text-sm mb-2">RS Universitas Andalas, <br> Kota Padang, Sumatera Barat, 2511</p>
-                                                    <p class="text-truncate text-muted text-sm mb-2">0811223344</p>
+                                <div class="col-xl-4">
+                                    <div class="media align-items-start">
+                                        <div class="text-center">
+                                            <div class="chat-avtar d-inline-flex mx-auto">
+                                                <img class="bg-light rounded img-fluid wid-60" src="{{ url('assets/images/store/koffea.jpeg') }}" alt="User image">
+                                            </div>
+                                            <h5 class="mt-3">KOFFEA</h5>
+                                            <p class="text-muted text-xsm">RS Universitas Andalas, Kota Padang, Sumatera Barat, 25161 </p>
+                                            <p class="text-muted text-xsm" style="margin-top: -10px;"><b>081122334455</b></p>
+                                        </div>
+                                    </div>
+                                    <div class="dashed-line" style="margin-top: -10px;"></div>
+                                    <div style="margin-top: 20px;">
+                                        <div class="row" class="row" style="margin-top: -15px;">
+                                            <div class="col">
+                                                <div class="float-end">
+                                                    <p class="text-muted text-xsm">{{ $datPenjualan->no_nota }}</p>
+                                                </div>
+                                                <p class="text-muted text-xsm">No Nota</p>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-top: -15px;">
+                                            <div class="col">
+                                                <div class="float-end">
+                                                    <p class="text-muted text-xsm">{{ date("d M Y H:i", strtotime($datPenjualan->tgl_nota)); }}</p>
+                                                </div>
+                                                <p class="text-muted text-xsm">Waktu</p>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-top: -15px;">
+                                            <div class="col">
+                                                <div class="float-end">
+                                                    <p class="text-muted text-xsm">{{ $datPenjualan->nama }}</p>
+                                                </div>
+                                                <p class="text-muted text-xsm">Kasir</p>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-top: -15px;">
+                                            <div class="col">
+                                                <div class="float-end">
+                                                    <?php
+                                                        $random_string = '';
+                                                        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+                                                        for ($i = 0; $i < 10; $i++) {
+                                                            $random_string .= $characters[mt_rand(0, strlen($characters) - 1)];
+                                                        }
+                                                    ?>
+                                                    <p class="text-muted text-xsm">{{ $random_string }}</p>
+                                                </div>
+                                                <p class="text-muted text-xsm">No Kuitansi</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dashed-line" style="margin-top: -10px;"></div>
+                                    <div style="margin-top: 20px;">
+                                        @foreach($result as $category => $items)
+                                            <div class="row" style="margin-top: -15px; padding-bottom: 12px;">
+                                                <div class="col">
+                                                    <span class="text-muted text-sm"><b>{{ $category }}</b></span>
                                                 </div>
                                             </div>
-                                        </li>
-                                        <li class="list-group-item px-0">
-                                            <div class="row">
+                                            @foreach($items as $itm)
+                                                <div class="row" style="margin-top: -18px; margin-left: 1px;">
+                                                    <div class="col">
+                                                        <span class="text-muted text-xsm">{{ $itm->item_name }}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col" style="margin-left: 13px;">
+                                                        <div class="float-end">
+                                                            <p class="text-muted text-xsm">Rp. {{ number_format($itm->sub_total) }}</p>
+                                                        </div>
+                                                        <p class="text-muted text-xsm">{{ $itm->qty }} x <span style="margin-left: 10px;">Rp. {{ number_format($itm->harga_peritem) }}</span></p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @endforeach
+                                    </div>
+                                    <div class="dashed-line" style="margin-top: -10px;"></div>
+                                    <div style="margin-top: 20px;">
+                                        <div class="row" style="margin-top: -15px;">
+                                            <div class="col">
+                                                <div class="float-end">
+                                                    <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->total) }}</p>
+                                                </div>
+                                                <p class="text-muted text-xsm">Subtotal</p>
+                                            </div>
+                                        </div>
+                                        <div class="row" style="margin-top: -15px;">
+                                            <div class="col">
+                                                <div class="float-end">
+                                                    <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->total) }}</p>
+                                                </div>
+                                                <p class="text-muted text-xsm">Total Tagihan</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="dashed-line" style="margin-top: -10px;"></div>
+                                    <div style="margin-top: 20px;">
+                                        @if($datPenjualan->payment_method != 'Pay Later')
+                                        <div class="row" style="margin-top: -15px;">
+                                            <div class="col">
+                                                <div class="float-end">
+                                                    <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->uang_bayar) }}</p>
+                                                </div>
+                                                <p class="text-muted text-xsm">{{ $datPenjualan->payment_method }}</p>
+                                            </div>
+                                        </div>
+                                        @else
+                                            <div class="row" style="margin-top: -15px;">
                                                 <div class="col">
                                                     <div class="float-end">
-                                                        <p class="text-muted">17.19</p>
+                                                        <p class="text-muted text-xsm">Rp. 0</p>
                                                     </div>
-                                                    <span class="text-muted">08 Mar 2024</span>
+                                                    <p class="text-muted text-xsm">{{ $datPenjualan->payment_method }}</p>
                                                 </div>
                                             </div>
-                                            <div class="row" style="margin-top: -10px;">
-                                                <div class="col">
-                                                    <div class="float-end">
-                                                        <p class="text-muted">104UPM</p>
-                                                    </div>
-                                                    <span class="text-muted">Receipt Number</span>
+                                        @endif
+                                        <div class="row" style="margin-top: -15px;">
+                                            <div class="col">
+                                                <div class="float-end">
+                                                    <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->uang_bayar) }}</p>
                                                 </div>
+                                                <p class="text-muted text-xsm">Total Bayar</p>
                                             </div>
-                                        </li>
-                                        <li class="list-group-item px-0">
-                                            <div class="float-end">
-                                                <h5 class="mb-0">-</h5>
+                                        </div>
+                                        <div class="row" style="margin-top: -15px;">
+                                            <div class="col">
+                                                <div class="float-end">
+                                                    <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->uang_kembali) }}</p>
+                                                </div>
+                                                <p class="text-muted text-xsm">Kembali</p>
                                             </div>
-                                            <span class="text-muted">Estimated Delivery</span>
-                                        </li>
-                                        <li class="list-group-item px-0">
-                                            <div class="float-end">
-                                                <h5 class="mb-0">-</h5>
-                                            </div>
-                                            <span class="text-muted">Voucher</span>
-                                        </li>
-                                    </ul>
+                                        </div>
+                                    </div>
+                                    <div style="width: 100%">
+                                        <div class="text-center">
+                                            <p class="text-muted text-xsm">Powered By MA POS</p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

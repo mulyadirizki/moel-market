@@ -103,10 +103,10 @@ class FrontController extends Controller
 
     public function paymentOrderAdd(Request $request)
     {
+        $id_penjualan = null;
         try {
-            DB::transaction(function () use ($request) {
+            DB::transaction(function () use ($request, &$id_penjualan) {
                 $data = json_decode($request->getContent(), true);
-
                 $id_penjualan = Generator::uuid4()->toString();
                 Penjualan::updateOrCreate(
                     [
@@ -142,7 +142,8 @@ class FrontController extends Controller
             });
             return response()->json([
                 'success' => true,
-                'message' => 'Payment Successful'
+                'message' => 'Payment Successful',
+                'id_penjualan' => $id_penjualan
             ], 200);
 
         } catch (\Throwable $e) {
@@ -153,9 +154,57 @@ class FrontController extends Controller
         }
     }
 
-    public function billingPrint()
+    public function billingPrint($id_penjualan)
     {
-        return view('koffe.frontend.cetakan.billing');
+        $datPenjualan = DB::table('t_penjualan AS pj')
+            ->join('users as usr', 'pj.norec_user', '=', 'usr.noregistrasi')
+            ->select(
+                'pj.no_nota',
+                'pj.tgl_nota',
+                'usr.nama',
+                'pj.total',
+                'pj.uang_bayar',
+                'pj.uang_kembali',
+                DB::raw('CASE
+                            WHEN pj.status = 1 THEN "Cash"
+                            WHEN pj.status = 2 THEN "Pay Later"
+                            WHEN pj.status = 3 THEN "QRIS"
+                            ELSE ""
+                        END AS payment_method')
+            )->where('pj.id_penjualan', $id_penjualan)
+            ->first();
+
+            $result = DB::table('t_penjualan_det AS pjd')
+                ->join('m_item AS itm', 'pjd.id_item', '=', 'itm.id_item')
+                ->join('m_category AS ct', 'itm.category_id', '=', 'ct.id_category')
+                ->select(
+                    'pjd.id_penjualan_det',
+                    'pjd.id_penjualan',
+                    'pjd.qty',
+                    'pjd.harga_peritem',
+                    'pjd.sub_total',
+                    'itm.item_name',
+                    'itm.category_id',
+                    'ct.category_name'
+                )
+                ->where('pjd.id_penjualan', '=', $id_penjualan)
+                ->groupBy(
+                    'pjd.id_penjualan_det',
+                    'pjd.id_penjualan',
+                    'pjd.qty',
+                    'pjd.harga_peritem',
+                    'pjd.sub_total',
+                    'itm.item_name',
+                    'itm.category_id',
+                    'ct.category_name'
+                )
+                ->get()
+                ->groupBy('category_name') // Mengelompokkan hasil berdasarkan array
+                ->toArray();
+
+        // dd($datPenjualan);
+
+        return view('koffe.frontend.cetakan.billing', compact('datPenjualan', 'result'));
     }
 
     public function activity()
@@ -168,6 +217,7 @@ class FrontController extends Controller
                 DB::raw("DATE_FORMAT(pj.tgl_nota, '%H:%i') AS jam_nota"),
                 'pj.id_penjualan',
                 'pj.total',
+                'pj.status',
                 DB::raw('GROUP_CONCAT(itm.item_name) AS item_names'),
                 DB::raw('GROUP_CONCAT(pj.total) AS totals')
             )
@@ -195,6 +245,16 @@ class FrontController extends Controller
         } else {
             return view('koffe.frontend.activity.activityIndex', compact('groupedData'));
         }
+    }
+
+    public function activityDetail($id_penjualan)
+    {
+        return view('koffe.frontend.partials.setting');
+    }
+
+    public function setting()
+    {
+        return view('koffe.frontend.partials.setting');
     }
 
 }

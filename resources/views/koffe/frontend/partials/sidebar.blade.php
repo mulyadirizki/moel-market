@@ -21,10 +21,10 @@
                     class="pc-mtext">Activity</span><span class="pc-arrow"></span></a>
                 </li>
                 <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-phone"></i></span><span
-                    class="pc-mtext">Setting</span><span class="pc-arrow"></span></a>
+                    <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-phone"></i></span><span
+                    class="pc-mtext">All</span><span class="pc-arrow"></span></a>
                 </li>
-                <li class="pc-item"><a href="../other/sample-page.html" class="pc-link"><span class="pc-micon">
+                <li class="pc-item"><a href="{{ route('setting') }}" class="pc-link"><span class="pc-micon">
                     <i class="ti ti-brand-chrome"></i></span><span class="pc-mtext">Setting</span></a>
                 </li>
             </ul>

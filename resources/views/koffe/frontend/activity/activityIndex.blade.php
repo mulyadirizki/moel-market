@@ -60,19 +60,39 @@
                                     <h4 style="font-weight: bold; font-size: 18px;">Total Rp. {{ number_format(array_sum(array_column($transactions, 'total')), 0, ',', '.') }}</h4>
                                 </div>
                                 @foreach($transactions as $trans)
-                                    <div style="padding: 10px;">
-                                        <div class="row align-items-center">
-                                            <div class="col">
-                                                <a href="">
-                                                    <h5 class="m-b-5">Rp. {{ number_format($trans->total, 0, ',', '.') }}</h5>
-                                                    <span>{{ $trans->item_names }}</span>
-                                                </a>
+                                    @if($trans->status == '2')
+                                        <a href="{{ route('activity.detail', ['id' => $trans->id_penjualan]) }}">
+                                            <div style="padding: 10px; background-color: salmon;">
+                                                <div class="row align-items-center">
+                                                    <div class="col">
+                                                            <h5 class="m-b-5" style="color: white">Rp. {{ number_format($trans->total, 0, ',', '.') }}</h5>
+                                                            <span style="color: white">{{ $trans->item_names }}</span>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <span class="pc-arrow">{{ $trans->jam_nota }}</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="col-auto">
-                                                <span class="pc-arrow">{{ $trans->jam_nota }}</span>
+                                        </a>
+                                        <hr>
+                                    @else
+                                        <a href="{{ route('activity.detail', ['id' => $trans->id_penjualan]) }}">
+                                            <div style="padding: 10px;">
+                                                <div class="row align-items-center">
+                                                    <div class="col">
+                                                        <a href="">
+                                                            <h5 class="m-b-5">Rp. {{ number_format($trans->total, 0, ',', '.') }}</h5>
+                                                            <span>{{ $trans->item_names }}</span>
+                                                        </a>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <span class="pc-arrow">{{ $trans->jam_nota }}</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
+                                            <hr>
+                                        <a href="">
+                                    @endif
                                 @endforeach
                             </div>
                         </div>

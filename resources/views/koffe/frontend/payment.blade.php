@@ -67,8 +67,8 @@
               </div>
               <div class="col-lg-4" hidden id="nmpiutang">
                 <div class="form-group">
-                  <label class="form-label" for="namepaylater">Name Paylater</label>
-                  <input type="text" class="form-control" placeholder="Enter Name Paylater" id="namepaylater">
+                  <label class="form-label" for="namepaylater">Name</label>
+                  <input type="text" class="form-control" placeholder="Enter Name" id="namepaylater">
                 </div>
               </div>
               <div class="col-lg-4" id="priceitem">

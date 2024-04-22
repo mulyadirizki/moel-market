@@ -61,6 +61,7 @@
                                 </div>
                                 @foreach($transactions as $trans)
                                     @if($trans->status == '2')
+                                        <button class="btn btn-success printBillingBtn" data-id-penjualan="{{ $trans->id_penjualan }}">Cetak</button>
                                         <a href="{{ route('activity.detail', ['id' => $trans->id_penjualan]) }}">
                                             <div style="padding: 10px; background-color: salmon;">
                                                 <div class="row align-items-center">
@@ -76,6 +77,7 @@
                                         </a>
                                         <hr>
                                     @else
+                                        <button class="btn btn-success printBillingBtn" data-id-penjualan="{{ $trans->id_penjualan }}">Cetak</button>
                                         <a href="{{ route('activity.detail', ['id' => $trans->id_penjualan]) }}">
                                             <div style="padding: 10px;">
                                                 <div class="row align-items-center">
@@ -91,7 +93,7 @@
                                                 </div>
                                             </div>
                                             <hr>
-                                        <a href="">
+                                        </a>
                                     @endif
                                 @endforeach
                             </div>
@@ -105,15 +107,34 @@
 @endsection
 @push('script')
     <script>
-
-        getAllActivity = () => {
-            $.get("{{ route('activity') }}", function (items) {
-                console.log(items)
+        $(document).ready(function() {
+            $('.printBillingBtn').click(function() {
+                var id_penjualan = $(this).data('id-penjualan');
+                printBilling(id_penjualan);
             });
+        });
+
+        function printBilling(id_penjualan) {
+            var url = "{{ route('billing.print', ['id' => ':id']) }}".replace(':id', id_penjualan);
+            console.log(id_penjualan);
+
+            var popupWindow = window.open(url, "_blank", "width=110");
+            // Tunggu sampai jendela baru dimuat
+            popupWindow.onload = function() {
+                // Memicu pencetakan setelah halaman eksternal dimuat
+                popupWindow.print();
+            };
+            popupWindow.document.head.insertAdjacentHTML("beforeend", "<style>@page { size: 58mm; }</style>");
         }
 
-        $(document).ready(function() {
-            getAllActivity();
-        });
+        // getAllActivity = () => {
+        //     $.get("{{ route('activity') }}", function (items) {
+        //         console.log(items)
+        //     });
+        // }
+
+        // $(document).ready(function() {
+        //     getAllActivity();
+        // });
     </script>
 @endpush

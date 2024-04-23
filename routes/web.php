@@ -13,6 +13,7 @@ use App\Http\Controllers\HomeController;
 // koffe backend
 use App\Http\Controllers\Koffe\Backend\MainController;
 use App\Http\Controllers\Koffe\Backend\KaryawanController;
+use App\Http\Controllers\Koffe\Backend\ActivityController;
 
 // front
 use App\Http\Controllers\Koffe\Frontend\FrontController;
@@ -52,6 +53,8 @@ Route::group([ 'prefix' => 'admin/koffe', 'middleware' => ['auth', 'checkrole:1'
 
     Route::get('/data-karyawan', [KaryawanController::class, 'karyawan'])->name('karyawan.data');
     Route::post('/data-karyawan/add', [KaryawanController::class, 'karyawanAdd'])->name('karyawan.add');
+
+    Route::get('/data-activity/refund', [ActivityController::class, 'activityRefund'])->name('activity.refund');
 });
 
 Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2']], function() {
@@ -81,22 +84,5 @@ Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2'
     Route::post('/payment-method/change', [FrontController::class, 'changePaymentMethod'])->name('change.payment.method');
     Route::post('/transaksi-penjualan/delete', [FrontController::class, 'transaksiPenjualanDelete'])->name('transaksi.penjualan.delete');
 });
-// Route::group(['middleware' => 'guest'], function() {
-//     Route::get('/', [LoginController::class, 'pageLogin'])->name('pageLogin');
-//     Route::get('/login', [LoginController::class, 'pageLogin'])->name('pageLogin');
-//     Route::post('/', [AuthController::class, 'dologin']);
-//     Route::post('/login-proses', [LoginController::class, 'loginStore'])->name('loginStore');
-
-// });
-
-// // untuk superadmin dan pegawai
-// Route::group(['middleware' => ['auth', 'checkrole:1,2']], function() {
-//     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
-//     Route::get('/redirect', [RedirectController::class, 'cek']);
-// });
-
-// Route::group(['middleware' => ['auth', 'checkrole:2']], function() {
-//     Route::get('/kasir', [KasirController::class, 'index'])->name('kasir');
-// });
 
 

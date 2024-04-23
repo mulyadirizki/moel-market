@@ -53,7 +53,7 @@
                 </div>
                 <div class="row" id="data-activity">
                     @foreach ($groupedData as $tanggal => $transactions)
-                        <div class="col-xl-3 col-md-6" style="margin-top: -10px;">
+                        <div class="col-xl-4 col-md-6" style="margin-top: -10px;">
                             <div class="card product-card">
                                 <div class="card-header d-flex align-items-center justify-content-between">
                                     <button class="btn btn-sm btn-shadow btn-success" onclick="printBillingDay('{{ $tanggal }}')">Print</button>

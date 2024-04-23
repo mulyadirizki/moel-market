@@ -71,7 +71,7 @@
                                             </div>
                                             <h5 class="mt-3">KOFFEA</h5>
                                             <p class="text-muted text-xsm">RS Universitas Andalas, Kota Padang, Sumatera Barat, 25161 </p>
-                                            <p class="text-muted text-xsm" style="margin-top: -10px;"><b>081122334455</b></p>
+                                            <p class="text-muted text-xsm" style="margin-top: -10px;"><b>(0751) 8465000</b></p>
                                         </div>
                                     </div>
                                     <div class="dashed-line" style="margin-top: -10px;"></div>

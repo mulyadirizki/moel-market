@@ -207,6 +207,74 @@ class FrontController extends Controller
         return view('koffe.frontend.cetakan.billing', compact('datPenjualan', 'result'));
     }
 
+    public function billingPrintHarian($tgl_transaksi)
+    {
+        // $datPenjualan = DB::table('t_penjualan AS pj')
+        //     ->join('users as usr', 'pj.norec_user', '=', 'usr.noregistrasi')
+        //     ->select(
+        //         'pj.no_nota',
+        //         DB::raw('DATE_FORMAT(pj.tgl_nota, "%Y-%m-%d") as tgl_nota'), // Format tgl_nota ke YYYY-MM-DD
+        //         'usr.nama',
+        //         'pj.total',
+        //         'pj.uang_bayar',
+        //         'pj.uang_kembali',
+        //         DB::raw('CASE
+        //                     WHEN pj.status = 1 THEN "Cash"
+        //                     WHEN pj.status = 2 THEN "Pay Later"
+        //                     WHEN pj.status = 3 THEN "QRIS"
+        //                     ELSE ""
+        //                 END AS payment_method')
+        //     )
+        //     ->where('pj.tgl_nota', 'LIKE', $tgl_transaksi . '%') // Tambahkan '%' untuk mencocokkan tanggal tertentu
+        //     ->first();
+        $dataPenjualan = DB::table('t_penjualan_det AS pjd')
+            ->join('t_penjualan AS pj', 'pjd.id_penjualan', '=', 'pj.id_penjualan')
+            ->join('m_item AS itm', 'pjd.id_item', '=', 'itm.id_item')
+            ->leftJoin('m_category AS ct', 'itm.category_id', '=', 'ct.id_category')
+            ->select(
+                DB::raw("DATE_FORMAT(pj.tgl_nota, '%Y-%m-%d') AS tanggal_nota"),
+                DB::raw("DATE_FORMAT(pj.tgl_nota, '%H:%i') AS jam_nota"),
+                'pj.id_penjualan',
+                'pj.total',
+                'pj.status',
+                'pj.statusenabled',
+                DB::raw('AVG(pjd.harga_peritem) AS rata_rata_harga_peritem'),
+                DB::raw('GROUP_CONCAT(itm.item_name) AS item_names'),
+                DB::raw('GROUP_CONCAT(pj.total) AS totals')
+            )
+            ->groupBy('tanggal_nota', 'jam_nota', 'pj.id_penjualan')
+            ->orderBy('tanggal_nota', 'desc')
+            ->orderBy('jam_nota', 'asc')
+            ->where('pj.statusenabled', true)
+            ->having('tanggal_nota', 'LIKE', $tgl_transaksi . '%')
+            ->get();
+
+        $groupedData = [];
+
+        foreach($dataPenjualan as $penjualan) {
+            $tanggal = $penjualan->tanggal_nota;
+
+            if (!isset($groupedData[$tanggal])) {
+                $groupedData[$tanggal] = [];
+            }
+
+            $groupedData[$tanggal][] = $penjualan;
+        }
+
+        // dd($groupedData);
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'data' => $groupedData
+            ], 200);
+        } else {
+            return view('koffe.frontend.cetakan.billingHarian', compact('groupedData'));
+        }
+        // return response()->json([
+        //     'tgl'   => $id
+        // ], 200);
+    }
+
     public function activity()
     {
         $dataPenjualan = DB::table('t_penjualan_det AS pjd')
@@ -218,12 +286,14 @@ class FrontController extends Controller
                 'pj.id_penjualan',
                 'pj.total',
                 'pj.status',
+                'pj.statusenabled',
                 DB::raw('GROUP_CONCAT(itm.item_name) AS item_names'),
                 DB::raw('GROUP_CONCAT(pj.total) AS totals')
             )
             ->groupBy('tanggal_nota', 'jam_nota', 'pj.id_penjualan')
             ->orderBy('tanggal_nota', 'desc')
             ->orderBy('jam_nota', 'asc')
+            ->where('pj.statusenabled', true)
             ->get();
 
         $groupedData = [];
@@ -319,19 +389,30 @@ class FrontController extends Controller
         }
     }
 
-    public function transaksiPenjualanDelete($id_penjualan)
+    public function transaksiPenjualanDelete(Request $request)
     {
-        $penjualanDet = PenjualanDet::where('id_penjualan', $id_penjualan)->delete();
-        $penjualan = Penjualan::find($id_penjualan);
-        if($penjualanDet) {
-            $penjualan->delete();
+        $data = json_decode($request->getContent(), true);
+        $saveData = Penjualan::updateOrCreate(
+            [
+                'id_penjualan'  => $data['dataObj']['id_penjualan'],
+            ],
+            [
+                'keteranganrefund'  => $data['dataObj']['keteranganrefund'],
+                'statusenabled'      => 'f'
+            ]
+        );
 
+        if($saveData) {
             return response()->json([
                 'success' => true,
-                'message' => 'Data berhasil dihapus'
+                'message' => 'Delete transaksi Successful',
+                'id_penjualan' => $data['dataObj']['id_penjualan']
             ], 200);
-        }else {
-            return redirect()->route('activity')->with(['error' => 'Data Gagal Dihapus!']);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Delete transaksi Failed'
+            ], 400);
         }
     }
 

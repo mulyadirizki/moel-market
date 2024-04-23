@@ -209,7 +209,15 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <p id="iduangkembali">Yakin akan refund transaksi ini ?</p>
+                    <h5 id="iduangkembali">Yakin akan refund transaksi ini ?</h5>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                <label class="form-label" for="keteranganrefund">Keterangan Refund</label>
+                                <input type="text" class="form-control" id="keteranganrefund">
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                   <a href="{{ route('activity') }}">
@@ -223,25 +231,6 @@
 @endsection
 @push('script')
     <script>
-        // $(document).ready(function() {
-        //     $('.printBillingBtn').click(function() {
-        //         var id_penjualan = $(this).data('id-penjualan');
-        //         printBilling(id_penjualan);
-        //     });
-        // });
-
-        // function printBilling(id_penjualan) {
-        //     var url = "{{ route('billing.print', ['id' => ':id']) }}".replace(':id', id_penjualan);
-        //     console.log(id_penjualan);
-
-        //     var popupWindow = window.open(url, "_blank", "width=110");
-        //     // Tunggu sampai jendela baru dimuat
-        //     popupWindow.onload = function() {
-        //         // Memicu pencetakan setelah halaman eksternal dimuat
-        //         popupWindow.print();
-        //     };
-        //     popupWindow.document.head.insertAdjacentHTML("beforeend", "<style>@page { size: 58mm; }</style>");
-        // }
 
         getAllActivityDetail = () => {
 
@@ -389,16 +378,45 @@
 
         function btnProsesRefund() {
             var id_penjualan = window.location.pathname.split('/').pop();
+            var keteranganrefund = $('#keteranganrefund').val();
+            var token = $("meta[name='csrf-token']").attr("content");
 
-            $.ajax({
-                type: "delete",
-                url: "{{ route('transaksi.penjualan.delete', ['id' => ':id']) }}".replace(':id', id_penjualan),
-                data: {
-                    "_token": "{{ csrf_token() }}"
-                },
-                success: function (data) {
-                    if(data.success === true) {
-                        $.Toast("Success", data.message, "success", {
+            var jsonSave = {
+                id_penjualan: id_penjualan,
+                keteranganrefund: keteranganrefund
+            }
+
+            console.log(keteranganrefund)
+            if (keteranganrefund != '') {
+                $.ajax({
+                    url: "{{ route('transaksi.penjualan.delete') }}",
+                    type: "POST",
+                    dataType: "JSON",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        "dataObj": jsonSave,
+                        "_token": token
+                    }),
+                    success: function (data) {
+                        if(data.success === true) {
+                            $.Toast("Success", data.message, "success", {
+                                has_icon:true,
+                                has_close_btn:true,
+                                stack: true,
+                                fullscreen:false,
+                                timeout:8000,
+                                sticky:false,
+                                has_progress:true,
+                                rtl:false,
+                                position_class: "toast-top-right",
+                                width: 250,
+                            });
+                            $('#modalTransaksiRefund').modal('hide');
+                            window.location = "{{ route('activity') }}";
+                        }
+                    },
+                    error: function (err) {
+                        $.Toast("Failed", err.responseJSON.message, "error", {
                             has_icon:true,
                             has_close_btn:true,
                             stack: true,
@@ -410,26 +428,22 @@
                             position_class: "toast-top-right",
                             width: 250,
                         });
-                        $('#modalTransaksiRefund').modal('hide');
-                        window.location = "{{ route('activity') }}";
                     }
-                },
-                error: function (err) {
-                    $.Toast("Failed", err.responseJSON.message, "error", {
-                        has_icon:true,
-                        has_close_btn:true,
-                        stack: true,
-                        fullscreen:false,
-                        timeout:8000,
-                        sticky:false,
-                        has_progress:true,
-                        rtl:false,
-                        position_class: "toast-top-right",
-                        width: 250,
-                    });
-                }
-            });
-            console.log(id_penjualan)
+                });
+            } else {
+                $.Toast("Failed", 'Keterangan refund tidak boleh kosong', "error", {
+                    has_icon:true,
+                    has_close_btn:true,
+                    stack: true,
+                    fullscreen:false,
+                    timeout:8000,
+                    sticky:false,
+                    has_progress:true,
+                    rtl:false,
+                    position_class: "toast-top-right",
+                    width: 250,
+                });
+            }
         }
 
         $(document).ready(function() {

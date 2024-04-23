@@ -74,11 +74,12 @@ Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2'
     Route::get('/settings', [FrontController::class, 'setting'])->name('setting');
 
     Route::get('/billing-print/{id}', [FrontController::class, 'billingPrint'])->name('billing.print');
+    Route::get('/billing-print/day/{id}', [FrontController::class, 'billingPrintHarian'])->name('billing.print.harian');
 
     Route::get('/activity', [FrontController::class, 'activity'])->name('activity');
     Route::get('/activity-detail/{id}', [FrontController::class, 'activityDetail'])->name('activity.detail');
     Route::post('/payment-method/change', [FrontController::class, 'changePaymentMethod'])->name('change.payment.method');
-    Route::delete('/transaksi-penjualan/delete/{id}', [FrontController::class, 'transaksiPenjualanDelete'])->name('transaksi.penjualan.delete');
+    Route::post('/transaksi-penjualan/delete', [FrontController::class, 'transaksiPenjualanDelete'])->name('transaksi.penjualan.delete');
 });
 // Route::group(['middleware' => 'guest'], function() {
 //     Route::get('/', [LoginController::class, 'pageLogin'])->name('pageLogin');

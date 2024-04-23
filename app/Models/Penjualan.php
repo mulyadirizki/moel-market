@@ -28,6 +28,8 @@ class Penjualan extends Model
         'status',
         'nm_pelanggan',
         'tgl_pembayaran',
+        'statusenabled',
+        'keteranganrefund'
     ];
 
     // protected static function boot()

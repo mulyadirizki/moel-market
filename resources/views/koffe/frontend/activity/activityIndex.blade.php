@@ -56,6 +56,7 @@
                         <div class="col-xl-3 col-md-6" style="margin-top: -10px;">
                             <div class="card product-card">
                                 <div class="card-header d-flex align-items-center justify-content-between">
+                                    <button class="btn btn-sm btn-shadow btn-success" onclick="printBillingDay('{{ $tanggal }}')">Print</button>
                                     <h5>{{ $tanggal }}</h5>
                                     <h4 style="font-weight: bold; font-size: 18px;">Total Rp. {{ number_format(array_sum(array_column($transactions, 'total')), 0, ',', '.') }}</h4>
                                 </div>
@@ -103,31 +104,18 @@
 @endsection
 @push('script')
     <script>
-        // $(document).ready(function() {
-        //     $('.printBillingBtn').click(function() {
-        //         var id_penjualan = $(this).data('id-penjualan');
-        //         printBilling(id_penjualan);
-        //     });
-        // });
+        function printBillingDay(tgl_transaksi) {
+            var url = "{{ route('billing.print.harian', ['id' => ':id']) }}".replace(':id', tgl_transaksi);
+            console.log(url)
 
-        // function printBilling(id_penjualan) {
-        //     var url = "{{ route('billing.print', ['id' => ':id']) }}".replace(':id', id_penjualan);
-        //     console.log(id_penjualan);
-
-        //     var popupWindow = window.open(url, "_blank", "width=110");
-        //     // Tunggu sampai jendela baru dimuat
-        //     popupWindow.onload = function() {
-        //         // Memicu pencetakan setelah halaman eksternal dimuat
-        //         popupWindow.print();
-        //     };
-        //     popupWindow.document.head.insertAdjacentHTML("beforeend", "<style>@page { size: 58mm; }</style>");
-        // }
-
-        // getAllActivity = () => {
-        //     $.get("{{ route('activity') }}", function (items) {
-        //         console.log(items)
-        //     });
-        // }
+            var popupWindow = window.open(url, "_blank", "width=110");
+            // Tunggu sampai jendela baru dimuat
+            popupWindow.onload = function() {
+                // Memicu pencetakan setelah halaman eksternal dimuat
+                popupWindow.print();
+            };
+            popupWindow.document.head.insertAdjacentHTML("beforeend", "<style>@page { size: 58mm; }</style>");
+        }
 
         // $(document).ready(function() {
         //     getAllActivity();

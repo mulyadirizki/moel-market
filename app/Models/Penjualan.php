@@ -27,6 +27,7 @@ class Penjualan extends Model
         'uang_kembali',
         'status',
         'nm_pelanggan',
+        'tgl_pembayaran',
     ];
 
     // protected static function boot()

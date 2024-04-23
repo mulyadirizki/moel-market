@@ -134,11 +134,15 @@
 
     function changePembayaran() {
       let statusbayar = $('#statusbayar').val();
-      if (statusbayar == 2 || statusbayar == 3) {
+      if (statusbayar == 2) {
           $('#nmpiutang')[0].removeAttribute("hidden")
           $('#priceitem')[0].setAttribute("hidden", true)
           $('.btn-bayar').removeAttr('disabled');
-      } else {
+          $('#cash').val('0');
+      } else if(statusbayar == 3) {
+          $('#nmpiutang')[0].removeAttribute("hidden")
+          $('.btn-bayar').removeAttr('disabled');
+      }else {
           $('#nmpiutang')[0].setAttribute("hidden", true)
           $('#priceitem')[0].removeAttribute("hidden")
           $('.btn-bayar').attr('disabled', 'disabled');

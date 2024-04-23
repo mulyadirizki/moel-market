@@ -249,7 +249,90 @@ class FrontController extends Controller
 
     public function activityDetail($id_penjualan)
     {
-        return view('koffe.frontend.partials.setting');
+        $detPenjualan = DB::table('m_variant as vr')
+            ->leftJoin('m_item as itm', 'vr.id_item', '=', 'itm.id_item')
+            ->join('t_penjualan_det as pjd', 'pjd.id_item', '=', 'itm.id_item')
+            ->select(
+                'itm.item_name',
+                'pjd.harga_peritem',
+                'vr.variant_name',
+            )
+            ->where('pjd.id_penjualan', $id_penjualan)
+            ->get();
+
+        $dataPenj = DB::table('t_penjualan as pj')
+                ->select(
+                    DB::raw('CASE
+                            WHEN pj.status = 1 THEN "Cash"
+                            WHEN pj.status = 2 THEN "Pay Later"
+                            WHEN pj.status = 3 THEN "QRIS"
+                            ELSE ""
+                        END AS payment_method'),
+                    'pj.nm_pelanggan',
+                    'pj.status',
+                    'pj.no_nota',
+                    'pj.tgl_nota',
+                    'pj.total',
+                    'pj.uang_bayar',
+                    'pj.uang_kembali',
+                    'pj.tgl_pembayaran'
+                )
+                ->where('pj.id_penjualan', $id_penjualan)
+                ->first();
+
+        if (request()->expectsJson()) {
+            return response()->json([
+                'dtpj' => $detPenjualan,
+                'dtitm' => $dataPenj
+            ], 200);
+        } else {
+            return view('koffe.frontend.activity.activityDetail', compact('detPenjualan', 'dataPenj'));
+        }
+    }
+
+    public function changePaymentMethod(Request $request)
+    {
+        $data = json_decode($request->getContent(), true);
+        $saveData = Penjualan::updateOrCreate(
+            [
+                'id_penjualan'  => $data['dataObj']['id_penjualan'],
+            ],
+            [
+                'tgl_pembayaran'    => $data['dataObj']['tgl_pembayaran'],
+                'uang_bayar'        => $data['dataObj']['cash'],
+                'uang_kembali'      => $data['dataObj']['uang_kembali'],
+                'status'            => $data['dataObj']['statusbayar']
+            ]
+        );
+
+        if($saveData) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Change Payment Mehtod Successful',
+                'id_penjualan' => $data['dataObj']['id_penjualan']
+            ], 200);
+        } else {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cahnge Payment Method Failed'
+            ], 400);
+        }
+    }
+
+    public function transaksiPenjualanDelete($id_penjualan)
+    {
+        $penjualanDet = PenjualanDet::where('id_penjualan', $id_penjualan)->delete();
+        $penjualan = Penjualan::find($id_penjualan);
+        if($penjualanDet) {
+            $penjualan->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus'
+            ], 200);
+        }else {
+            return redirect()->route('activity')->with(['error' => 'Data Gagal Dihapus!']);
+        }
     }
 
     public function setting()

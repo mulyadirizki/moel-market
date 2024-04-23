@@ -61,7 +61,6 @@
                                 </div>
                                 @foreach($transactions as $trans)
                                     @if($trans->status == '2')
-                                        <button class="btn btn-success printBillingBtn" data-id-penjualan="{{ $trans->id_penjualan }}">Cetak</button>
                                         <a href="{{ route('activity.detail', ['id' => $trans->id_penjualan]) }}">
                                             <div style="padding: 10px; background-color: salmon;">
                                                 <div class="row align-items-center">
@@ -77,23 +76,20 @@
                                         </a>
                                         <hr>
                                     @else
-                                        <button class="btn btn-success printBillingBtn" data-id-penjualan="{{ $trans->id_penjualan }}">Cetak</button>
                                         <a href="{{ route('activity.detail', ['id' => $trans->id_penjualan]) }}">
                                             <div style="padding: 10px;">
                                                 <div class="row align-items-center">
                                                     <div class="col">
-                                                        <a href="">
-                                                            <h5 class="m-b-5">Rp. {{ number_format($trans->total, 0, ',', '.') }}</h5>
-                                                            <span>{{ $trans->item_names }}</span>
-                                                        </a>
+                                                        <h5 class="m-b-5">Rp. {{ number_format($trans->total, 0, ',', '.') }}</h5>
+                                                        <span>{{ $trans->item_names }}</span>
                                                     </div>
                                                     <div class="col-auto">
                                                         <span class="pc-arrow">{{ $trans->jam_nota }}</span>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <hr>
                                         </a>
+                                        <hr>
                                     @endif
                                 @endforeach
                             </div>
@@ -107,25 +103,25 @@
 @endsection
 @push('script')
     <script>
-        $(document).ready(function() {
-            $('.printBillingBtn').click(function() {
-                var id_penjualan = $(this).data('id-penjualan');
-                printBilling(id_penjualan);
-            });
-        });
+        // $(document).ready(function() {
+        //     $('.printBillingBtn').click(function() {
+        //         var id_penjualan = $(this).data('id-penjualan');
+        //         printBilling(id_penjualan);
+        //     });
+        // });
 
-        function printBilling(id_penjualan) {
-            var url = "{{ route('billing.print', ['id' => ':id']) }}".replace(':id', id_penjualan);
-            console.log(id_penjualan);
+        // function printBilling(id_penjualan) {
+        //     var url = "{{ route('billing.print', ['id' => ':id']) }}".replace(':id', id_penjualan);
+        //     console.log(id_penjualan);
 
-            var popupWindow = window.open(url, "_blank", "width=110");
-            // Tunggu sampai jendela baru dimuat
-            popupWindow.onload = function() {
-                // Memicu pencetakan setelah halaman eksternal dimuat
-                popupWindow.print();
-            };
-            popupWindow.document.head.insertAdjacentHTML("beforeend", "<style>@page { size: 58mm; }</style>");
-        }
+        //     var popupWindow = window.open(url, "_blank", "width=110");
+        //     // Tunggu sampai jendela baru dimuat
+        //     popupWindow.onload = function() {
+        //         // Memicu pencetakan setelah halaman eksternal dimuat
+        //         popupWindow.print();
+        //     };
+        //     popupWindow.document.head.insertAdjacentHTML("beforeend", "<style>@page { size: 58mm; }</style>");
+        // }
 
         // getAllActivity = () => {
         //     $.get("{{ route('activity') }}", function (items) {

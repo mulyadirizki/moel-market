@@ -47,7 +47,7 @@ Route::group(['middleware' => ['auth', 'checkrole:1,2']], function() {
     Route::get('/redirect', [RedirectController::class, 'cek']);
 });
 
-// untuk superadmin
+// untuk admin
 Route::group([ 'prefix' => 'admin/koffe', 'middleware' => ['auth', 'checkrole:1']], function() {
     Route::get('/', [MainController::class, 'index'])->name('admin');
 
@@ -83,6 +83,10 @@ Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2'
     Route::get('/activity-detail/{id}', [FrontController::class, 'activityDetail'])->name('activity.detail');
     Route::post('/payment-method/change', [FrontController::class, 'changePaymentMethod'])->name('change.payment.method');
     Route::post('/transaksi-penjualan/delete', [FrontController::class, 'transaksiPenjualanDelete'])->name('transaksi.penjualan.delete');
+
+    // pengeluaran
+    Route::get('/pengeluaran', [FrontController::class, 'pengeluaranIndex'])->name('pengeluaran');
+    Route::post('/pengeluaran/add', [FrontController::class, 'pengeluaranAdd'])->name('pengeluaran.add');
 });
 
 

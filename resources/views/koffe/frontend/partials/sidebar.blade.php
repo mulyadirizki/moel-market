@@ -17,12 +17,12 @@
                     class="pc-mtext">Online Order</span><span class="pc-arrow"></span></a>
                 </li>
                 <li class="pc-item pc-hasmenu">
-                    <a href="{{ route('activity') }}" class="pc-link"><span class="pc-micon"><i class="ti ti-phone"></i></span><span
+                    <a href="{{ route('activity') }}" class="pc-link"><span class="pc-micon"><i class="ti ti-chart-infographic"></i></span><span
                     class="pc-mtext">Activity</span><span class="pc-arrow"></span></a>
                 </li>
                 <li class="pc-item pc-hasmenu">
-                    <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-phone"></i></span><span
-                    class="pc-mtext">All</span><span class="pc-arrow"></span></a>
+                    <a href="{{ route('pengeluaran') }}" class="pc-link"><span class="pc-micon"><i class="ti ti ti-arrow-back-up"></i></span><span
+                    class="pc-mtext">Pengeluaran</span><span class="pc-arrow"></span></a>
                 </li>
                 <li class="pc-item"><a href="{{ route('setting') }}" class="pc-link"><span class="pc-micon">
                     <i class="ti ti-brand-chrome"></i></span><span class="pc-mtext">Setting</span></a>

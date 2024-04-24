@@ -9,9 +9,12 @@ use App\Models\Item;
 use App\Models\Variant;
 use App\Models\Penjualan;
 use App\Models\PenjualanDet;
+use App\Models\Pengeluaran;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 use Ramsey\Uuid\Uuid as Generator;
+use DataTables;
 
 class FrontController extends Controller
 {
@@ -384,7 +387,7 @@ class FrontController extends Controller
         } else {
             return response()->json([
                 'success' => false,
-                'message' => 'Cahnge Payment Method Failed'
+                'message' => 'Change Payment Method Failed'
             ], 400);
         }
     }
@@ -412,6 +415,87 @@ class FrontController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Delete transaksi Failed'
+            ], 400);
+        }
+    }
+
+    public function pengeluaranIndex()
+    {
+        if (request()->ajax()) {
+            $pengeluaran = Pengeluaran::select('t_pengeluaran.*')
+                ->where('toko_id', auth()->user()->toko_id)
+                ->get();
+
+            return DataTables::of($pengeluaran)
+                ->addIndexColumn()
+                ->editColumn('jenispembayaran', function($row) {
+                    if ($row->jenis_pembayaran === 1) {
+                        return '<span>Cash</span>';
+                    } else if ($row->jenis_pembayaran === 2) {
+                        return '<span>Transfer</span>';
+                    } else if ($row->jenis_pembayaran === 3) {
+                        return '<span>Hutan</span>';
+                    }
+                })
+                ->addColumn('action', function($row) {
+                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  dataId="'.$row->id_pengeluaran.'" data-original-title="Edit" class="edit btn btn-primary btn-sm btn-edit">Edit</a>';
+
+                    $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  dataId="'. $row->id_pengeluaran .'" data-original-title="Delete" class="btn btn-danger btn-sm btn-delete">Delete</a>';
+
+                    return $btn;
+                })
+                ->rawColumns(['action', 'jenispembayaran'])
+                ->make();
+        }
+        return view('koffe.frontend.pengeluaran.pengeluaranIndex');
+    }
+
+    public function pengeluaranAdd(Request $request)
+    {
+        $rules = [
+            'tgl_pengeluaran'   => 'required',
+            'nama_barang'       => 'required',
+            'harga_barang'      => 'required',
+            'jenis_pembayaran'  => 'required',
+            'keterangan'        => 'required',
+        ];
+
+        $messages = [
+            'tgl_pengeluaran.required' => 'Tanggal Pengeluaran required',
+            'nama_barang.required' => 'Nama Barang required',
+            'harga_barang.required' => 'Harga Barang required',
+            'jenis_pembayaran.required' => 'Jenis Pembayaran required',
+            'keterangan.required' => 'Keterangan required',
+        ];
+        $validasi = Validator::make($request->all(), $rules, $messages);
+
+        if($validasi->fails()){
+            return response()->json(
+                ['error' => $validasi->errors()->all()
+            ], 400);
+        }
+
+        $pengeluaran = Pengeluaran::create(
+            [
+                'toko_id'        => auth()->user()->toko_id,
+                'norec_user'        => auth()->user()->noregistrasi,
+                'tgl_pengeluaran'   => $request->tgl_pengeluaran,
+                'nama_barang'       => $request->nama_barang,
+                'harga_barang'      => $request->harga_barang,
+                'jenis_pembayaran'  => $request->jenis_pembayaran,
+                'keterangan'        => $request->keterangan
+            ]
+        );
+
+        if($pengeluaran) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Pengeluaran added successfully'
+            ], 200);
+        } else {
+            return response()->json([
+                'success'   => true,
+                'message'   => 'Pengeluaran failed to add'
             ], 400);
         }
     }

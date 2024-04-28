@@ -116,7 +116,7 @@ class FrontController extends Controller
                         'id_penjualan'  => $id_penjualan,
                     ],
                     [
-                         'toko_id'        => auth()->user()->noregistrasi,
+                        'toko_id'        => auth()->user()->toko_id,
                         'norec_user'     => auth()->user()->noregistrasi,
                         'no_nota'       => $data['dataObj']['nonota'],
                         'tgl_nota'      => $data['dataObj']['tgl_nota'],

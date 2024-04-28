@@ -14,6 +14,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Koffe\Backend\MainController;
 use App\Http\Controllers\Koffe\Backend\KaryawanController;
 use App\Http\Controllers\Koffe\Backend\ActivityController;
+use App\Http\Controllers\Koffe\Backend\KoffePenjualanController;
 
 // front
 use App\Http\Controllers\Koffe\Frontend\FrontController;
@@ -54,7 +55,9 @@ Route::group([ 'prefix' => 'admin/koffe', 'middleware' => ['auth', 'checkrole:1'
     Route::get('/data-karyawan', [KaryawanController::class, 'karyawan'])->name('karyawan.data');
     Route::post('/data-karyawan/add', [KaryawanController::class, 'karyawanAdd'])->name('karyawan.add');
 
-    Route::get('/data-activity/refund', [ActivityController::class, 'activityRefund'])->name('activity.refund');
+    Route::get('/data-penjualan/butuh-dibayarkan', [KoffePenjualanController::class, 'penjualanButuhDibayarkan'])->name('penjualan.butuh.dibayarkan');
+    Route::get('/data-penjualan/selesai', [KoffePenjualanController::class, 'penjualanSelesai'])->name('penjualan.selesai');
+    Route::get('/data-penjualan/refund', [KoffePenjualanController::class, 'penjualanRefund'])->name('penjualan.refund');
 });
 
 Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2']], function() {

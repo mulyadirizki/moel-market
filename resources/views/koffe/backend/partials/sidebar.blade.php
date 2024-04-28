@@ -9,7 +9,7 @@
         <div class="navbar-content">
             <ul class="pc-navbar">
                 <li class="pc-item">
-                    <a href="../dashboard/index.html" class="pc-link">
+                    <a href="{{ route('admin') }}" class="pc-link">
                         <span class="pc-micon"><i class="ti ti-dashboard"></i></span>
                         <span class="pc-mtext">Dashboard</span>
                     </a>
@@ -26,10 +26,11 @@
                     </a>
                 </li>
                 <li class="pc-item pc-hasmenu">
-                    <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-forms"></i></span><span class="pc-mtext">Aktifitas Transaksi</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                    <a href="#!" class="pc-link"><span class="pc-micon"><i class="ti ti-shopping-cart"></i></span><span class="pc-mtext">Penjualan</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
                     <ul class="pc-submenu">
-                        <li class="pc-item"><a class="pc-link" href="{{ route('activity.refund') }}">Refund</a></li>
-                        <li class="pc-item"><a class="pc-link" href="#">Ganti Pembayaran</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('penjualan.butuh.dibayarkan') }}">Butuh Dibayarkan</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('penjualan.selesai') }}">Selesai</a></li>
+                        <li class="pc-item"><a class="pc-link" href="{{ route('penjualan.refund') }}">Dibatalkan</a></li>
                     </ul>
                 </li>
             </ul>

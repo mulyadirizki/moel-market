@@ -164,40 +164,56 @@
                                     <div class="dashed-line" style="margin-top: -10px;"></div>
                                     <div style="margin-top: 20px;">
                                         @if($datPenjualan->payment_method != 'Pay Later')
-                                        <div class="row" style="margin-top: -15px;">
-                                            <div class="col">
-                                                <div class="float-end">
-                                                    <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->uang_bayar) }}</p>
+                                            <div class="row" style="margin-top: -15px;">
+                                                <div class="col">
+                                                    <div class="float-end">
+                                                        <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->uang_bayar) }}</p>
+                                                    </div>
+                                                    <p class="text-muted text-xsm">{{ $datPenjualan->payment_method }}</p>
                                                 </div>
-                                                <p class="text-muted text-xsm">{{ $datPenjualan->payment_method }}</p>
                                             </div>
-                                        </div>
+                                            <div class="row" style="margin-top: -15px;">
+                                                <div class="col">
+                                                    <div class="float-end">
+                                                        <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->uang_bayar) }}</p>
+                                                    </div>
+                                                    <p class="text-muted text-xsm">Total Bayar</p>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top: -15px;">
+                                                <div class="col">
+                                                    <div class="float-end">
+                                                        <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->uang_kembali) }}</p>
+                                                    </div>
+                                                    <p class="text-muted text-xsm">Kembali</p>
+                                                </div>
+                                            </div>
                                         @else
+                                            <div class="row" style="margin-top: -15px;">
+                                                <div class="col">
+                                                    <div class="float-end">
+                                                        <p class="text-muted text-xsm">{{ $datPenjualan->nm_pelanggan }}</p>
+                                                    </div>
+                                                    <p class="text-muted text-xsm">{{ $datPenjualan->payment_method }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="row" style="margin-top: -15px;">
+                                                <div class="col">
+                                                    <div class="float-end">
+                                                        <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->uang_bayar) }}</p>
+                                                    </div>
+                                                    <p class="text-muted text-xsm">Total Bayar</p>
+                                                </div>
+                                            </div>
                                             <div class="row" style="margin-top: -15px;">
                                                 <div class="col">
                                                     <div class="float-end">
                                                         <p class="text-muted text-xsm">Rp. 0</p>
                                                     </div>
-                                                    <p class="text-muted text-xsm">{{ $datPenjualan->payment_method }}</p>
+                                                    <p class="text-muted text-xsm">Kembali</p>
                                                 </div>
                                             </div>
                                         @endif
-                                        <div class="row" style="margin-top: -15px;">
-                                            <div class="col">
-                                                <div class="float-end">
-                                                    <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->uang_bayar) }}</p>
-                                                </div>
-                                                <p class="text-muted text-xsm">Total Bayar</p>
-                                            </div>
-                                        </div>
-                                        <div class="row" style="margin-top: -15px;">
-                                            <div class="col">
-                                                <div class="float-end">
-                                                    <p class="text-muted text-xsm">Rp. {{ number_format($datPenjualan->uang_kembali) }}</p>
-                                                </div>
-                                                <p class="text-muted text-xsm">Kembali</p>
-                                            </div>
-                                        </div>
                                     </div>
                                     <div style="width: 100%">
                                         <div class="text-center">

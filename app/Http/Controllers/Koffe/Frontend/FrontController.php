@@ -168,6 +168,7 @@ class FrontController extends Controller
                 'pj.total',
                 'pj.uang_bayar',
                 'pj.uang_kembali',
+                'pj.nm_pelanggan',
                 DB::raw('CASE
                             WHEN pj.status = 1 THEN "Cash"
                             WHEN pj.status = 2 THEN "Pay Later"

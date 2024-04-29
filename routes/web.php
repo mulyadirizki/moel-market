@@ -58,6 +58,8 @@ Route::group([ 'prefix' => 'admin/koffe', 'middleware' => ['auth', 'checkrole:1'
     Route::get('/data-penjualan/butuh-dibayarkan', [KoffePenjualanController::class, 'penjualanButuhDibayarkan'])->name('penjualan.butuh.dibayarkan');
     Route::get('/data-penjualan/selesai', [KoffePenjualanController::class, 'penjualanSelesai'])->name('penjualan.selesai');
     Route::get('/data-penjualan/refund', [KoffePenjualanController::class, 'penjualanRefund'])->name('penjualan.refund');
+
+    Route::get('/data-pembelian', [ActivityController::class, 'dataPembelian'])->name('data.pembelian');
 });
 
 Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2']], function() {

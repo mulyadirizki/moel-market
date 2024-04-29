@@ -33,6 +33,12 @@
                         <li class="pc-item"><a class="pc-link" href="{{ route('penjualan.refund') }}">Dibatalkan</a></li>
                     </ul>
                 </li>
+                <li class="pc-item">
+                    <a href="{{ route('data.pembelian') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-edit"></i></span>
+                        <span class="pc-mtext">Pembelian</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

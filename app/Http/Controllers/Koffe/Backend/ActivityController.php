@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 
 class ActivityController extends Controller
 {
-    public function activityRefund()
+    public function dataPembelian()
     {
-        return view('koffe.backend.activity.activityRefund');
+        return view('koffe.backend.activity.pembelian');
     }
 }

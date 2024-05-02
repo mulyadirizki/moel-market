@@ -39,6 +39,12 @@
                         <span class="pc-mtext">Pembelian</span>
                     </a>
                 </li>
+                <li class="pc-item">
+                    <a href="{{ route('data.pendapatan') }}" class="pc-link">
+                        <span class="pc-micon"><i class="ti ti-credit-card"></i></span>
+                        <span class="pc-mtext">Pendapatan</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

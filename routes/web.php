@@ -15,6 +15,8 @@ use App\Http\Controllers\Koffe\Backend\MainController;
 use App\Http\Controllers\Koffe\Backend\KaryawanController;
 use App\Http\Controllers\Koffe\Backend\ActivityController;
 use App\Http\Controllers\Koffe\Backend\KoffePenjualanController;
+use App\Http\Controllers\Koffe\Backend\KoffePembelianController;
+use App\Http\Controllers\Koffe\Backend\KoffePendapatanController;
 
 // front
 use App\Http\Controllers\Koffe\Frontend\FrontController;
@@ -59,7 +61,9 @@ Route::group([ 'prefix' => 'admin/koffe', 'middleware' => ['auth', 'checkrole:1'
     Route::get('/data-penjualan/selesai', [KoffePenjualanController::class, 'penjualanSelesai'])->name('penjualan.selesai');
     Route::get('/data-penjualan/refund', [KoffePenjualanController::class, 'penjualanRefund'])->name('penjualan.refund');
 
-    Route::get('/data-pembelian', [ActivityController::class, 'dataPembelian'])->name('data.pembelian');
+    Route::get('/data-pembelian', [KoffePembelianController::class, 'dataPembelian'])->name('data.pembelian');
+
+    Route::get('/data-pendapatan', [KoffePendapatanController::class, 'dataPendapatan'])->name('data.pendapatan');
 });
 
 Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2']], function() {

@@ -192,8 +192,13 @@
                     var tgl_penjualanAkhir = $('#tgl_penjualanAkhir').val();
                     var category = $('#category').val();
 
-                    listQuery.tgl_penjualan = tgl_penjualan
-                    listQuery.tgl_penjualanAkhir = tgl_penjualanAkhir
+                    var tgl_penjualan_parts = tgl_penjualan.split('T'); // Pisahkan tanggal dan waktu
+                    var tgl_penjualan_date = tgl_penjualan_parts[0] + ' ' + timeAwal;
+                    listQuery.tgl_penjualan = tgl_penjualan_date
+
+                    var tgl_penjualan_parts_akhir = tgl_penjualanAkhir.split('T'); // Pisahkan tanggal dan waktu
+                    var tgl_penjualan_date_akhir = tgl_penjualan_parts_akhir[0] + ' ' + timeAkhir;
+                    listQuery.tgl_penjualanAkhir = tgl_penjualan_date_akhir
                     listQuery.category = category
 
                     var table2 = $('#data-penjualan-selesai').DataTable({

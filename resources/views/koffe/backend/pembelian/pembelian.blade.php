@@ -177,8 +177,13 @@
                     var tgl_pengeluaran = $('#tgl_pengeluaran').val();
                     var tgl_pengeluaranAkhir = $('#tgl_pengeluaranAkhir').val();
 
-                    listQuery.tgl_pengeluaran = tgl_pengeluaran
-                    listQuery.tgl_pengeluaranAkhir = tgl_pengeluaranAkhir
+                    var tgl_pengeluaran_parts = tgl_pengeluaran.split('T'); // Pisahkan tanggal dan waktu
+                    var tgl_pengeluaran_date = tgl_pengeluaran_parts[0] + ' ' + timeAwal;
+                    listQuery.tgl_pengeluaran = tgl_pengeluaran_date
+
+                    var tgl_pengeluaran_parts_akhir = tgl_pengeluaranAkhir.split('T'); // Pisahkan tanggal dan waktu
+                    var tgl_pengeluaran_date_akhir = tgl_pengeluaran_parts_akhir[0] + ' ' + timeAkhir;
+                    listQuery.tgl_pengeluaranAkhir = tgl_pengeluaran_date_akhir
 
                     var table2 = $('#data-pembelian').DataTable({
                         ajax: {

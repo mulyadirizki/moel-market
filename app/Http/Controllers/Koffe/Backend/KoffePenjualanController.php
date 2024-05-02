@@ -45,11 +45,11 @@ class KoffePenjualanController extends Controller
                 ->where('pj.status', '=', '2');
 
             if(isset($request->tgl_penjualan) && $request->tgl_penjualan !== "" && $request->tgl_penjualan != "undefined" ) {
-                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d') >= ?", [$request->tgl_penjualan]);
+                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d %H:%i') >= ?", [$request->tgl_penjualan]);
             }
 
             if(isset($request->tgl_penjualanAkhir) && $request->tgl_penjualanAkhir !== "" && $request->tgl_penjualanAkhir != "undefined" ) {
-                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d') <= ?", [$request->tgl_penjualanAkhir]);
+                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d %H:%i') <= ?", [$request->tgl_penjualanAkhir]);
             }
 
             $item = $data->offset(($page * $limit) - $limit)->limit($limit)->get();
@@ -115,11 +115,11 @@ class KoffePenjualanController extends Controller
                 ->where('itm.category_id', 'like', '%' . $category . '%');
 
             if(isset($request->tgl_penjualan) && $request->tgl_penjualan !== "" && $request->tgl_penjualan != "undefined" ) {
-                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d') >= ?", [$request->tgl_penjualan]);
+                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d %H:%i') >= ?", [$request->tgl_penjualan]);
             }
 
             if(isset($request->tgl_penjualanAkhir) && $request->tgl_penjualanAkhir !== "" && $request->tgl_penjualanAkhir != "undefined" ) {
-                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d') <= ?", [$request->tgl_penjualanAkhir]);
+                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d %H:%i') <= ?", [$request->tgl_penjualanAkhir]);
             }
 
             $item = $data->offset(($page * $limit) - $limit)->limit($limit)->get();
@@ -180,11 +180,11 @@ class KoffePenjualanController extends Controller
                 ->where('pj.statusenabled', 'f');
 
             if(isset($request->tgl_penjualan) && $request->tgl_penjualan !== "" && $request->tgl_penjualan != "undefined" ) {
-                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d') >= ?", [$request->tgl_penjualan]);
+                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d %H:%i') >= ?", [$request->tgl_penjualan]);
             }
 
             if(isset($request->tgl_penjualanAkhir) && $request->tgl_penjualanAkhir !== "" && $request->tgl_penjualanAkhir != "undefined" ) {
-                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d') <= ?", [$request->tgl_penjualanAkhir]);
+                $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d %H:%i') <= ?", [$request->tgl_penjualanAkhir]);
             }
 
             $item = $data->offset(($page * $limit) - $limit)->limit($limit)->get();

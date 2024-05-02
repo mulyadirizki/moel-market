@@ -27,11 +27,11 @@ class KoffePembelianController extends Controller
                 ->where('toko_id', auth()->user()->toko_id);
 
             if(isset($request->tgl_pengeluaran) && $request->tgl_pengeluaran !== "" && $request->tgl_pengeluaran != "undefined" ) {
-                $data = $data->whereRaw("DATE_FORMAT(t_pengeluaran.tgl_pengeluaran, '%Y-%m-%d') >= ?", [$request->tgl_pengeluaran]);
+                $data = $data->whereRaw("DATE_FORMAT(t_pengeluaran.tgl_pengeluaran, '%Y-%m-%d %H:%i') >= ?", [$request->tgl_pengeluaran]);
             }
 
             if(isset($request->tgl_pengeluaranAkhir) && $request->tgl_pengeluaranAkhir !== "" && $request->tgl_pengeluaranAkhir != "undefined" ) {
-                $data = $data->whereRaw("DATE_FORMAT(t_pengeluaran.tgl_pengeluaran, '%Y-%m-%d') <= ?", [$request->tgl_pengeluaranAkhir]);
+                $data = $data->whereRaw("DATE_FORMAT(t_pengeluaran.tgl_pengeluaran, '%Y-%m-%d %H:%i') <= ?", [$request->tgl_pengeluaranAkhir]);
             }
 
             $item = $data->offset(($page * $limit) - $limit)->limit($limit)->get();

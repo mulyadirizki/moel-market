@@ -155,7 +155,7 @@
                             }
                         }
                     ],
-                    "bDestroy": true,
+                    dom: 'Bfrtip',
                     footerCallback: function (row, data, start, end, display) {
                         let api = this.api();
                         let api2 = this.api();
@@ -270,7 +270,7 @@
                                 }
                             }
                         ],
-                        "bDestroy": true,
+                        dom: 'Bfrtip',
                         footerCallback: function (row, data, start, end, display) {
                             let api = this.api();
                             let api2 = this.api();

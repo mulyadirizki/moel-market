@@ -70,6 +70,8 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
+                                        <!-- <th colspan="4" style="text-align:right"></th> -->
+                                        <!-- <th colspan="4" style="text-align:right"></th> -->
                                         <th></th>
                                         <th></th>
                                         <th></th>
@@ -140,7 +142,7 @@
                         { data: 'keterangan', name: 'keterangan' },
                         { data: 'harga_barang', name: 'harga_barang' }
                     ],
-                    "bDestroy": true,
+                    dom: 'Bfrtip',
                     footerCallback: function (row, data, start, end, display) {
                         let api = this.api();
 

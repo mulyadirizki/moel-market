@@ -213,70 +213,75 @@ class FrontController extends Controller
 
     public function billingPrintHarian($tgl_transaksi)
     {
-        // $datPenjualan = DB::table('t_penjualan AS pj')
-        //     ->join('users as usr', 'pj.norec_user', '=', 'usr.noregistrasi')
-        //     ->select(
-        //         'pj.no_nota',
-        //         DB::raw('DATE_FORMAT(pj.tgl_nota, "%Y-%m-%d") as tgl_nota'), // Format tgl_nota ke YYYY-MM-DD
-        //         'usr.nama',
-        //         'pj.total',
-        //         'pj.uang_bayar',
-        //         'pj.uang_kembali',
-        //         DB::raw('CASE
-        //                     WHEN pj.status = 1 THEN "Cash"
-        //                     WHEN pj.status = 2 THEN "Pay Later"
-        //                     WHEN pj.status = 3 THEN "QRIS"
-        //                     ELSE ""
-        //                 END AS payment_method')
-        //     )
-        //     ->where('pj.tgl_nota', 'LIKE', $tgl_transaksi . '%') // Tambahkan '%' untuk mencocokkan tanggal tertentu
-        //     ->first();
-        $dataPenjualan = DB::table('t_penjualan_det AS pjd')
-            ->join('t_penjualan AS pj', 'pjd.id_penjualan', '=', 'pj.id_penjualan')
-            ->join('m_item AS itm', 'pjd.id_item', '=', 'itm.id_item')
-            ->leftJoin('m_category AS ct', 'itm.category_id', '=', 'ct.id_category')
-            ->select(
-                DB::raw("DATE_FORMAT(pj.tgl_nota, '%Y-%m-%d') AS tanggal_nota"),
-                DB::raw("DATE_FORMAT(pj.tgl_nota, '%H:%i') AS jam_nota"),
-                'pj.id_penjualan',
-                'pj.total',
-                'pj.status',
-                'pj.statusenabled',
-                DB::raw('AVG(pjd.harga_peritem) AS rata_rata_harga_peritem'),
-                DB::raw('GROUP_CONCAT(itm.item_name) AS item_names'),
-                DB::raw('GROUP_CONCAT(pj.total) AS totals')
-            )
-            ->groupBy('tanggal_nota', 'jam_nota', 'pj.id_penjualan')
-            ->orderBy('tanggal_nota', 'desc')
-            ->orderBy('jam_nota', 'asc')
-            ->where('pj.statusenabled', true)
-            ->having('tanggal_nota', 'LIKE', $tgl_transaksi . '%')
+        $dataPenjualan = DB::table('t_penjualan')
+            ->select(DB::raw('DATE(tgl_nota) AS tgl_nota'), DB::raw('SUM(total) AS total_penjualan'))
+            ->selectRaw("CASE `status`
+                                WHEN 1 THEN 'Cash'
+                                WHEN 2 THEN 'QRIS'
+                                WHEN 3 THEN 'Pay Later'
+                                ELSE 'Unknown'
+                            END AS payment_method")
+            ->whereDate('tgl_nota', $tgl_transaksi)
+            ->groupBy(DB::raw('DATE(tgl_nota)'), 'status')
             ->get();
 
-        $groupedData = [];
+        $formattedPenjualan = [];
 
-        foreach($dataPenjualan as $penjualan) {
-            $tanggal = $penjualan->tanggal_nota;
-
-            if (!isset($groupedData[$tanggal])) {
-                $groupedData[$tanggal] = [];
+        foreach ($dataPenjualan as $result) {
+            if (!isset($formattedPenjualan[$result->tgl_nota])) {
+                $formattedPenjualan[$result->tgl_nota] = [];
             }
-
-            $groupedData[$tanggal][] = $penjualan;
+            $formattedPenjualan[$result->tgl_nota][] = [
+                'payment_method' => $result->payment_method,
+                'total_penjualan' => $result->total_penjualan
+            ];
         }
 
-        // dd($groupedData);
+        $dataPembelian = DB::table('t_pengeluaran')
+            ->select(DB::raw('DATE(tgl_pengeluaran) AS tgl_pengeluaran'), 'nama_barang', 'jenis_pembayaran', 'harga_barang')
+            ->whereDate('tgl_pengeluaran', $tgl_transaksi)
+            ->where('jenis_pembayaran', 1)
+            ->get();
+
+        $formattedPembelian = [];
+
+        foreach ($dataPembelian as $result) {
+            if (!isset($formattedPembelian[$result->tgl_pengeluaran])) {
+                $formattedPembelian[$result->tgl_pengeluaran] = [];
+            }
+            $formattedPembelian[$result->tgl_pengeluaran][] = [
+                'nama_barang' => $result->nama_barang,
+                'jenis_pembayaran' => $result->jenis_pembayaran,
+                'harga_barang' => $result->harga_barang
+            ];
+        }
+
+        // Calculate total income
+        $totalIncome = 0;
+        foreach ($dataPenjualan as $result) {
+            if ($result->payment_method === 'Cash') {
+                $totalIncome += $result->total_penjualan;
+            }
+        }
+
+        // Calculate total purchases
+        $totalPurchases = 0;
+        foreach ($dataPembelian as $result) {
+            $totalPurchases += $result->harga_barang;
+        }
+
+        // Calculate the difference
+        $difference = $totalIncome - $totalPurchases;
+
+        // dd($difference);
 
         if (request()->expectsJson()) {
             return response()->json([
-                'data' => $groupedData
+                'data' => $formattedPenjualan
             ], 200);
         } else {
-            return view('koffe.frontend.cetakan.billingHarian', compact('groupedData'));
+            return view('koffe.frontend.cetakan.billingHarian', compact('formattedPenjualan', 'formattedPembelian', 'difference'));
         }
-        // return response()->json([
-        //     'tgl'   => $id
-        // ], 200);
     }
 
     public function activity()

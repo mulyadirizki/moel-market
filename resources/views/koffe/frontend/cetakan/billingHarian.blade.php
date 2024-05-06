@@ -75,58 +75,98 @@
                                         </div>
                                     </div>
                                     <div class="dashed-line" style="margin-top: -10px;"></div>
-                                    @foreach ($groupedData as $tanggal => $transactions)
-                                        <div style="margin-top: 20px;">
-                                            <div class="row" style="margin-top: -15px;">
-                                                <div class="col">
-                                                    <div class="float-end">
-                                                        <p class="text-muted text-xsm">{{ $tanggal }}</p>
-                                                    </div>
-                                                    <p class="text-muted text-xsm">Waktu</p>
-                                                </div>
-                                            </div>
-                                            <div class="row" style="margin-top: -15px;">
-                                                <div class="col">
-                                                    <div class="float-end">
-                                                        <?php
-                                                            $random_string = '';
-                                                            $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-                                                            for ($i = 0; $i < 10; $i++) {
-                                                                $random_string .= $characters[mt_rand(0, strlen($characters) - 1)];
-                                                            }
-                                                        ?>
-                                                        <p class="text-muted text-xsm">{{ $random_string }}</p>
-                                                    </div>
-                                                    <p class="text-muted text-xsm">No Kuitansi</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="dashed-line" style="margin-top: -10px;"></div>
-                                        <div style="margin-top: 20px;">
-                                            @foreach($transactions as $trans)
-                                                <div class="row">
-                                                    <div class="col" style="margin-top: -15px;">
+                                        @foreach($formattedPenjualan as $tgl => $penjualan)
+                                            <div style="margin-top: 20px;">
+                                                <div class="row" style="margin-top: -15px;">
+                                                    <div class="col">
                                                         <div class="float-end">
-                                                            <p class="text-muted text-xsm">Rp. {{ number_format($trans->rata_rata_harga_peritem) }}</p>
+                                                            <p class="text-muted text-xsm">{{ $tgl }}</p>
                                                         </div>
-                                                        <p class="text-muted text-xsm">{{ $trans->item_names }} <span style="margin-left: 20px;">{{ $trans->jam_nota }}</span></p>
+                                                        <p class="text-muted text-xsm">Waktu</p>
                                                     </div>
                                                 </div>
-                                            @endforeach
-                                        </div>
+                                                <div class="row" style="margin-top: -15px;">
+                                                    <div class="col">
+                                                        <div class="float-end">
+                                                            <?php
+                                                                $random_string = '';
+                                                                $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+                                                                for ($i = 0; $i < 10; $i++) {
+                                                                    $random_string .= $characters[mt_rand(0, strlen($characters) - 1)];
+                                                                }
+                                                            ?>
+                                                            <p class="text-muted text-xsm">{{ $random_string }}</p>
+                                                        </div>
+                                                        <p class="text-muted text-xsm">No Kuitansi</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="dashed-line" style="margin-top: -10px;"></div>
+                                            <div style="margin-top: 20px;">
+                                                <div class="row" style="margin-top: -15px; padding-bottom: 12px;">
+                                                    <div class="col">
+                                                        <div class="float-end">
+                                                            <span class="text-muted text-xsm">Rp. {{ number_format(array_sum(array_column($penjualan, 'total_penjualan')), 0, ',', '.') }}</span>
+                                                        </div>
+                                                        <span class="text-muted text-sm"><b>Pendapatan</b></span>
+                                                    </div>
+                                                </div>
+                                                @foreach($penjualan as $pj)
+                                                    <div class="row" style="margin-top: -15px;">
+                                                        <div class="col" style="margin-left: 13px;">
+                                                            <div class="float-end">
+                                                                <p class="text-muted text-xsm">Rp. {{ number_format($pj['total_penjualan']) }}</p>
+                                                            </div>
+                                                            <p class="text-muted text-xsm">{{ $pj['payment_method'] }}</p>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endforeach
+                                        <div class="dashed-line" style="margin-top: -10px;"></div>
+                                        @foreach($formattedPembelian as $tglpbl => $pembelian)
+                                            <div style="margin-top: 20px;">
+                                                <div class="row" style="margin-top: -15px; padding-bottom: 12px;">
+                                                    <div class="col">
+                                                        <div class="float-end">
+                                                            <span class="text-muted text-xsm">Rp. {{ number_format(array_sum(array_column($pembelian, 'harga_barang')), 0, ',', '.') }}</span>
+                                                        </div>
+                                                        <span class="text-muted text-sm"><b>Pengeluaran</b></span>
+                                                    </div>
+                                                </div>
+                                                    @foreach($pembelian as $pm)
+                                                        <div class="row" style="margin-top: -15px;">
+                                                            <div class="col" style="margin-left: 13px;">
+                                                                <div class="float-end">
+                                                                    <p class="text-muted text-xsm">Rp. {{ number_format($pm['harga_barang']) }}</p>
+                                                                </div>
+                                                                <p class="text-muted text-xsm">{{ $pm['nama_barang'] }}</p>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                            </div>
+                                        @endforeach
                                         <div class="dashed-line" style="margin-top: -10px;"></div>
                                         <div style="margin-top: 20px;">
                                             <div class="row" style="margin-top: -15px;">
                                                 <div class="col">
                                                     <div class="float-end">
-                                                        <p class="text-muted text-xsm">Rp. {{ number_format(array_sum(array_column($transactions, 'total')), 0, ',', '.') }}</p>
+                                                        <p class="text-muted text-xsm">Rp. {{ number_format($difference) }}</p>
                                                     </div>
-                                                    <p class="text-muted text-xsm">Total Pendapatan</p>
+                                                    <p class="text-muted text-xsm"><b>Total Pendapatan Bersih</b></p>
+                                                </div>
+                                            </div>
+
+                                            <div class="row" style="margin-top: -15px;">
+                                                <div class="col" style="margin-left: 15px;">
+                                                    <div class="float-end">
+                                                        <p class="text-muted text-xsm">Rp. {{ number_format($difference) }}</p>
+                                                    </div>
+                                                    <p class="text-muted text-xsm">Cash - Total Pengeluaran</p>
                                                 </div>
                                             </div>
                                         </div>
-                                    @endforeach
 
                                     <div style="width: 100%">
                                         <div class="text-center">

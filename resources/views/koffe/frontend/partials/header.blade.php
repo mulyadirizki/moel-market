@@ -193,18 +193,17 @@
                                 <button class="btn link-primary" onclick="btnclearsale()"><i class="ti ti-trash text-danger"></i></button>
                             </div>
                             <div class="dropdown-divider"></div>
-                                <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative" style="max-height: calc(100vh - 215px)">
-                                    <div class="list-group list-group-flush w-100" id="datacart">
-                                    </div>
+                            <div class="dropdown-header px-0 text-wrap header-notification-scroll position-relative" style="max-height: calc(100vh - 215px)">
+                                <div class="list-group list-group-flush w-100" id="datacart">
                                 </div>
-                            <div class="dropdown-divider"></div>
-                            <div class="dropdown-header d-flex align-items-center justify-content-between">
-                                <h6 class="m-0" style="margin-left: 30px;">Subtotal</h6>
-                                <span style="margin-right: 48px;" id="subtotal">Rp. 0</span>
-                            </div>
-                            <div class="dropdown-header d-flex align-items-center justify-content-between" style="margin-top: -20px;">
-                                <h6 class="m-0" style="margin-left: 30px;">Total</h6>
-                                <span style="margin-right: 48px;" id="total">Rp. 0</span>
+                                <div class="dropdown-header d-flex align-items-center justify-content-between">
+                                    <h6 style="margin-left: 60px;">Subtotal</h6>
+                                    <span style="margin-right: 40px;" id="subtotal">Rp. 0</span>
+                                </div>
+                                <div class="dropdown-header d-flex align-items-center justify-content-between" style="margin-top: -20px;">
+                                    <h6 style="margin-left: 60px;">Total</h6>
+                                    <span style="margin-right: 40px;" id="total">Rp. 0</span>
+                                </div>
                             </div>
                             <div class="text-center py-2">
                                 <a href="{{ route('payment.order') }}" id="idRoutePayment">

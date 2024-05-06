@@ -256,7 +256,6 @@ class FrontController extends Controller
             ];
         }
 
-        // Calculate total income
         $totalIncome = 0;
         foreach ($dataPenjualan as $result) {
             if ($result->payment_method === 'Cash') {
@@ -264,13 +263,11 @@ class FrontController extends Controller
             }
         }
 
-        // Calculate total purchases
         $totalPurchases = 0;
         foreach ($dataPembelian as $result) {
             $totalPurchases += $result->harga_barang;
         }
 
-        // Calculate the difference
         $difference = $totalIncome - $totalPurchases;
 
         // dd($difference);

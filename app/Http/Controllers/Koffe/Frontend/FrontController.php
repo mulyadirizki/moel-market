@@ -214,7 +214,7 @@ class FrontController extends Controller
     public function billingPrintHarian($tgl_transaksi)
     {
         $dataPenjualan = DB::table('t_penjualan')
-            ->select(DB::raw('DATE(tgl_nota) AS tgl_nota'), DB::raw('SUM(total) AS total_penjualan'))
+            ->select(DB::raw('DATE(tgl_nota) AS tgl_nota'), DB::raw('SUM(total) AS total_penjualan'), 'statusenabled')
             ->selectRaw("CASE `status`
                                 WHEN 1 THEN 'Cash'
                                 WHEN 2 THEN 'QRIS'
@@ -222,7 +222,8 @@ class FrontController extends Controller
                                 ELSE 'Unknown'
                             END AS payment_method")
             ->whereDate('tgl_nota', $tgl_transaksi)
-            ->groupBy(DB::raw('DATE(tgl_nota)'), 'status')
+            ->where('statusenabled', true)
+            ->groupBy(DB::raw('DATE(tgl_nota)'), 'status', 'statusenabled')
             ->get();
 
         $formattedPenjualan = [];

@@ -124,8 +124,8 @@
                                                 @endforeach
                                             </div>
                                         @endforeach
-                                        <div class="dashed-line" style="margin-top: -10px;"></div>
                                         @foreach($formattedPembelian as $tglpbl => $pembelian)
+                                        <div class="dashed-line" style="margin-top: -10px;"></div>
                                             <div style="margin-top: 20px;">
                                                 <div class="row" style="margin-top: -15px; padding-bottom: 12px;">
                                                     <div class="col">

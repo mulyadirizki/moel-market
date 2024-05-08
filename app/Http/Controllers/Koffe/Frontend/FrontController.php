@@ -217,8 +217,8 @@ class FrontController extends Controller
             ->select(DB::raw('DATE(tgl_nota) AS tgl_nota'), DB::raw('SUM(total) AS total_penjualan'), 'statusenabled')
             ->selectRaw("CASE `status`
                                 WHEN 1 THEN 'Cash'
-                                WHEN 2 THEN 'QRIS'
-                                WHEN 3 THEN 'Pay Later'
+                                WHEN 2 THEN 'Pay Later'
+                                WHEN 3 THEN 'QRIS'
                                 ELSE 'Unknown'
                             END AS payment_method")
             ->whereDate('tgl_nota', $tgl_transaksi)

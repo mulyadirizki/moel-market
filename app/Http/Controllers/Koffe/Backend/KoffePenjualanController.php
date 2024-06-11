@@ -112,6 +112,9 @@ class KoffePenjualanController extends Controller
                 ->where('pj.toko_id', auth()->user()->toko_id)
                 ->where('pj.statusenabled', true)
                 ->where('pj.status', '<>', '2')
+                ->when($request->filled('carabayar'), function ($query) use ($request) {
+                    $query->where('pj.status', $request->carabayar);
+                })
                 ->where('itm.category_id', 'like', '%' . $category . '%');
 
             if(isset($request->tgl_penjualan) && $request->tgl_penjualan !== "" && $request->tgl_penjualan != "undefined" ) {

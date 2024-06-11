@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Koffe\Backend;
+namespace App\Http\Controllers\Glob;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

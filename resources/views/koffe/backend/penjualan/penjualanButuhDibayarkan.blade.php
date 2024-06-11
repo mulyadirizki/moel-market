@@ -1,4 +1,4 @@
-@extends('koffe.backend.default')
+@extends('_partials.default')
 
 @push('meta')
     <meta name="author" content="HPV">
@@ -228,6 +228,7 @@
                             { data: 'nm_pelanggan', name: 'nm_pelanggan' }
                         ],
                         "bDestroy": true,
+                        dom: 'Bfrtip',
                         footerCallback: function (row, data, start, end, display) {
                             let api = this.api();
 

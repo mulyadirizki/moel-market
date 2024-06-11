@@ -8,6 +8,8 @@ use Auth;
 use App\Models\Toko;
 use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
+use AuthenticatesUsers;
+use Illuminate\Support\Facades\DB;
 
 class LoginController extends Controller
 {
@@ -26,37 +28,62 @@ class LoginController extends Controller
     {
         $credentials = $request->only('username', 'password');
 
-        $dat = User::leftJoin('m_toko', 'users.toko_id', '=', 'm_toko.norectoko')
-        ->select('m_toko.bisnis_id')
-        ->first();
-
         if (auth()->attempt($credentials)) {
             $request->session()->regenerate();
 
+            // Define redirect URLs
+            $redirectUrlAdminMarket = Redirect::route('admin.market')->getTargetUrl();
             $redirectUrlAdmin = Redirect::route('admin')->getTargetUrl();
             $redirectUrlKasir = Redirect::route('kasir')->getTargetUrl();
-            if (auth()->user()->roles === 1 && $dat->bisnis_id === 2) {
-                return response()->json([
-                    'success'   => true,
-                    'redirect' => $redirectUrlAdmin,
-                    'message'   => 'Login berhasil'
-                ]);
-            } else if(auth()->user()->roles === 2 && $dat->bisnis_id === 2) {
-                return response()->json([
-                    'success'   => true,
-                    'redirect'  => $redirectUrlKasir,
-                    'message'   => 'Login berhasil'
-                ]);
+
+            $loggedInUser = auth()->user();
+            $user = DB::table('users')
+                ->leftJoin('m_toko', 'users.toko_id', '=', 'm_toko.norectoko')
+                ->where('users.noregistrasi', $loggedInUser->noregistrasi)
+                ->select('users.*', 'm_toko.*')
+                ->first();
+
+            if ($loggedInUser->roles === 1) {
+
+                if ($user->bisnis_id === 1) {
+                    return response()->json([
+                        'success' => true,
+                        'redirect' => $redirectUrlAdminMarket,
+                        'message' => 'Login berhasil'
+                    ]);
+                } else if ($user->bisnis_id === 2) {
+                    return response()->json([
+                        'success' => true,
+                        'redirect' => $redirectUrlAdmin,
+                        'message' => 'Login berhasil'
+                    ]);
+                }
+            } else if ($loggedInUser->roles === 2) {
+
+                if ($user->bisnis_id === 2) {
+                    return response()->json([
+                        'success' => true,
+                        'redirect' => $redirectUrlKasir,
+                        'message' => 'Login berhasil'
+                    ]);
+                }
             }
         }
-        return response()->json(['message' => 'Username atau Password salah!'], 401);
+
+        return response()->json(['message' => 'Username atau Password salah!', $user], 401);
     }
 
     public function logout(Request $request)
     {
-        auth()->logout();
+        Auth::logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+
+        return redirect('/')->withHeaders([
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
+            'Expires' => 'Fri, 01 Jan 1990 00:00:00 GMT',
+        ]);
     }
 }

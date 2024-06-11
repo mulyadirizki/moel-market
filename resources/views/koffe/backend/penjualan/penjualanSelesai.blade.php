@@ -1,4 +1,4 @@
-@extends('koffe.backend.default')
+@extends('_partials.default')
 
 @push('meta')
     <meta name="author" content="HPV">
@@ -44,6 +44,14 @@
                             <div class="col-12">
                                 <label for="akhirtgl">- Penjualan</label>
                                 <input type="datetime-local" class="form-control form-control-sm" id="tgl_penjualanAkhir">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Cara Pebayaran</label>
+                                <select class="form-select form-select-sm" style="margin-top: -10px;" id="carabayar">
+                                    <option selected value="">Pilih Cara Bayar</option>
+                                    <option value="1">Chas</option>
+                                    <option value="3">QRIS</option>
+                                </select>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Category</label>
@@ -203,6 +211,7 @@
                     var tgl_penjualan = $('#tgl_penjualan').val();
                     var tgl_penjualanAkhir = $('#tgl_penjualanAkhir').val();
                     var category = $('#category').val();
+                    var carabayar = $('#carabayar').val();
 
                     var tgl_penjualan_parts = tgl_penjualan.split('T'); // Pisahkan tanggal dan waktu
                     var tgl_penjualan_date = tgl_penjualan_parts[0] + ' ' + timeAwal;
@@ -212,6 +221,7 @@
                     var tgl_penjualan_date_akhir = tgl_penjualan_parts_akhir[0] + ' ' + timeAkhir;
                     listQuery.tgl_penjualanAkhir = tgl_penjualan_date_akhir
                     listQuery.category = category
+                    listQuery.carabayar = carabayar
 
                     var table2 = $('#data-penjualan-selesai').DataTable({
                         ajax: {
@@ -240,6 +250,7 @@
                             { data: 'statuspayment', name: 'statuspayment' }
                         ],
                         "bDestroy": true,
+                        dom: 'Bfrtip',
                         footerCallback: function (row, data, start, end, display) {
                             let api = this.api();
 

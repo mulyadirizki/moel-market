@@ -193,7 +193,7 @@
             </a>
             <a href="#!" class="dropdown-item">
               <i class="ti ti-power"></i>
-              <form action="{{ route('logout') }}" method="POST">
+              <form action="{{ route('logout') }}" method="GET">
                 @csrf
                 <button type="submit">Logout</button>
             </form>

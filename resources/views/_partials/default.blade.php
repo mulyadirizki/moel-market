@@ -50,11 +50,11 @@
     <!-- [ Pre-loader ] End -->
 
     <!-- [ Sidebar Menu ] start -->
-        @include('koffe.backend.partials.sidebar')
+        @include('_partials.sidebar')
     <!-- [ Sidebar Menu ] end -->
 
     <!-- [ Header Topbar ] start -->
-        @include('koffe.backend.partials.header')
+        @include('_partials.header')
     <!-- [ Header ] end -->
 
 
@@ -66,7 +66,7 @@
     <!-- [ Main Content ] end -->
 
     <!-- footer -->
-        @include('koffe.backend.partials.footer')
+        @include('_partials.footer')
     <!-- footer end-->
 
     <!-- [Page Specific JS] end -->

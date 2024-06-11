@@ -9,19 +9,22 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Backend\KasirController;
 use App\Http\Controllers\RedirectController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Glob\KaryawanController;
 
 // koffe backend
 use App\Http\Controllers\Koffe\Backend\MainController;
-use App\Http\Controllers\Koffe\Backend\KaryawanController;
 use App\Http\Controllers\Koffe\Backend\ActivityController;
 use App\Http\Controllers\Koffe\Backend\KoffePenjualanController;
 use App\Http\Controllers\Koffe\Backend\KoffePembelianController;
 use App\Http\Controllers\Koffe\Backend\KoffePendapatanController;
 
-// front
+// front koffea
 use App\Http\Controllers\Koffe\Frontend\FrontController;
 use App\Http\Controllers\Koffe\Frontend\CategoryController;
 use App\Http\Controllers\Koffe\Frontend\ItemController;
+
+// market backend
+use App\Http\Controllers\Market\Backend\MarketMasterController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -46,24 +49,42 @@ Route::group(['middleware' => 'guest'], function() {
 });
 
 Route::group(['middleware' => ['auth', 'checkrole:1,2']], function() {
-    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('no-cache');
     Route::get('/redirect', [RedirectController::class, 'cek']);
 });
 
 // untuk admin
-Route::group([ 'prefix' => 'admin/koffe', 'middleware' => ['auth', 'checkrole:1']], function() {
-    Route::get('/', [MainController::class, 'index'])->name('admin');
+Route::group([ 'prefix' => 'backend', 'middleware' => ['auth', 'checkrole:1', 'no-cache']], function() {
 
-    Route::get('/data-karyawan', [KaryawanController::class, 'karyawan'])->name('karyawan.data');
-    Route::post('/data-karyawan/add', [KaryawanController::class, 'karyawanAdd'])->name('karyawan.add');
+    Route::group([ 'prefix' => 'global'], function() {
+        Route::get('/data-karyawan', [KaryawanController::class, 'karyawan'])->name('karyawan.data');
+        Route::post('/data-karyawan/add', [KaryawanController::class, 'karyawanAdd'])->name('karyawan.add');
+    });
+    Route::group([ 'prefix' => 'koffe'], function() {
+        Route::get('/', [MainController::class, 'index'])->name('admin');
 
-    Route::get('/data-penjualan/butuh-dibayarkan', [KoffePenjualanController::class, 'penjualanButuhDibayarkan'])->name('penjualan.butuh.dibayarkan');
-    Route::get('/data-penjualan/selesai', [KoffePenjualanController::class, 'penjualanSelesai'])->name('penjualan.selesai');
-    Route::get('/data-penjualan/refund', [KoffePenjualanController::class, 'penjualanRefund'])->name('penjualan.refund');
+        Route::get('/data-penjualan/butuh-dibayarkan', [KoffePenjualanController::class, 'penjualanButuhDibayarkan'])->name('penjualan.butuh.dibayarkan');
+        Route::get('/data-penjualan/selesai', [KoffePenjualanController::class, 'penjualanSelesai'])->name('penjualan.selesai');
+        Route::get('/data-penjualan/refund', [KoffePenjualanController::class, 'penjualanRefund'])->name('penjualan.refund');
 
-    Route::get('/data-pembelian', [KoffePembelianController::class, 'dataPembelian'])->name('data.pembelian');
+        Route::get('/data-pembelian', [KoffePembelianController::class, 'dataPembelian'])->name('data.pembelian');
 
-    Route::get('/data-pendapatan', [KoffePendapatanController::class, 'dataPendapatan'])->name('data.pendapatan');
+        Route::get('/data-pendapatan', [KoffePendapatanController::class, 'dataPendapatan'])->name('data.pendapatan');
+    });
+
+    Route::group([ 'prefix' => 'market'], function() {
+        Route::get('/', [HomeController::class, 'indexMarket'])->name('admin.market');
+
+        Route::get('/data-satuan', [MarketMasterController::class, 'satuan'])->name('data.satuan');
+        Route::post('/data-satuan/add', [MarketMasterController::class, 'satuanAdd'])->name('data.satuan.add');
+        Route::get('/data-satuan/edit/{id}', [MarketMasterController::class, 'satuanEdit'])->name('data.satuan.edit');
+        Route::delete('/data-satuan/delete/{id}', [MarketMasterController::class, 'satuanDelete'])->name('data.satuan.delete');
+
+        Route::get('/data-kategori', [MarketMasterController::class, 'kategori'])->name('data.kategori');
+        Route::post('/data-kategori/add', [MarketMasterController::class, 'kategoriAdd'])->name('data.kategori.add');
+        Route::get('/data-kategori/edit/{id}', [MarketMasterController::class, 'kategoriEdit'])->name('data.kategori.edit');
+        Route::delete('/data-kategori/delete/{id}', [MarketMasterController::class, 'kategoriDelete'])->name('data.kategori.delete');
+    });
 });
 
 Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2']], function() {

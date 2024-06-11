@@ -1,4 +1,4 @@
-@extends('koffe.backend.default')
+@extends('_partials.default')
 
 @push('meta')
     <meta name="author" content="HPV">

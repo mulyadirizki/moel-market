@@ -79,16 +79,32 @@
                                     <h5>Items</h5>
                                 </div>
                                 <div class="card-body position-relative" style="margin-top: -15px;">
-                                    <div class="text-center mt-3">
-                                        @foreach($detPenjualan as $dpj)
-                                            <div class="d-inline-flex align-items-center justify-content-between w-100">
-                                                <p>{{ $dpj->item_name }}
-                                                    @if($dpj->variant_name != null)
-                                                        ({{ $dpj->variant_name }})
-                                                    @endif
-                                                </p>
-                                                <p>Rp. {{ number_format($dpj->harga_peritem) }}</p>
+                                        <div style="margin-top: 20px;">
+                                        @foreach($result as $category => $items)
+                                            <div class="row" style="margin-top: -15px; padding-bottom: 15px;">
+                                                <div class="col">
+                                                    <span><b>{{ $category }}</b></span>
+                                                </div>
                                             </div>
+                                            @foreach($items as $itm)
+                                                <div class="row" style="margin-top: -10px; margin-left: 1px;">
+                                                    <div class="col">
+                                                        <p>{{ $itm->item_name }}
+                                                            @if($itm->variant_name != null)
+                                                                ({{ $itm->variant_name }})
+                                                            @endif
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col" style="margin-top: -10px; margin-left: 13px;">
+                                                        <div class="float-end">
+                                                            <p>Rp. {{ number_format($itm->sub_total) }}</p>
+                                                        </div>
+                                                        <p>{{ $itm->qty }} x <span style="margin-left: 10px;">Rp. {{ number_format($itm->harga_peritem) }}</span></p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         @endforeach
                                         <hr style="margin-top: -10px;">
                                         <div class="d-inline-flex align-items-center justify-content-between w-100">

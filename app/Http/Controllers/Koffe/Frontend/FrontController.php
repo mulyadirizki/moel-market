@@ -326,7 +326,7 @@ class FrontController extends Controller
 
     public function activityDetail($id_penjualan)
     {
-        $detPenjualan = DB::table('m_variant as vr')
+        $datPenjualan = DB::table('m_variant as vr')
             ->leftJoin('m_item as itm', 'vr.id_item', '=', 'itm.id_item')
             ->join('t_penjualan_det as pjd', 'pjd.id_item', '=', 'itm.id_item')
             ->select(
@@ -336,6 +336,55 @@ class FrontController extends Controller
             )
             ->where('pjd.id_penjualan', $id_penjualan)
             ->get();
+        // $datPenjualan = DB::table('t_penjualan AS pj')
+        //     ->join('users as usr', 'pj.norec_user', '=', 'usr.noregistrasi')
+        //     ->select(
+        //         'pj.no_nota',
+        //         'pj.tgl_nota',
+        //         'usr.nama',
+        //         'pj.total',
+        //         'pj.uang_bayar',
+        //         'pj.uang_kembali',
+        //         'pj.nm_pelanggan',
+        //         DB::raw('CASE
+        //                     WHEN pj.status = 1 THEN "Cash"
+        //                     WHEN pj.status = 2 THEN "Pay Later"
+        //                     WHEN pj.status = 3 THEN "QRIS"
+        //                     ELSE ""
+        //                 END AS payment_method')
+        //     )->where('pj.id_penjualan', $id_penjualan)
+        //     ->first();
+
+            $result = DB::table('t_penjualan_det AS pjd')
+                ->join('m_item AS itm', 'pjd.id_item', '=', 'itm.id_item')
+                ->join('m_category AS ct', 'itm.category_id', '=', 'ct.id_category')
+                ->leftJoin('m_variant', 'itm.id_item', '=', 'm_variant.id_item')
+                ->select(
+                    'pjd.id_penjualan_det',
+                    'pjd.id_penjualan',
+                    'pjd.qty',
+                    'pjd.harga_peritem',
+                    'pjd.sub_total',
+                    'itm.item_name',
+                    'itm.category_id',
+                    'ct.category_name',
+                    'm_variant.variant_name'
+                )
+                ->where('pjd.id_penjualan', '=', $id_penjualan)
+                ->groupBy(
+                    'pjd.id_penjualan_det',
+                    'pjd.id_penjualan',
+                    'pjd.qty',
+                    'pjd.harga_peritem',
+                    'pjd.sub_total',
+                    'itm.item_name',
+                    'itm.category_id',
+                    'ct.category_name',
+                    'm_variant.variant_name'
+                )
+                ->get()
+                ->groupBy('category_name') // Mengelompokkan hasil berdasarkan array
+                ->toArray();
 
         $dataPenj = DB::table('t_penjualan as pj')
                 ->select(
@@ -360,10 +409,11 @@ class FrontController extends Controller
         if (request()->expectsJson()) {
             return response()->json([
                 'dtpj' => $detPenjualan,
-                'dtitm' => $dataPenj
+                'dtitm' => $dataPenj,
+                'result' => $result
             ], 200);
         } else {
-            return view('koffe.frontend.activity.activityDetail', compact('detPenjualan', 'dataPenj'));
+            return view('koffe.frontend.activity.activityDetail', compact('datPenjualan', 'dataPenj', 'result'));
         }
     }
 

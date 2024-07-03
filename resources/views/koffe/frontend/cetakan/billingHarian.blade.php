@@ -106,6 +106,40 @@
                                             <div style="margin-top: 20px;">
                                                 <div class="row" style="margin-top: -15px; padding-bottom: 12px;">
                                                     <div class="col">
+                                                        <span class="text-muted text-sm"><b>Transaksi</b></span>
+                                                    </div>
+                                                </div>
+                                                @foreach($results as $category => $items)
+                                                    <div class="row" style="margin-top: -15px; padding-bottom: 15px; margin-left: 1px;">
+                                                        <div class="col">
+                                                            <span class="text-muted text-sm"><b>{{ $category }}</b></span>
+                                                        </div>
+                                                    </div>
+                                                    @foreach($items as $itm)
+                                                        <div class="row" style="margin-top: -20px; margin-left: 1px;">
+                                                            <div class="col">
+                                                                <span class="text-muted text-xsm">{{ $itm->item_name }}
+                                                                    @if($itm->variant_name != null)
+                                                                        ({{ $itm->variant_name }})
+                                                                    @endif
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col" style="margin-top: -2px; margin-left: 13px;">
+                                                                <div class="float-end">
+                                                                    <p class="text-muted text-xsm">Rp. {{ number_format($itm->total_sub_total) }}</p>
+                                                                </div>
+                                                                <p class="text-muted text-xsm">{{ $itm->total_qty }} x <span style="margin-left: 10px;">Rp. {{ number_format($itm->harga_peritem) }}</span></p>
+                                                            </div>
+                                                        </div>
+                                                    @endforeach
+                                                @endforeach
+                                            </div>
+                                            <div class="dashed-line" style="margin-top: -10px;"></div>
+                                            <div style="margin-top: 20px;">
+                                                <div class="row" style="margin-top: -15px; padding-bottom: 12px;">
+                                                    <div class="col">
                                                         <div class="float-end">
                                                             <span class="text-muted text-xsm">Rp. {{ number_format(array_sum(array_column($penjualan, 'total_penjualan')), 0, ',', '.') }}</span>
                                                         </div>

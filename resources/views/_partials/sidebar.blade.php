@@ -33,7 +33,18 @@
                                 <a class="pc-link" href="{{ route('data.kategori') }}">Data Kategori</a>
                             </li>
                             <li class="pc-item">
-                                <a class="pc-link" href="{{ route('penjualan.selesai') }}">Data Barang</a>
+                                <a class="pc-link" href="{{ route('data.supplier') }}">Data Supplier</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="pc-item pc-hasmenu">
+                        <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-server"></i></span><span class="pc-mtext">Data Barang</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                        <ul class="pc-submenu">
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('data.barang') }}">List Barang</a>
+                            </li>
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('data.barang.masuk') }}">Barang Masuk</a>
                             </li>
                         </ul>
                     </li>

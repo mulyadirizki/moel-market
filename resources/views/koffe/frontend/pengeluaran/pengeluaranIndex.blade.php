@@ -114,12 +114,13 @@
 @endsection
 @push('script')
     <script>
+        var table
         getDataPengeluaran = () => {
             const result = new Date();
             const formattedDate = `${result.getFullYear()}-${String(result.getMonth() + 1).padStart(2, '0')}-${String(result.getDate()).padStart(2, '0')} ${String(result.getHours()).padStart(2, '0')}:${String(result.getMinutes()).padStart(2, '0')}:${String(result.getSeconds()).padStart(2, '0')}`;
             $('#tglpengeluaran').val(formattedDate);
 
-            $('#data-pengeluaran').DataTable({
+            table = $('#data-pengeluaran').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: "{{ route('pengeluaran') }}",
@@ -221,6 +222,38 @@
                 }
             })
         }
+
+        $('body').on('click', '.btn-delete', function () {
+
+            var id_pengeluaran = $(this).attr("dataId");
+            var token = $("meta[name='csrf-token']").attr("content");
+
+            $.ajax({
+                type: "post",
+                url: "{{ route('pengeluaran.delete', ['id' => ':id']) }}".replace(':id', id_pengeluaran),
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                },
+                success: function (data) {
+                    $.Toast("Success", "Hapus data berhasil", "success", {
+                        has_icon:true,
+                        has_close_btn:true,
+                        stack: true,
+                        fullscreen:false,
+                        timeout:8000,
+                        sticky:false,
+                        has_progress:true,
+                        rtl:false,
+                        position_class: "toast-top-right",
+                        width: 250,
+                    });
+                    table.ajax.reload();
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+        });
 
         $(document).ready(function() {
             getDataPengeluaran();

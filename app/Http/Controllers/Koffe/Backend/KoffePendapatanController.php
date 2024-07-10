@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Koffe\Backend;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use DataTables;
+use Yajra\DataTables\DataTables;
 
 class KoffePendapatanController extends Controller
 {

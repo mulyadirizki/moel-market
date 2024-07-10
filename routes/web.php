@@ -25,6 +25,7 @@ use App\Http\Controllers\Koffe\Frontend\ItemController;
 
 // market backend
 use App\Http\Controllers\Market\Backend\MarketMasterController;
+use App\Http\Controllers\Market\Backend\MarketBarangController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -45,7 +46,6 @@ Route::group(['middleware' => 'guest'], function() {
     Route::post('/login-store', [LoginController::class, 'dologin'])->name('dologin');
     Route::get('/id/sign-up', [RegisterController::class, 'register'])->name('register');
     Route::post('/register', [RegisterController::class, 'doregister'])->name('doregister');
-
 });
 
 Route::group(['middleware' => ['auth', 'checkrole:1,2']], function() {
@@ -75,6 +75,13 @@ Route::group([ 'prefix' => 'backend', 'middleware' => ['auth', 'checkrole:1', 'n
     Route::group([ 'prefix' => 'market'], function() {
         Route::get('/', [HomeController::class, 'indexMarket'])->name('admin.market');
 
+        // master dropdown
+        Route::get('/master/get-data-kategori', [MarketMasterController::class, 'getKategori'])->name('get.kategori');
+        Route::get('/master/get-data-satuan', [MarketMasterController::class, 'getSatuan'])->name('get.satuan');
+        Route::get('/master/get-data-merek', [MarketMasterController::class, 'getMerek'])->name('get.merek');
+        Route::get('/master/get-data-supplier', [MarketMasterController::class, 'getSupplier'])->name('get.supplier');
+        Route::get('/master/get-data-barang', [MarketMasterController::class, 'getBarang'])->name('get.barang');
+
         Route::get('/data-satuan', [MarketMasterController::class, 'satuan'])->name('data.satuan');
         Route::post('/data-satuan/add', [MarketMasterController::class, 'satuanAdd'])->name('data.satuan.add');
         Route::get('/data-satuan/edit/{id}', [MarketMasterController::class, 'satuanEdit'])->name('data.satuan.edit');
@@ -84,6 +91,21 @@ Route::group([ 'prefix' => 'backend', 'middleware' => ['auth', 'checkrole:1', 'n
         Route::post('/data-kategori/add', [MarketMasterController::class, 'kategoriAdd'])->name('data.kategori.add');
         Route::get('/data-kategori/edit/{id}', [MarketMasterController::class, 'kategoriEdit'])->name('data.kategori.edit');
         Route::delete('/data-kategori/delete/{id}', [MarketMasterController::class, 'kategoriDelete'])->name('data.kategori.delete');
+
+        Route::get('/data-supplier', [MarketMasterController::class, 'supplier'])->name('data.supplier');
+        Route::post('/data-supplier/add', [MarketMasterController::class, 'supplierAdd'])->name('data.supplier.add');
+        Route::get('/data-supplier/edit/{id}', [MarketMasterController::class, 'supplierEdit'])->name('data.supplier.edit');
+        Route::delete('/data-supplier/delete/{id}', [MarketMasterController::class, 'supplierDelete'])->name('data.supplier.delete');
+
+        // Data barang
+        Route::get('/data-barang', [MarketBarangController::class, 'barang'])->name('data.barang');
+        Route::post('/data-barang/add', [MarketBarangController::class, 'barangAdd'])->name('data.barang.add');
+        Route::get('/data-barang/edit/{id}', [MarketBarangController::class, 'barangEdit'])->name('data.barang.edit');
+        Route::post('/data-barang/delete/{id}', [MarketBarangController::class, 'barangDelete'])->name('data.barang.delete');
+
+        // Data barang terima
+        Route::get('/data-barang-masuk', [MarketBarangController::class, 'barangMasuk'])->name('data.barang.masuk');
+        Route::post('/data-barang-masuk/add', [MarketBarangController::class, 'barangMasukAdd'])->name('data.barang.masuk.add');
     });
 });
 
@@ -117,6 +139,7 @@ Route::group([ 'prefix' => 'front/koffe', 'middleware' => ['auth', 'checkrole:2'
     // pengeluaran
     Route::get('/pengeluaran', [FrontController::class, 'pengeluaranIndex'])->name('pengeluaran');
     Route::post('/pengeluaran/add', [FrontController::class, 'pengeluaranAdd'])->name('pengeluaran.add');
+    Route::post('/pengeluaran/delete/{id}', [FrontController::class, 'pengeluaranDelete'])->name('pengeluaran.delete');
 });
 
 

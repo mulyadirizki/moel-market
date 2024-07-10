@@ -13,8 +13,13 @@
     <meta name="author" content="CodedThemes">
 
     @stack('meta')
-
     <!-- [Favicon] icon -->
+
+    <!-- <link href="{{ url('assets/css/plugins/bootstrap.min.css') }}" rel="stylesheet" type="text/css" /> -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
     <link rel="icon" href="{{ url('assets/images/favicon.svg') }}" type="image/x-icon"> <!-- [Google Font] Family -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700&display=swap" id="main-font-link">
     <!-- [Tabler Icons] https://tablericons.com -->
@@ -34,6 +39,8 @@
 
     <link href="{{ url('assets/css/toast.style.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ url('assets/css/toast.style.min.css') }}" rel="stylesheet" type="text/css">
+
+    <!-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> -->
     @stack('css')
 
 </head>
@@ -71,9 +78,12 @@
 
     <!-- [Page Specific JS] end -->
     <!-- Required Js -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ url('assets/js/plugins/popper.min.js') }}"></script>
     <script src="{{ url('assets/js/plugins/simplebar.min.js') }}"></script>
-    <script src="{{ url('assets/js/plugins/bootstrap.min.js') }}"></script>
+    <!-- <script src="{{ url('assets/js/plugins/bootstrap.min.js') }}"></script> -->
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
     <script src="{{ url('assets/js/fonts/custom-font.js') }}"></script>
     <script src="{{ url('assets/js/pcoded.js') }}"></script>
     <script src="{{ url('assets/js/plugins/feather.min.js') }}"></script>
@@ -83,7 +93,6 @@
     <script>preset_change("preset-1");</script>
     <script>font_change("Public-Sans");</script>
     <!-- datatable Js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="{{ url('assets/js/plugins/jquery.dataTables.min.js') }}"></script>
     <script src="{{ url('assets/js/plugins/dataTables.bootstrap5.min.js') }}"></script>
     <script src="{{ url('assets/js/toast.script.js') }}"></script>
@@ -97,6 +106,7 @@
     <script src="https://cdn.datatables.net/colreorder/1.7.0/js/dataTables.colReorder.min.js"></script>
     <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     @stack('script')
 </body>
 <!-- [Body] end -->

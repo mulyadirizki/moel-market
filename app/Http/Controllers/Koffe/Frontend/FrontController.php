@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 use Ramsey\Uuid\Uuid as Generator;
-use DataTables;
+use Yajra\DataTables\DataTables;
 
 class FrontController extends Controller
 {
@@ -466,7 +466,7 @@ class FrontController extends Controller
 
         if (request()->expectsJson()) {
             return response()->json([
-                'dtpj' => $detPenjualan,
+                // 'dtpj' => $detPenjualan,
                 'dtitm' => $dataPenj,
                 'result' => $result
             ], 200);
@@ -536,6 +536,7 @@ class FrontController extends Controller
         if (request()->ajax()) {
             $pengeluaran = Pengeluaran::select('t_pengeluaran.*')
                 ->where('toko_id', auth()->user()->toko_id)
+                ->where('statusenabled', 1)
                 ->get();
 
             return DataTables::of($pengeluaran)
@@ -610,6 +611,30 @@ class FrontController extends Controller
                 'message'   => 'Pengeluaran failed to add'
             ], 400);
         }
+    }
+
+    public function pengeluaranDelete($id_pengeluaran) {
+        // Cari barang berdasarkan ID
+        $pengeluaran = Pengeluaran::where('id_pengeluaran', $id_pengeluaran)->first();
+
+        // Cek apakah barang ditemukan
+        if (!$pengeluaran) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Barang tidak ditemukan'
+            ], 404);
+        }
+
+        // Update statusenabled menjadi 0
+        $pengeluaran->statusenabled = 0;
+        $pengeluaran->norec_user = auth()->user()->noregistrasi;
+        $pengeluaran->save();
+
+        // Mengembalikan response JSON
+        return response()->json([
+            'success' => true,
+            'message' => 'Barang berhasil dinonaktifkan'
+        ], 200);
     }
 
     public function setting()

@@ -20,10 +20,11 @@ class MarketPenjualanController extends Controller
     {
         $penjualanData = $request->input('dataSave');
 
+        $id_penjualan_market = $this->idCreate('t_penjualan_market', 'id_penjualan_market');
+
         // Transaksi database
-        DB::transaction(function () use ($penjualanData) {
+        DB::transaction(function () use ($penjualanData, $id_penjualan_market) {
             // Insert ke tabel penjualan
-            $id_penjualan_market = $this->idCreate('t_penjualan_market', 'id_penjualan_market');
             $penjualan = PenjualanMarket::create([
                 'id_penjualan_market'   => $id_penjualan_market,
                 'statusenabled'         => '1',
@@ -61,7 +62,8 @@ class MarketPenjualanController extends Controller
 
         return response()->json([
             'success'   => true,
-            'message'   => 'Transaksi berhasil disimpan'
+            'message'   => 'Transaksi berhasil disimpan',
+            'id_penjualan_market' => $id_penjualan_market
         ], 200);
     }
 
@@ -164,6 +166,62 @@ class MarketPenjualanController extends Controller
                 'message' => 'Delete transaksi Failed'
             ], 400);
         }
+    }
+
+    public function transaksiPrint($id_penjualan_market) {
+        $datPenjualan = DB::table('t_penjualan_market AS pjm')
+            ->join('users as usr', 'pjm.user', '=', DB::raw('usr.noregistrasi COLLATE utf8mb4_unicode_ci'))
+            ->select(
+                'pjm.no_nota',
+                'pjm.tgl_nota',
+                'usr.nama',
+                'pjm.total',
+                'pjm.uang_bayar',
+                'pjm.uang_kembali',
+                'pjm.nm_pelanggan',
+                DB::raw('CASE
+                            WHEN pjm.cara_bayar = 1 THEN "Cash"
+                            WHEN pjm.cara_bayar = 2 THEN "Pay Later"
+                            WHEN pjm.cara_bayar = 3 THEN "QRIS"
+                            ELSE ""
+                        END AS payment_method')
+            )->where('pjm.id_penjualan_market', $id_penjualan_market)
+            ->first();
+
+            // dd($datPenjualan);
+
+            $result = DB::table('t_penjualan_market_det AS pjmd')
+                ->join('m_barang AS mb', 'pjmd.id_barang', '=', 'mb.id_barang')
+                ->join('m_kategori AS kt', 'mb.id_kategori', '=', 'kt.id_kategori')
+                ->select(
+                    'pjmd.id_penjualan_market_det',
+                    'pjmd.id_penjualan_market',
+                    'pjmd.qty',
+                    'pjmd.harga_jual_default AS harga_peritem',
+                    'pjmd.sub_total',
+                    'mb.nama_barang',
+                    'kt.id_kategori',
+                    'kt.nama_kategori'
+                )
+                ->where('pjmd.id_penjualan_market', '=', $id_penjualan_market)
+                ->groupBy(
+                    'pjmd.id_penjualan_market_det',
+                    'pjmd.id_penjualan_market',
+                    'pjmd.qty',
+                    'pjmd.harga_jual_default',
+                    'pjmd.sub_total',
+                    'mb.nama_barang',
+                    'kt.id_kategori',
+                    'kt.nama_kategori'
+                )
+                ->get()
+                ->groupBy('nama_kategori') // Mengelompokkan hasil berdasarkan nama kategori setelah pengambilan data
+                ->toArray();
+
+
+        // dd($datPenjualan);
+
+        return view('market.frontend.cetakan.billing-market', compact('datPenjualan', 'result'));
     }
 
 }

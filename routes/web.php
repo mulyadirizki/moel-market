@@ -160,6 +160,8 @@ Route::group([ 'prefix' => 'front', 'middleware' => ['auth', 'checkrole:2']], fu
 
         Route::get('/history-transaksi', [MarketPenjualanController::class, 'historyTransaksi'])->name('history.transaksi');
         Route::post('/history-transaksi/delete', [MarketPenjualanController::class, 'historyTransaksiDelete'])->name('history.transaksi.delete');
+
+        Route::get('/transaksi-print/{id}', [MarketPenjualanController::class, 'transaksiPrint'])->name('market.print.transaksi');
     });
 });
 

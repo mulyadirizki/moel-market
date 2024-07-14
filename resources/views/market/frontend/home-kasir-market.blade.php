@@ -186,8 +186,9 @@
         </div>
         </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="btnClose()">Close</button>
-        <button type="button" class="btn btn-primary btn-submit btn-bayar" disabled onclick="saveTransaksi()">Simpan (F9)</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" onclick="btnClose()">Close</button>
+        <button type="button" class="btn btn-warning btn-sm" id="printBillingBtn" data-dismiss="modal" onclick="btnPrint()">Cetak</button>
+        <button type="button" class="btn btn-primary btn-submit btn-bayar btn-sm" disabled onclick="saveTransaksi()">Simpan (F9)</button>
       </div>
     </div>
   </div>
@@ -370,19 +371,21 @@
                 $('.kembali').text('0');
             } else {
                 $('#bayar').on('keyup', function() {
-                    const bayar = $('#bayar').val();
-                    const kembali = bayar - totalConvert;
-                    if (parseInt(bayar) < parseInt(totalConvert)) {
-                        $('.kembali').text('Belum cukup');
-                        $('.btn-bayar').attr('disabled', 'disabled');
-                    } else if (parseInt(bayar) === parseInt(totalConvert)) {
-                        $('.kembali').text('Uang pas');
-                        $('.btn-bayar').removeAttr('disabled');
-                    } else {
-                        $('.kembali').text('Rp. ' + kembali.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                        $('.btn-bayar').removeAttr('disabled');
-                    }
-                });
+                const bayar = parseInt($('#bayar').val());
+                const totalConvParse = parseInt(totalConvert)
+                
+                if (isNaN(bayar) || bayar < totalConvParse) {
+                    $('.kembali').text('Belum cukup');
+                    $('.btn-bayar').attr('disabled', 'disabled');
+                } else if (bayar == totalConvParse) {
+                    $('.kembali').text('Uang pas');
+                    $('.btn-bayar').removeAttr('disabled');
+                } else {
+                    const kembali = bayar - totalConvParse;
+                    $('.kembali').text('Rp. ' + kembali.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
+                    $('.btn-bayar').removeAttr('disabled');
+                }
+            });
             }
         }
     }
@@ -428,8 +431,6 @@
             }).get()
         };
 
-        console.log(dataSave);
-
         $.ajax({
             url: "{{ route('save.transaksi') }}",
             method: "POST",
@@ -440,6 +441,7 @@
                 "_token": token
             }),
             success: function(response) {
+                $('#printBillingBtn').data('id-penjualan-market', response.id_penjualan_market);
                 if (response.success) {
                     $.Toast("Berhasil", 'Transaksi berhasil', "success", {
                         has_icon: true,
@@ -453,8 +455,8 @@
                         position_class: "toast-top-right",
                         width: 150,
                     });
-                    $('#exampleModalCenter').modal('hide');
-                    location.reload();
+                    // $('#exampleModalCenter').modal('hide');
+                    // location.reload();
                 } else {
                     alert('Gagal menyimpan transaksi.');
                 }
@@ -463,6 +465,20 @@
                 alert('Terjadi kesalahan. Silakan coba lagi.');
             }
         });
+    }
+
+    function btnPrint() {
+        var id_penjualan_market = $('#printBillingBtn').data('id-penjualan-market');
+        var url = "{{ route('market.print.transaksi', ['id' => ':id']) }}".replace(':id', id_penjualan_market);
+        console.log(url)
+
+        var popupWindow = window.open(url, "_blank", "width=110");
+        // Tunggu sampai jendela baru dimuat
+        popupWindow.onload = function() {
+            // Memicu pencetakan setelah halaman eksternal dimuat
+            popupWindow.print();
+        };
+        popupWindow.document.head.insertAdjacentHTML("beforeend", "<style>@page { size: 58mm; }</style>");
     }
 
     function batalTransaksi() {

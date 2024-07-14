@@ -487,6 +487,7 @@
 
     function btnClose() {
         $('#exampleModalCenter').modal('hide');
+        location.reload();
     }
 
 </script>

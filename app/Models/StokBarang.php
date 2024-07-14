@@ -5,27 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Stok extends Model
+class StokBarang extends Model
 {
     use HasFactory;
 
-    protected $table = 't_inv_stok';
+    protected $table = 't_total_stok_barang';
 
     // protected $primaryKey = null;
-    protected $primaryKey = 'id_stok';
+    protected $primaryKey = 'id_stok_barang';
     public $incrementing = false;
 
     protected $fillable = [
-        'th',
-        'bln',
         'id_barang',
-        'rak',
-        'tgl_expired',
-        'awal',
-        'masuk',
-        'keluar',
-        'sudah_so',
-        'user',
+        'total_stok',
         'toko_id',
     ];
 }

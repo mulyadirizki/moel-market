@@ -20948,6 +20948,28 @@ pre[class*=language-] > code {
   padding-top: 85px;
 }
 
+.pc-container-fluid {
+  position: relative;
+  top: 10px;
+  min-height: calc(100vh - 180px);
+}
+.pc-container-fluid .pc-content {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+}
+@media (max-width: 1199.98px) {
+  .pc-container-fluid .pc-content.container-fluid {
+    max-width: 100%;
+  }
+}
+.pc-container-fluid .page-header + .row {
+  padding-top: 24px;
+}
+.pc-container-fluid .page-header + .pc-content {
+  padding-top: 85px;
+}
+
 .page-header {
   display: flex;
   align-items: center;

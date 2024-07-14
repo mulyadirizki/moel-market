@@ -429,7 +429,7 @@ class MarketMasterController extends Controller
 
     public function getBarang(Request $request) {
         $query = DB::table('m_barang')
-            ->select('id_barang', 'nama_barang');
+            ->select('id_barang', 'nama_barang', 'harga_pokok', 'harga_jual', 'harga_jual_default');
 
         if ($request->has('q') && !empty($request->q)) {
             $cari = $request->q;

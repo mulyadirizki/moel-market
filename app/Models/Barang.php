@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\StokBarang;
+use App\Models\Satuan;
 
 class Barang extends Model
 {
@@ -31,4 +33,14 @@ class Barang extends Model
         'toko_id',
         // Tambahkan field lain jika diperlukan
     ];
+
+    public function totalStok()
+    {
+        return $this->hasOne(StokBarang::class, 'id_barang', 'id_barang');
+    }
+
+    public function satuan()
+    {
+        return $this->belongsTo(Satuan::class, 'id_satuan', 'id_satuan');
+    }
 }

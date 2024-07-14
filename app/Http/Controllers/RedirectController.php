@@ -27,7 +27,15 @@ class RedirectController extends Controller
                 return redirect()->route('logout')->with('method', 'post');
             }
         } else if(auth()->user()->roles === 2)  {
-            return redirect('/front/koffe');
+            $request->session()->regenerate();
+            if ($user->bisnis_id === 1) {
+                return redirect('/front/market');
+            } else if ($user->bisnis_id === 2) {
+                return redirect('/front/koffe');
+            } else {
+                return redirect()->route('logout')->with('method', 'post');
+            }
+            // return redirect('/front/koffe');
         }
     }
 }

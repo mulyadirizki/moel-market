@@ -77,7 +77,10 @@
                 <div class="modal-body">
                     <form>
                         <div class="row g-3">
-                            <input type="hidden" id="id_barang" value="">
+                            <input type="hidden" id="id_terima" value="">
+                            <input type="hidden" id="harga_pokok" />
+                            <input type="hidden" id="harga_jual" />
+                            <input type="hidden" id="harga_jual_default" />
                             <div class="col-lg-2">
                                 <div class="form-group input-group-sm">
                                     <label class="form-label" for="tgl_terima">Tgl Terima <span style="color: red;">*</span></label>
@@ -164,22 +167,26 @@
             table = $('#data-barang').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('data.barang') }}",
+                ajax: "{{ route('data.barang.masuk') }}",
                 columns: [
                     { data: 'DT_RowIndex', name: 'no', orderable: false, searchable: false },
-                    { data: 'kode_barcode', name: 'kode_barcode' },
-                    { data: 'nama_barang', name: 'nama_barang' },
-                    { data: 'nama_kategori', name: 'nama_kategori' },
-                    { data: 'desc_satuan', name: 'desc_satuan' },
-                    { data: 'desc_merek', name: 'desc_merek' },
+                    { data: 'id_terima', name: 'id_terima' },
+                    { data: 'tgl_terima', name: 'tgl_terima' },
+                    { data: 'tgl_faktur', name: 'tgl_faktur' },
+                    { data: 'no_faktur', name: 'no_faktur' },
+                    { data: 'nama_supplier', name: 'nama_supplier' },
                     { data: 'action', name: 'action', orderable: true, searchable: true }
                 ]
             });
 
         }
 
+        var save_method_form
+
         function addData() {
             $('#modalAddBarangMasuk').modal('show')
+
+            save_method_form = 'add'
 
             var today = new Date();
             var day = String(today.getDate()).padStart(2, '0');
@@ -199,6 +206,9 @@
             var selectedBarang = $('#barang').select2('data')[0];
             var nama_barang = selectedBarang.text;
             var id_barang = selectedBarang.id;
+            var harga_pokok = selectedBarang.harga_pokok;
+            var harga_jual = selectedBarang.harga_jual;
+            var harga_jual_default = selectedBarang.harga_jual_default;
             var tgl_expired = $('#tgl_expired').val();
             var qty = $('#qty').val();
 
@@ -206,6 +216,9 @@
                 dataAllBarang.push({
                     id_barang: id_barang,
                     nama_barang: nama_barang,
+                    harga_pokok: harga_pokok,
+                    harga_jual: harga_jual,
+                    harga_jual_default: harga_jual_default,
                     tgl_expired: tgl_expired,
                     qty: qty
                 });
@@ -213,13 +226,14 @@
                 dataAllBarang[editIndex] = {
                     id_barang: id_barang,
                     nama_barang: nama_barang,
+                    harga_pokok: $('#harga_pokok').val(),
+                    harga_jual: $('#harga_jual').val(),
+                    harga_jual_default: $('#harga_jual_default').val(),
                     tgl_expired: tgl_expired,
                     qty: qty
                 };
                 editIndex = -1;
             }
-
-            console.log(dataAllBarang);
 
             $('#barang').val(null).trigger('change');
 
@@ -247,6 +261,10 @@
             $('#barang').append(newOption).trigger('change');
             $('#tgl_expired').val(item.tgl_expired);
             $('#qty').val(item.qty);
+
+            $('#harga_pokok').val(item.harga_pokok);
+            $('#harga_jual').val(item.harga_jual);
+            $('#harga_jual_default').val(item.harga_jual_default);
             editIndex = index;
         }
 
@@ -255,10 +273,48 @@
             updateTable();
         }
 
+        $('body').on('click', '.btn-edit', function() {
+            save_method_form = 'edit'
+            var id = $(this).attr("dataId");
+            $('#id_barang').val(id);
+
+            $.get("{{ route('data.barang.masuk.edit', ['id' => ':id']) }}".replace(':id', id), function (response) {
+                $('#modalAddBarangMasuk').modal('show');
+
+                // Clear previous data
+                dataAllBarang = [];
+
+                $('#id_terima').val(response.data.penerimaan.id_terima);
+                $('#tgl_terima').val(response.data.penerimaan.tgl_terima);
+                $('#tgl_faktur').val(response.data.penerimaan.tgl_faktur);
+                $('#no_faktur').val(response.data.penerimaan.no_faktur);
+
+                var newOption = new Option(response.data.penerimaan.nama_supplier, response.data.penerimaan.id_supplier, true, true);
+                $('#supplier').append(newOption).trigger('change');
+
+                response.data.penerimaan_det.forEach(function(item) {
+                    dataAllBarang.push({
+                        id_barang: item.id_barang,
+                        nama_barang: item.nama_barang,
+                        harga_pokok: item.harga_pokok,
+                        harga_jual: item.harga_jual,
+                        harga_jual_default: item.harga_jual_default,
+                        tgl_expired: item.tgl_expired,
+                        qty: item.qty
+                    });
+                });
+
+                $('#barang').val(null).trigger('change');
+
+                updateTable();
+            });
+        });
+
         function save() {
             var token = $("meta[name='csrf-token']").attr("content");
 
             var dataSave = {
+                id_terima: $('#id_terima').val(),
                 tgl_terima: $('#tgl_terima').val(),
                 tgl_faktur: $('#tgl_faktur').val(),
                 no_faktur: $('#no_faktur').val(),
@@ -266,11 +322,18 @@
                 barang: dataAllBarang
             }
 
-            console.log(dataSave)
+            var url;
+            if(save_method_form == 'add') {
+                url = "{{ route('data.barang.masuk.add') }}"
+            } else {
+                url = "{{ route('data.barang.masuk.update') }}"
+            }
+
+            console.log(save_method_form)
 
             $.ajax({
                 type: "POST",
-                url: "{{ route('data.barang.masuk.add') }}",
+                url: url,
                 dataType: "JSON",
                 contentType: "application/json",
                 data: JSON.stringify({
@@ -303,7 +366,6 @@
                     }
                 },
                 error: function(err) {
-                    console.log(err)
                     if(err.status == 422) {
                         $.Toast("Berhasil", err.responseJSON.message, "error", {
                             has_icon:true,
@@ -354,12 +416,12 @@
 
         $('body').on('click', '.btn-delete', function () {
 
-            var id_barang = $(this).attr("dataId");
+            var id_terima = $(this).attr("dataId");
             var token = $("meta[name='csrf-token']").attr("content");
 
             $.ajax({
                 type: "post",
-                url: "{{ route('data.barang.delete', ['id' => ':id']) }}".replace(':id', id_barang),
+                url: "{{ route('data.barang.masuk.delete', ['id' => ':id']) }}".replace(':id', id_terima),
                 data: {
                     "_token": "{{ csrf_token() }}"
                 },
@@ -421,7 +483,10 @@
                             results: $.map(response.data, function(item) {
                                 return {
                                     text: item.nama_barang,
-                                    id: item.id_barang
+                                    id: item.id_barang,
+                                    harga_pokok: item.harga_pokok,
+                                    harga_jual: item.harga_jual,
+                                    harga_jual_default: item.harga_jual_default
                                 }
                             })
                         }
@@ -430,29 +495,6 @@
                 },
                 minimumInputLength: 0 // Ini memungkinkan dropdown muncul tanpa input
             });
-        })
-        $('body').on('click', '.btn-edit', function() {
-            var id = $(this).attr("dataId");
-            $('#id_barang').val(id)
-
-            $.get("{{ route('data.barang.edit', ['id' => ':id']) }}".replace(':id', id), function (data) {
-                $('#modalAddBarangMasuk').modal('show')
-
-                $('#kode_barcode').val(data.item.kode_barcode)
-                $('#nama_barang').val(data.item.nama_barang)
-                var newOption = new Option(data.item.desc_satuan, data.item.id_satuan, true, true);
-                $('#satuan').append(newOption).trigger('change');
-                var newOption2 = new Option(data.item.nama_kategori, data.item.id_kategori, true, true);
-                $('#kategori').append(newOption2).trigger('change');
-                var newOption3 = new Option(data.item.desc_merek, data.item.id_merek, true, true);
-                $('#merek').append(newOption3).trigger('change');
-                $('#stok_min').val(data.item.stok_min)
-                $('#stok_max').val(data.item.stok_max)
-                $('#harga_pokok').val(data.item.harga_pokok)
-                $('#harga_jual').val(data.item.harga_jual)
-                $('#margin').val(data.item.margin)
-                $('#harga_jual_default').val(data.item.harga_jual_default)
-            })
         })
     </script>
 @endpush

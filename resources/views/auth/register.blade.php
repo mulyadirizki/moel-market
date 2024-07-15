@@ -171,6 +171,7 @@
     <script src="{{ url('assets/build/js/custom.min.js') }}"></script>
     <script>
         var registerUrl = "{{ route('doregister') }}";
+        var loginUrl = "{{ route('login') }}";
     </script>
 
     <style>

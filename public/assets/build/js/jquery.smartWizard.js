@@ -105,7 +105,10 @@ function SmartWizard(target, options) {
                             "_token": token
                         }),
                         success: function(response) {
-                            console.log(response);
+                            alert(response.message);
+                            setTimeout(function() {
+                                window.location.href = loginUrl;
+                            }, 3000);
                         },
                         error: function(err) {
                             console.log(err)

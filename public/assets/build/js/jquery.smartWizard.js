@@ -11,7 +11,7 @@
  * http://tech-laboratory.blogspot.com
  */
 
-let url=document.URL;
+let url=window.location.href;
 const myArray=url.split('/');
 url=myArray[0]+"//"+myArray[2];
 
@@ -90,7 +90,7 @@ function SmartWizard(target, options) {
 
                     $.ajax({
                         type: "POST",
-                        url: "{{ route('doregister') }}",
+                        url: url+'/register',
                         dataType: "JSON",
                         contentType: "application/json",
                         data: JSON.stringify({ // Konversi objek JavaScript ke JSON

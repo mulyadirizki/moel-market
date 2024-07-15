@@ -20953,20 +20953,20 @@ pre[class*=language-] > code {
   top: 10px;
   min-height: calc(100vh - 180px);
 }
-.pc-container-fluid .pc-content {
+.pc-container-fluid .pc-content-fluid {
   padding-left: 15px;
   padding-right: 15px;
   padding-top: 5px;
 }
 @media (max-width: 1199.98px) {
-  .pc-container-fluid .pc-content.container-fluid {
+  .pc-container-fluid .pc-content-fluid.container-fluid {
     max-width: 100%;
   }
 }
 .pc-container-fluid .page-header + .row {
   padding-top: 24px;
 }
-.pc-container-fluid .page-header + .pc-content {
+.pc-container-fluid .page-header + .pc-content-fluid {
   padding-top: 85px;
 }
 

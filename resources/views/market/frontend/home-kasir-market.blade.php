@@ -11,7 +11,7 @@
 @endpush
 
 @section('content')
-  <div class="pc-content">
+  <div class="pc-content-fluid">
     <div class="row">
       <!-- [ sample-page ] start -->
       <div class="ecom-content">
@@ -286,7 +286,6 @@
                     input.val(parseInt(input.val()) + 1);
                     countPrice(id_barang, data.harga_jual_default);
                 } else {
-                    console.log(total_stok)
                     if (total_stok > 0) {
                         makeNewRow(data);
                     } else {
@@ -501,7 +500,6 @@
             });
         } else {
             var url = "{{ route('market.print.transaksi', ['id' => ':id']) }}".replace(':id', id_penjualan_market);
-            console.log(url)
 
             var popupWindow = window.open(url, "_blank", "width=110");
             // Tunggu sampai jendela baru dimuat

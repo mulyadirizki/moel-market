@@ -90,7 +90,7 @@ function SmartWizard(target, options) {
 
                     $.ajax({
                         type: "POST",
-                        url: window.location.href+'/register',
+                        url: window.location.href+'/ma-pos/public/register',
                         dataType: "JSON",
                         contentType: "application/json",
                         data: JSON.stringify({ // Konversi objek JavaScript ke JSON

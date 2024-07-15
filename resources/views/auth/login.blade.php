@@ -84,21 +84,21 @@
 							<div class="col-4">
 								<div class="d-grid">
 									<button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-										<img src="../assets/images/authentication/google.svg" alt="img"> <span class="d-none d-sm-inline-block"> Google</span>
+										<img src="{{ url('assets/images/authentication/google.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Google</span>
 									</button>
 								</div>
 							</div>
 							<div class="col-4">
 								<div class="d-grid">
 									<button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-										<img src="../assets/images/authentication/twitter.svg" alt="img"> <span class="d-none d-sm-inline-block"> Twitter</span>
+										<img src="{{ url('assets/images/authentication/twitter.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Twitter</span>
 									</button>
 								</div>
 							</div>
 							<div class="col-4">
 								<div class="d-grid">
 									<button type="button" class="btn mt-2 btn-light-primary bg-light text-muted">
-										<img src="../assets/images/authentication/facebook.svg" alt="img"> <span class="d-none d-sm-inline-block"> Facebook</span>
+										<img src="{{ url('assets/images/authentication/facebook.svg') }}" alt="img"> <span class="d-none d-sm-inline-block"> Facebook</span>
 									</button>
 								</div>
 							</div>

@@ -169,6 +169,9 @@
     <script src="{{ url('assets/build/js/jquery.smartWizard.js') }}"></script>
     <!-- Custom Theme Scripts -->
     <script src="{{ url('assets/build/js/custom.min.js') }}"></script>
+    <script>
+        var registerUrl = "{{ route('doregister') }}";
+    </script>
 
     <style>
         /* Gaya CSS default untuk elemen */

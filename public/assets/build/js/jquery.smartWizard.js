@@ -90,7 +90,7 @@ function SmartWizard(target, options) {
 
                     $.ajax({
                         type: "POST",
-                        url: "{{ route('doregister') }}",
+                        url: registerUrl,
                         dataType: "JSON",
                         contentType: "application/json",
                         data: JSON.stringify({ // Konversi objek JavaScript ke JSON

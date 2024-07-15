@@ -259,7 +259,8 @@
                         const dataBarang = data.data.map(item => {
                             return {
                                 label: item.nama_barang + ' (Stok ' + item.total_stok + ')',
-                                value: item.id_barang
+                                value: item.id_barang,
+                                stok: item.total_stok
                             };
                         });
                         response(dataBarang);
@@ -268,12 +269,12 @@
             },
             select: function(event, ui) {
                 $(".id_barang").val(ui.item.value);
-                getDataBarang(ui.item.value);
+                getDataBarang(ui.item.value, ui.item.stok);
             }
         });
     });
 
-    function getDataBarang(id) {
+    function getDataBarang(id, total_stok) {
         $.get("{{ route('get.data.barangId', ['id' => ':id']) }}".replace(':id', id), function(response) {
             if (response.hasOwnProperty('data')) {
                 const data = response.data;
@@ -285,7 +286,23 @@
                     input.val(parseInt(input.val()) + 1);
                     countPrice(id_barang, data.harga_jual_default);
                 } else {
-                    makeNewRow(data);
+                    console.log(total_stok)
+                    if (total_stok > 0) {
+                        makeNewRow(data);
+                    } else {
+                        $.Toast("Warning", 'Stok Kosong, silahkan input stok terlebih dahulu', "warning", {
+                            has_icon: true,
+                            has_close_btn: true,
+                            stack: true,
+                            fullscreen: false,
+                            timeout: 8000,
+                            sticky: false,
+                            has_progress: true,
+                            rtl: false,
+                            position_class: "toast-top-right",
+                            width: 150,
+                        });
+                    }
                 }
 
                 $(".id_barang").val("");
@@ -469,16 +486,31 @@
 
     function btnPrint() {
         var id_penjualan_market = $('#printBillingBtn').data('id-penjualan-market');
-        var url = "{{ route('market.print.transaksi', ['id' => ':id']) }}".replace(':id', id_penjualan_market);
-        console.log(url)
+        if (id_penjualan_market == undefined) {
+            $.Toast("Warning", 'Transaksi belum disimpan', "warning", {
+                has_icon: true,
+                has_close_btn: true,
+                stack: true,
+                fullscreen: false,
+                timeout: 8000,
+                sticky: false,
+                has_progress: true,
+                rtl: false,
+                position_class: "toast-top-right",
+                width: 150,
+            });
+        } else {
+            var url = "{{ route('market.print.transaksi', ['id' => ':id']) }}".replace(':id', id_penjualan_market);
+            console.log(url)
 
-        var popupWindow = window.open(url, "_blank", "width=110");
-        // Tunggu sampai jendela baru dimuat
-        popupWindow.onload = function() {
-            // Memicu pencetakan setelah halaman eksternal dimuat
-            popupWindow.print();
-        };
-        popupWindow.document.head.insertAdjacentHTML("beforeend", "<style>@page { size: 58mm; }</style>");
+            var popupWindow = window.open(url, "_blank", "width=110");
+            // Tunggu sampai jendela baru dimuat
+            popupWindow.onload = function() {
+                // Memicu pencetakan setelah halaman eksternal dimuat
+                popupWindow.print();
+            };
+            popupWindow.document.head.insertAdjacentHTML("beforeend", "<style>@page { size: 58mm; }</style>");
+        }
     }
 
     function batalTransaksi() {

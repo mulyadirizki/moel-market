@@ -98,6 +98,7 @@ class MarketPenerimaanBarangController extends Controller
                     Stok::updateOrCreate([
                         'th'            => date('Y', strtotime($data['tgl_terima'])),
                         'bln'           => date('m', strtotime($data['tgl_terima'])),
+                        'id_terima'     => $id_terima,
                         'id_barang'     => $item['id_barang'],
                         'rak'           => 'ABC-123',
                         'tgl_expired'   => $item['tgl_expired'],
@@ -228,14 +229,38 @@ class MarketPenerimaanBarangController extends Controller
                         'user'          => auth()->user()->noregistrasi,
                         'toko_id'       => auth()->user()->toko_id
                     ]);
+                foreach ($data['barang'] as $value) {
+                    $total = StokBarang::where('id_barang', $value['id_barang'])
+                        ->where('toko_id', auth()->user()->toko_id)
+                        ->first();
+
+                    $qtyStok = Stok::where('id_terima', $data['id_terima'])
+                        ->where('id_barang', $value['id_barang'])
+                        ->where('toko_id', auth()->user()->toko_id)
+                        ->first();
+
+                    $neqWtyStok = $qtyStok->awal + $qtyStok->masuk - $qtyStok->keluar;
+
+                    $newQty = $total->total_stok - $neqWtyStok + $value['qty'];
+
+                    // dd($newQty);
+
+                    StokBarang::updateOrCreate(
+                        [
+                            'id_barang' => $value['id_barang'],
+                            'toko_id' => auth()->user()->toko_id
+                        ],
+                        [
+                            'total_stok' => $newQty,
+                        ]
+                    );
+                }
 
                 // Kurangi stok terlebih dahulu
                 $terima_det_delete = TerimaDet::where('id_terima', $data['id_terima'])->get();
                 foreach ($terima_det_delete as $terima_det) {
-                    $stok = Stok::where('th', date('Y', strtotime($data['tgl_terima'])))
-                        ->where('bln', date('m', strtotime($data['tgl_terima'])))
+                    $stok = Stok::where('id_terima', $data['id_terima'])
                         ->where('id_barang', $terima_det->id_barang)
-                        ->where('tgl_expired', $terima_det->tgl_expired)
                         ->where('toko_id', auth()->user()->toko_id)
                         ->first();
 
@@ -250,6 +275,12 @@ class MarketPenerimaanBarangController extends Controller
 
                 // Create ulang
                 foreach ($data['barang'] as $item) {
+                    // STOK Update or Create
+                    $stok = Stok::where('id_terima', $data['id_terima'])
+                        ->where('id_barang', $item['id_barang'])
+                        ->where('toko_id', auth()->user()->toko_id)
+                        ->first();
+
                     TerimaDet::create([
                         'id_terima'     => $data['id_terima'],
                         'id_barang'     => $item['id_barang'],
@@ -258,13 +289,6 @@ class MarketPenerimaanBarangController extends Controller
                         'user'          => auth()->user()->noregistrasi,
                         'toko_id'       => auth()->user()->toko_id
                     ]);
-
-                    // STOK Update or Create
-                    $stok = Stok::where('th', date('Y', strtotime($data['tgl_terima'])))
-                        ->where('bln', date('m', strtotime($data['tgl_terima'])))
-                        ->where('id_barang', $item['id_barang'])
-                        ->where('tgl_expired', $item['tgl_expired'])
-                        ->first();
 
                     if ($stok) {
                         $stok->update(['masuk' => $stok->masuk + $item['qty']]);

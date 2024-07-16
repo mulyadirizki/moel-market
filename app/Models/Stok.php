@@ -18,6 +18,7 @@ class Stok extends Model
     protected $fillable = [
         'th',
         'bln',
+        'id_terima',
         'id_barang',
         'rak',
         'tgl_expired',

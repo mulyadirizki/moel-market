@@ -44,7 +44,7 @@
                             <div class="mb-3 row">
                                 <label for="no_nota" class="col-sm-3 col-form-label">Barang</label>
                                 <div class="col-sm-8">
-                                    <input type="text" class="form-control id_barang" name="member[]" onchange="getDataBarang()" value="" id="input" />
+                                    <input type="text" class="form-control kode_barcode" name="member[]" onchange="getDataBarang()" value="" id="input" />
                                     <!-- <input type="text" class="form-control" id="no_nota" placeholder="Kasir"> -->
                                 </div>
                             </div>
@@ -197,14 +197,6 @@
 @push('script')
 <script>
     $(document).ready(function() {
-        document.addEventListener("keypress", function(e) {
-            if (e.target.tagName !== "INPUT") {
-                var input = document.querySelector(".id_barang");
-                input.focus();
-                input.value = e.key;
-                e.preventDefault();
-            }
-        });
 
         function generateSequence() {
             return Math.floor(Math.random() * 1000).toString().padStart(3, '0');
@@ -246,6 +238,35 @@
 
         $("#input").focus();
 
+        document.addEventListener("keypress", function(e) {
+            if (e.target.tagName !== "INPUT") {
+                var input = document.querySelector(".kode_barcode");
+                input.focus();
+                input.value = e.key;
+                e.preventDefault();
+            }
+        });
+
+        // var dataBarang = []
+
+        // function load() {
+        //     $.ajax({
+        //         url: "{{ route('get.data.barang') }}",
+        //         type: 'get',
+        //         dataType: 'JSON',
+        //         success: function(response) {
+        //             $.map(response.data, function(e) {
+        //                 dataBarang.push({
+        //                     label: e.nama_barang,
+        //                     value: e.kode_barang
+        //                 })
+        //             })
+        //         }
+        //     })
+
+        // }
+        // load();
+
         $("#input").autocomplete({
             minLength: 0,
             source: function(request, response) {
@@ -259,7 +280,7 @@
                         const dataBarang = data.data.map(item => {
                             return {
                                 label: item.nama_barang + ' (Stok ' + item.total_stok + ')',
-                                value: item.id_barang,
+                                value: item.kode_barcode,
                                 stok: item.total_stok
                             };
                         });
@@ -268,25 +289,26 @@
                 });
             },
             select: function(event, ui) {
-                $(".id_barang").val(ui.item.value);
-                getDataBarang(ui.item.value, ui.item.stok);
+                $(".kode_barcode").val(ui.item.value);
+                getDataBarang();
             }
         });
     });
 
-    function getDataBarang(id, total_stok) {
+    function getDataBarang() {
+        let id = $(".kode_barcode").val();
         $.get("{{ route('get.data.barangId', ['id' => ':id']) }}".replace(':id', id), function(response) {
             if (response.hasOwnProperty('data')) {
                 const data = response.data;
-                const id_barang = data.id_barang;
-                const existingRow = $(`.id_input_${id_barang}`).closest('tr');
+                const kode_barcode = data.kode_barcode;
+                const existingRow = $(`.id_input_${kode_barcode}`).closest('tr');
 
                 if (existingRow.length) {
                     const input = existingRow.find('input[name="qty[]"]');
                     input.val(parseInt(input.val()) + 1);
-                    countPrice(id_barang, data.harga_jual_default);
+                    countPrice(kode_barcode, data.harga_jual_default);
                 } else {
-                    if (total_stok > 0) {
+                    if (data.total_stok > 0) {
                         makeNewRow(data);
                     } else {
                         $.Toast("Warning", 'Stok Kosong, silahkan input stok terlebih dahulu', "warning", {
@@ -304,7 +326,7 @@
                     }
                 }
 
-                $(".id_barang").val("");
+                $(".kode_barcode").val("");
             } else {
                 console.log('key not exists');
             }
@@ -313,31 +335,31 @@
 
     function makeNewRow(data) {
         const changeFormat = data.harga_jual_default.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        const html = `<tr data-id="${data.id_barang}">
+        const html = `<tr data-id="${data.kode_barcode}">
             <td>${data.nama_barang}</td>
             <td>${data.kode_barcode}</td>
             <td>${data.desc_satuan}</td>
             <td>Rp. ${changeFormat}</td>
-            <td><input type="number" class="id_input_${data.id_barang} small-input" id="qty" onkeyup="countPrice('${data.id_barang}', ${data.harga_jual_default})" onclick="countPrice('${data.id_barang}', ${data.harga_jual_default})"  name="qty[]" value="1" style="border: none; width: 60px;" /></td>
-            <td class="id_total_${data.id_barang}"></td>
-            <td><button class="btn" onClick="hapusData('${data.id_barang}')">x</button></td>
+            <td><input type="number" class="id_input_${data.kode_barcode} small-input" id="qty" onkeyup="countPrice('${data.kode_barcode}', ${data.harga_jual_default})" onclick="countPrice('${data.kode_barcode}', ${data.harga_jual_default})"  name="qty[]" value="1" style="border: none; width: 60px;" /></td>
+            <td class="id_total_${data.kode_barcode}"></td>
+            <td><button class="btn" onClick="hapusData('${data.kode_barcode}')">x</button></td>
         </tr>`;
         $('#tbody').append(html);
-        countPrice(data.id_barang, data.harga_jual_default);
+        countPrice(data.kode_barcode, data.harga_jual_default);
     }
 
-    function countPrice(id_barang, harga) {
-        let vol = parseInt($(`.id_input_${id_barang}`).val());
+    function countPrice(kode_barcode, harga) {
+        let vol = parseInt($(`.id_input_${kode_barcode}`).val());
 
         // Cek apakah vol kosong atau kurang dari 1
         // if (isNaN(vol) || vol < 1) {
         //     vol = 1; // Set ke default 1
-        //     $(`.id_input_${id_barang}`).val(1); // Perbarui nilai input
+        //     $(`.id_input_${kode_barcode}`).val(1); // Perbarui nilai input
         // }
 
         const count = vol * harga;
         const changeFormat = count.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        $(`.id_total_${id_barang}`).text("Rp. " + changeFormat);
+        $(`.id_total_${kode_barcode}`).text("Rp. " + changeFormat);
         grandTotal();
     }
 
@@ -353,8 +375,8 @@
         $("#total_jual").val('Rp. ' + changeFormat);
     }
 
-    function hapusData(id_barang) {
-        $(`.id_input_${id_barang}`).closest('tr').remove();
+    function hapusData(kode_barcode) {
+        $(`.id_input_${kode_barcode}`).closest('tr').remove();
         grandTotal();
     }
 
@@ -439,7 +461,7 @@
                 const row = $(this);
                 const cleanedText = row.find('td:eq(3)').text().replace(/\D/g, '')
                 return {
-                    id_barang: row.data('id'),
+                    kode_barcode: row.data('id'),
                     qty: row.find('input[name="qty[]"]').val(),
                     harga_peritem: cleanedText.replace(/\.?0{2}$/, ''),
                     sub_total: row.find('td:eq(5)').text().replace(/\D/g, '')

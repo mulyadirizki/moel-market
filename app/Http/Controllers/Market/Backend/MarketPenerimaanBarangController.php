@@ -239,11 +239,15 @@ class MarketPenerimaanBarangController extends Controller
                         ->where('toko_id', auth()->user()->toko_id)
                         ->first();
 
-                    $neqWtyStok = $qtyStok->awal + $qtyStok->masuk - $qtyStok->keluar;
+                    $awal = $qtyStok->awal !== null ? $qtyStok->awal : 0;
+                    $masuk = $qtyStok->masuk !== null ? $qtyStok->masuk : 0;
+                    $keluar = $qtyStok->keluar !== null ? $qtyStok->keluar : 0;
+
+                    $neqWtyStok = $awal + $masuk - $keluar;
 
                     $newQty = $total->total_stok - $neqWtyStok + $value['qty'];
 
-                    // dd($newQty);
+                    // dd($keluar);
 
                     StokBarang::updateOrCreate(
                         [

@@ -14,17 +14,21 @@ class MarketFrontController extends Controller
 
     public function getDataBarang(Request $request) {
         $query = Barang::with('totalStok')
-            ->select('id_barang', 'nama_barang')
+            ->select('id_barang', 'kode_barcode', 'nama_barang')
             ->where('toko_id', auth()->user()->toko_id);
 
         if ($request->has('q') && !empty($request->q)) {
             $cari = $request->q;
-            $query->where('nama_barang', 'LIKE', '%' . $cari . '%');
+            $query->where(function($q) use ($cari) {
+                $q->where('nama_barang', 'LIKE', '%' . $cari . '%')
+                  ->orWhere('kode_barcode', 'LIKE', '%' . $cari . '%');
+            });
         }
 
         $barang = $query->limit(10)->get()->map(function ($item) {
             return [
                 'id_barang' => $item->id_barang,
+                'kode_barcode' => $item->kode_barcode,
                 'nama_barang' => $item->nama_barang,
                 'total_stok' => $item->totalStok->total_stok ?? 0,
             ];
@@ -37,9 +41,9 @@ class MarketFrontController extends Controller
     }
 
     public function getDataBarangById($id) {
-        $data = Barang::with('satuan')
+        $data = Barang::with('satuan')->with('totalStok')
             ->select('id_barang', 'nama_barang', 'kode_barcode', 'harga_jual_default', 'id_satuan')
-            ->where('id_barang', $id)
+            ->where('kode_barcode', $id)
             ->where('toko_id', auth()->user()->toko_id)
             ->first();
 
@@ -51,6 +55,7 @@ class MarketFrontController extends Controller
                     'kode_barcode'       => $data->kode_barcode,
                     'harga_jual_default' => $data->harga_jual_default,
                     'desc_satuan'        => optional($data->satuan)->desc_satuan,
+                    'total_stok'            => $data->totalStok->total_stok ?? 0,
                 ]
             ], 200);
         } else {

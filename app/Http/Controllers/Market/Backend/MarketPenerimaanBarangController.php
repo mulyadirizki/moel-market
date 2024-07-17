@@ -281,17 +281,19 @@ class MarketPenerimaanBarangController extends Controller
                         ->where('toko_id', auth()->user()->toko_id)
                         ->first();
 
+                    $stokKlr = !$stok ? 0 : $stok->keluar;
+
                     TerimaDet::create([
                         'id_terima'     => $data['id_terima'],
                         'id_barang'     => $item['id_barang'],
-                        'qty'           => $item['qty'],
+                        'qty'           => $item['qty'] + $stokKlr,
                         'tgl_expired'   => $item['tgl_expired'],
                         'user'          => auth()->user()->noregistrasi,
                         'toko_id'       => auth()->user()->toko_id
                     ]);
 
                     if ($stok) {
-                        $stok->update(['masuk' => $stok->masuk + $item['qty']]);
+                        $stok->update(['masuk' => $stok->masuk + $item['qty'] + $stokKlr]);
                     } else {
                         Stok::create([
                             'th'            => date('Y', strtotime($data['tgl_terima'])),
@@ -299,7 +301,7 @@ class MarketPenerimaanBarangController extends Controller
                             'id_barang'     => $item['id_barang'],
                             'rak'           => 'ABC-123',
                             'tgl_expired'   => $item['tgl_expired'],
-                            'masuk'         => $item['qty'],
+                            'masuk'         => $item['qty'] + $stokKlr,
                             'user'          => auth()->user()->noregistrasi,
                             'toko_id'       => auth()->user()->toko_id
                         ]);
@@ -309,7 +311,7 @@ class MarketPenerimaanBarangController extends Controller
                     StokDet::create([
                         'id_tx'                 => 1,//dari daftar m_tx
                         'id_barang'             => $item['id_barang'],
-                        'qty'                   => $item['qty'],
+                        'qty'                   => $item['qty'] + $stokKlr,
                         'harga_pokok'           => $item['harga_pokok'],
                         'harga_jual'            => $item['harga_jual'],
                         'harga_jual_default'    => $item['harga_jual_default'],

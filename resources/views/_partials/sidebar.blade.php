@@ -46,6 +46,9 @@
                             <li class="pc-item">
                                 <a class="pc-link" href="{{ route('data.barang.masuk') }}">Barang Masuk</a>
                             </li>
+                            <li class="pc-item">
+                                <a class="pc-link" href="{{ route('data.stok.barang') }}">Stok Barang</a>
+                            </li>
                         </ul>
                     </li>
                 <?php } else if ($globalUser->bisnis_id == 2) { ?>

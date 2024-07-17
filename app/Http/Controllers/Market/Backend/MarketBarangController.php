@@ -209,4 +209,31 @@ class MarketBarangController extends Controller
             'message' => 'Barang berhasil dinonaktifkan'
         ], 200);
     }
+
+    public function stokBarang() {
+        if (request()->ajax()) {
+            $stok = DB::table('t_total_stok_barang as tsb')
+                ->join('m_barang as mb', 'tsb.id_barang', '=', 'mb.id_barang')
+                ->join('m_satuan as st', 'mb.id_satuan', '=', 'st.id_satuan')
+                ->join('m_kategori as kt', 'mb.id_kategori', '=', 'kt.id_kategori')
+                ->select(
+                    'tsb.id_stok_barang',
+                    'tsb.id_barang',
+                    'mb.kode_barcode',
+                    'mb.nama_barang',
+                    'st.desc_satuan',
+                    'kt.nama_kategori',
+                    'tsb.total_stok',
+                    DB::raw('(tsb.total_stok * mb.harga_jual_default) AS jumlah_uang')
+                )
+                ->where('tsb.toko_id', auth()->user()->toko_id)
+                ->orderBy('mb.nama_barang', 'ASC')
+                ->get();
+
+            return DataTables::of($stok)
+                ->addIndexColumn()
+                ->make();
+        }
+        return view('market.backend.barang.list-stok-barang');
+    }
 }

@@ -113,6 +113,8 @@ Route::group([ 'prefix' => 'backend', 'middleware' => ['auth', 'checkrole:1', 'n
         Route::get('/data-barang-masuk/edit/{id}', [MarketPenerimaanBarangController::class, 'barangMasukEdit'])->name('data.barang.masuk.edit');
         Route::post('/data-barang-masuk/update', [MarketPenerimaanBarangController::class, 'barangMasukUpdate'])->name('data.barang.masuk.update');
         Route::post('/data-barang-masuk/delete/{id}', [MarketPenerimaanBarangController::class, 'barangMasukDelete'])->name('data.barang.masuk.delete');
+
+        Route::get('/data-stok-barang', [MarketBarangController::class, 'stokBarang'])->name('data.stok.barang');
     });
 });
 

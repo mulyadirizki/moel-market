@@ -65,7 +65,7 @@
                         <thead>
                             <tr>
                                 <th>Nama Barang</th>
-                                <th style="width: 150px">Kode</th>
+                                <th style="width: 150px">ID</th>
                                 <th style="width: 200px">Satuan</th>
                                 <th>Harga</th>
                                 <th width="60px">Qty</th>
@@ -186,9 +186,10 @@
         </div>
         </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" onclick="btnClose()">Close</button>
-        <button type="button" class="btn btn-warning btn-sm" id="printBillingBtn" data-dismiss="modal" onclick="btnPrint()">Cetak</button>
-        <button type="button" class="btn btn-primary btn-submit btn-bayar btn-sm" disabled onclick="saveTransaksi()">Simpan (F9)</button>
+        <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal" onclick="btnClose()">Close (Esc)</button>
+        <button type="button" class="btn btn-warning btn-sm" id="printBillingBtn" data-dismiss="modal" onclick="btnPrint()">Cetak (F11)</button>
+        <button type="button" class="btn btn-info btn-sm btn-uangpas" onclick="btnUangPas()">Uang Pas (F9)</button>
+        <button type="button" class="btn btn-primary btn-submit btn-bayar btn-sm" disabled onclick="saveTransaksi()">Simpan (Enter)</button>
       </div>
     </div>
   </div>
@@ -337,7 +338,7 @@
         const changeFormat = data.harga_jual_default.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         const html = `<tr data-id="${data.kode_barcode}">
             <td>${data.nama_barang}</td>
-            <td>${data.kode_barcode}</td>
+            <td>${data.id_barang}</td>
             <td>${data.desc_satuan}</td>
             <td>Rp. ${changeFormat}</td>
             <td><input type="number" class="id_input_${data.kode_barcode} small-input" id="qty" onkeyup="countPrice('${data.kode_barcode}', ${data.harga_jual_default})" onclick="countPrice('${data.kode_barcode}', ${data.harga_jual_default})"  name="qty[]" value="1" style="border: none; width: 60px;" /></td>
@@ -411,7 +412,7 @@
                 $('#bayar').on('keyup', function() {
                 const bayar = parseInt($('#bayar').val());
                 const totalConvParse = parseInt(totalConvert)
-                
+
                 if (isNaN(bayar) || bayar < totalConvParse) {
                     $('.kembali').text('Belum cukup');
                     $('.btn-bayar').attr('disabled', 'disabled');
@@ -440,9 +441,14 @@
     document.addEventListener('keydown', function(event) {
         if(event.keyCode == 119) {
             simpan()
-        }
-        else if(event.keyCode == 120) {
-            saveTransaksi()
+        } else if (event.key === "Escape" || event.keyCode === 27) {
+            btnClose()
+        } else if (event.keyCode == 120) {
+            btnUangPas()
+        } else if(event.keyCode == 13) {
+            saveTransaksi() //enter
+        } else if(event.keyCode == 122) {
+            btnPrint()
         }
     });
 
@@ -461,7 +467,7 @@
                 const row = $(this);
                 const cleanedText = row.find('td:eq(3)').text().replace(/\D/g, '')
                 return {
-                    kode_barcode: row.data('id'),
+                    id_barang: row.find('td:eq(1)').text(),
                     qty: row.find('input[name="qty[]"]').val(),
                     harga_peritem: cleanedText.replace(/\.?0{2}$/, ''),
                     sub_total: row.find('td:eq(5)').text().replace(/\D/g, '')
@@ -530,6 +536,16 @@
                 popupWindow.print();
             };
             popupWindow.document.head.insertAdjacentHTML("beforeend", "<style>@page { size: 58mm; }</style>");
+        }
+    }
+
+    function btnUangPas() {
+        var total = $('#total_belanja').val();
+        $('#bayar').val(total.replace(/\D/g, ''))
+
+        if (total) {
+            $('.kembali').text('Uang pas');
+            $('.btn-bayar').removeAttr('disabled');
         }
     }
 

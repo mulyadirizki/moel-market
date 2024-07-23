@@ -299,6 +299,7 @@ class FrontController extends Controller
         $dataPembelian = DB::table('t_pengeluaran')
             ->select(DB::raw('DATE(tgl_pengeluaran) AS tgl_pengeluaran'), 'nama_barang', 'jenis_pembayaran', 'harga_barang')
             ->whereDate('tgl_pengeluaran', $tgl_transaksi)
+            ->where('statusenabled', 1)
             ->where('jenis_pembayaran', 1)
             ->get();
 

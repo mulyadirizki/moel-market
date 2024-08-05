@@ -117,7 +117,15 @@
                                         </div>
                                         <div class="d-inline-flex align-items-center justify-content-between w-100" >
                                             <p>Uang Bayar</p>
-                                            <p>Rp. {{ number_format($dataPenj->uang_bayar) }}</p>
+                                            <p>
+                                                <?php
+                                                    if (is_numeric($dataPenj->uang_bayar)) {
+                                                        echo 'Rp. ' . number_format($dataPenj->uang_bayar);
+                                                    } else {
+                                                        echo 'Rp. ' . $dataPenj->uang_bayar .'0';
+                                                    }
+                                                ?>
+                                            </p>
                                         </div>
                                         <div class="d-inline-flex align-items-center justify-content-between w-100" >
                                             <p>Uang Kembali</p>
@@ -165,8 +173,9 @@
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label class="form-label" for="statusbayar">Payment Method</label>
-                                <select class="form-select" id="statusbayar">
+                                <select class="form-select" id="statusbayar" onchange="choosePay()">
                                     <option selected value="1">Lunas</option>
+                                    <option value="2">PayLater</option>
                                     <option value="3">QRIS</option>
                                 </select>
                             </div>
@@ -190,6 +199,23 @@
                     <button class="btn btn-sm btn-info">Kembali</button>
                   </a>
                   <button type="button" class="btn btn-sm btn-primary btn-bayar" disabled onclick="paymentAdd()">Bayar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalPassword" tabindex="-1" role="dialog" aria-labelledby="modalPasswordTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Password PayLater</h5>
+                </div>
+                <div class="modal-body">
+                    <input type="password" class="form-control" placeholder="Password" id="password">
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-success" onclick="btnClose()">Close</button>
+                  <button type="button" class="btn btn-primary btn-submit" onclick="btnSubmitPassword()">Oke</button>
                 </div>
             </div>
         </div>
@@ -283,6 +309,39 @@
             }
         });
 
+        function choosePay() {
+            var selectElement = document.getElementById("statusbayar");
+            var selectedValue = selectElement.value;
+
+            // if (selectedValue == "2") {
+            //     $('.btn-bayar').removeAttr('disabled');
+            //     $('#cash').hide();
+            //     console.log("Data PayLater dipilih");
+            // } else {
+            //     $('.btn-bayar').attr('disabled', 'disabled');
+            //     $('#cash').show();
+            // }
+            if (selectedValue == "2") {
+                $('#modalPassword').modal('show');
+                $('#cash').attr('disabled', 'disabled');
+            } else {
+                $('#modalPassword').modal('hide');
+                $('.btn-bayar').attr('disabled', 'disabled');
+                $('#cash').removeAttr('disabled');
+            }
+        }
+
+        function btnSubmitPassword() {
+            var passwordMatch = 'y4kuz4'
+            var password = $('#password').val()
+            if (passwordMatch == password) {
+                $('.btn-bayar').removeAttr('disabled');
+                $('#modalPassword').modal('hide');
+            } else {
+                alert('Wrong Password')
+            }
+        }
+
         function paymentAdd() {
 
             var tgl_pembayaran = $('#tgl_pembayaran').val();
@@ -335,14 +394,16 @@
                         width: 250,
                     });
 
-                    $('#modaluangkembali').modal('show');
-                    if (kembali == 0) {
-                        $('#iduangkembali').text('Kembalian Pas')
-                    } else {
-                        $('#iduangkembali').text('Rp. ' + kembali.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+                    if (statusbayar != "2") {
+                        $('#modaluangkembali').modal('show');
+                        if (kembali == 0) {
+                            $('#iduangkembali').text('Kembalian Pas')
+                        } else {
+                            $('#iduangkembali').text('Rp. ' + kembali.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
+                        }
+                        sessionStorage.removeItem('dataOrderTemp');
+                        countCart();
                     }
-                    sessionStorage.removeItem('dataOrderTemp');
-                    countCart();
                 },
                 error: function(err) {
                     console.log(err)
@@ -361,7 +422,7 @@
                     //     });
                     // })
                 }
-                })
+            })
 
         }
 

@@ -83,7 +83,7 @@ class MarketBarangController extends Controller
 
         $dataArray = json_decode($request->getContent(), true);
 
-        if ($request->id_barang == '') {
+        if (empty($dataArray['dataSave']['id_barang'])) {
             $cek_count = Barang::where('nama_barang', $dataArray['dataSave']['nama_barang'])
                 ->select('*')
                 ->count();

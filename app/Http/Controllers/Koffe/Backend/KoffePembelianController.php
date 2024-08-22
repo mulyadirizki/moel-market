@@ -24,7 +24,8 @@ class KoffePembelianController extends Controller
             $ascdsc = $asc == '-' ? 'ASC' : 'DESC';
 
             $data = Pengeluaran::select('t_pengeluaran.*')
-                ->where('toko_id', auth()->user()->toko_id);
+                ->where('toko_id', auth()->user()->toko_id)
+                ->where('statusenabled', 1);
 
             if(isset($request->tgl_pengeluaran) && $request->tgl_pengeluaran !== "" && $request->tgl_pengeluaran != "undefined" ) {
                 $data = $data->whereRaw("DATE_FORMAT(t_pengeluaran.tgl_pengeluaran, '%Y-%m-%d %H:%i') >= ?", [$request->tgl_pengeluaran]);

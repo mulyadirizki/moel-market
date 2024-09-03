@@ -20,42 +20,53 @@
                     <i class="ti ti-dashboard"></i>
                 </li>
                 <?php if ($globalUser->bisnis_id == 1) { ?>
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">Master Data</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item">
-                                <a class="pc-link" href="{{ route('karyawan.data') }}">Data Karyawan</a>
-                            </li>
-                            <li class="pc-item">
-                                <a class="pc-link" href="{{ route('data.satuan') }}">Data Satuan</a>
-                            </li>
-                            <li class="pc-item">
-                                <a class="pc-link" href="{{ route('data.kategori') }}">Data Kategori</a>
-                            </li>
-                            <li class="pc-item">
-                                <a class="pc-link" href="{{ route('data.supplier') }}">Data Supplier</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="pc-item pc-hasmenu">
-                        <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-server"></i></span><span class="pc-mtext">Data Barang</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
-                        <ul class="pc-submenu">
-                            <li class="pc-item">
-                                <a class="pc-link" href="{{ route('data.barang') }}">List Barang</a>
-                            </li>
-                            <li class="pc-item">
-                                <a class="pc-link" href="{{ route('data.barang.masuk') }}">Barang Masuk</a>
-                            </li>
-                            <li class="pc-item">
-                                <a class="pc-link" href="{{ route('data.stok.barang') }}">Stok Barang</a>
-                            </li>
-                        </ul>
-                    </li>
+                    <?php if($globalUser->roles == 1) { ?>
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">Master Data</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                            <ul class="pc-submenu">
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('karyawan.data') }}">Data Karyawan</a>
+                                </li>
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('data.satuan') }}">Data Satuan</a>
+                                </li>
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('data.kategori') }}">Data Kategori</a>
+                                </li>
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('data.supplier') }}">Data Supplier</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-server"></i></span><span class="pc-mtext">Data Barang</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                            <ul class="pc-submenu">
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('data.barang') }}">List Barang</a>
+                                </li>
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('data.barang.masuk') }}">Barang Masuk</a>
+                                </li>
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('data.stok.barang') }}">Stok Barang</a>
+                                </li>
+                            </ul>
+                        </li>
+                    <?php } else if($globalUser->roles == 3) { ?>
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">Laporan</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                            <ul class="pc-submenu">
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('manajemen.penjualan') }}">Data Penjualan</a>
+                                </li>
+                            </ul>
+                        </li>
+                    <?php } ?>
                 <?php } else if ($globalUser->bisnis_id == 2) { ?>
                     <li class="pc-item">
                         <a href="{{ route('karyawan.data') }}" class="pc-link">
                             <span class="pc-micon"><i class="ti ti-user"></i></span>
-                            <span class="pc-mtext">Data Karyawan</span>
+                            <span class="pc-mtext">Data Karyawan </span>
                         </a>
                     </li>
                     <li class="pc-item pc-hasmenu">

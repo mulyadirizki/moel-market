@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth', 'checkrole:1,2']], function() {
 });
 
 // untuk admin
-Route::group([ 'prefix' => 'backend', 'middleware' => ['auth', 'checkrole:1', 'no-cache']], function() {
+Route::group([ 'prefix' => 'backend', 'middleware' => ['auth', 'checkrole:1,3', 'no-cache']], function() {
 
     Route::group([ 'prefix' => 'global'], function() {
         Route::get('/data-karyawan', [KaryawanController::class, 'karyawan'])->name('karyawan.data');
@@ -116,6 +116,12 @@ Route::group([ 'prefix' => 'backend', 'middleware' => ['auth', 'checkrole:1', 'n
 
         Route::get('/data-stok-barang', [MarketBarangController::class, 'stokBarang'])->name('data.stok.barang');
     });
+
+    Route::group([ 'prefix' => 'market/manajemen'], function() {
+        Route::get('/', [HomeController::class, 'indexManajemenMarket'])->name('market.manajemen');
+
+        Route::get('/data-penjualan', [HomeController::class, 'dataPenjualan'])->name('manajemen.penjualan');
+    });
 });
 
 Route::group([ 'prefix' => 'front', 'middleware' => ['auth', 'checkrole:2']], function() {
@@ -149,6 +155,7 @@ Route::group([ 'prefix' => 'front', 'middleware' => ['auth', 'checkrole:2']], fu
         // pengeluaran
         Route::get('/pengeluaran', [FrontController::class, 'pengeluaranIndex'])->name('pengeluaran');
         Route::post('/pengeluaran/add', [FrontController::class, 'pengeluaranAdd'])->name('pengeluaran.add');
+        Route::get('/pengeluaran/get-id/{id}', [FrontController::class, 'pengeluaranGetById'])->name('pengeluaran.getById');
         Route::post('/pengeluaran/delete/{id}', [FrontController::class, 'pengeluaranDelete'])->name('pengeluaran.delete');
     });
 
@@ -166,5 +173,4 @@ Route::group([ 'prefix' => 'front', 'middleware' => ['auth', 'checkrole:2']], fu
         Route::get('/transaksi-print/{id}', [MarketPenjualanController::class, 'transaksiPrint'])->name('market.print.transaksi');
     });
 });
-
 

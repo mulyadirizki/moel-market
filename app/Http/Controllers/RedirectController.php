@@ -17,25 +17,46 @@ class RedirectController extends Controller
             ->select('users.*', 'm_toko.*')
             ->first();
 
-        if (auth()->user()->roles === 1) {
+        if ($user->bisnis_id === 1) {
             $request->session()->regenerate();
-            if ($user->bisnis_id === 1) {
+            if (auth()->user()->roles === 1) {
                 return redirect('/backend/market');
-            } else if ($user->bisnis_id === 2) {
-                return redirect('/backend/koffe');
+            } else if (auth()->user()->roles === 2) {
+                return redirect('/front/market');
+            } else if (auth()->user()->roles === 3) {
+                return redirect('/logout');
             } else {
                 return redirect()->route('logout')->with('method', 'post');
             }
-        } else if(auth()->user()->roles === 2)  {
+        } else if($user->bisnis_id === 2)  {
             $request->session()->regenerate();
-            if ($user->bisnis_id === 1) {
-                return redirect('/front/market');
+            if (auth()->user()->roles === 1) {
+                return redirect('/backend/koffe');
             } else if ($user->bisnis_id === 2) {
                 return redirect('/front/koffe');
             } else {
                 return redirect()->route('logout')->with('method', 'post');
             }
-            // return redirect('/front/koffe');
         }
+
+        // if (auth()->user()->roles === 1) {
+        //     $request->session()->regenerate();
+        //     if ($user->bisnis_id === 1) {
+        //         return redirect('/backend/market');
+        //     } else if ($user->bisnis_id === 2) {
+        //         return redirect('/backend/koffe');
+        //     } else {
+        //         return redirect()->route('logout')->with('method', 'post');
+        //     }
+        // } else if(auth()->user()->roles === 2)  {
+        //     $request->session()->regenerate();
+        //     if ($user->bisnis_id === 1) {
+        //         return redirect('/front/market');
+        //     } else if ($user->bisnis_id === 2) {
+        //         return redirect('/front/koffe');
+        //     } else {
+        //         return redirect()->route('logout')->with('method', 'post');
+        //     }
+        // }
     }
 }

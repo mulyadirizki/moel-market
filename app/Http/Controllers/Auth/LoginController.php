@@ -35,6 +35,7 @@ class LoginController extends Controller
             // market
             $redirectUrlAdminMarket = Redirect::route('admin.market')->getTargetUrl();
             $redirectUrlKasirMarket = Redirect::route('market.kasir')->getTargetUrl();
+            $redirectUrlManajemenMarket = Redirect::route('market.manajemen')->getTargetUrl();
 
             $redirectUrlAdmin = Redirect::route('admin')->getTargetUrl();
             $redirectUrlKasir = Redirect::route('kasir')->getTargetUrl();
@@ -46,29 +47,35 @@ class LoginController extends Controller
                 ->select('users.*', 'm_toko.*')
                 ->first();
 
-            if ($loggedInUser->roles === 1) {
+            if ($user->bisnis_id === 1) {
 
-                if ($user->bisnis_id === 1) {
+                if ($loggedInUser->roles === 1) {
                     return response()->json([
                         'success' => true,
                         'redirect' => $redirectUrlAdminMarket,
                         'message' => 'Login berhasil'
                     ]);
-                } else if ($user->bisnis_id === 2) {
-                    return response()->json([
-                        'success' => true,
-                        'redirect' => $redirectUrlAdmin,
-                        'message' => 'Login berhasil'
-                    ]);
-                }
-            } else if ($loggedInUser->roles === 2) {
-                if ($user->bisnis_id === 1) {
+                } else if ($loggedInUser->roles === 2) {
                     return response()->json([
                         'success' => true,
                         'redirect' => $redirectUrlKasirMarket,
                         'message' => 'Login berhasil'
                     ]);
-                } else if ($user->bisnis_id === 2) {
+                } else if ($loggedInUser->roles === 3) {
+                    return response()->json([
+                        'success' => true,
+                        'redirect' => $redirectUrlManajemenMarket,
+                        'message' => 'Login berhasil'
+                    ]);
+                }
+            } else if ($user->bisnis_id === 2) {
+                if ($loggedInUser->roles === 1) {
+                    return response()->json([
+                        'success' => true,
+                        'redirect' => $redirectUrlAdmin,
+                        'message' => 'Login berhasil'
+                    ]);
+                } else if ($loggedInUser->roles === 2) {
                     return response()->json([
                         'success' => true,
                         'redirect' => $redirectUrlKasir,
@@ -76,6 +83,37 @@ class LoginController extends Controller
                     ]);
                 }
             }
+
+            // if ($loggedInUser->roles === 1) {
+
+            //     if ($user->bisnis_id === 1) {
+            //         return response()->json([
+            //             'success' => true,
+            //             'redirect' => $redirectUrlAdminMarket,
+            //             'message' => 'Login berhasil'
+            //         ]);
+            //     } else if ($user->bisnis_id === 2) {
+            //         return response()->json([
+            //             'success' => true,
+            //             'redirect' => $redirectUrlAdmin,
+            //             'message' => 'Login berhasil'
+            //         ]);
+            //     }
+            // } else if ($loggedInUser->roles === 2) {
+            //     if ($user->bisnis_id === 1) {
+            //         return response()->json([
+            //             'success' => true,
+            //             'redirect' => $redirectUrlKasirMarket,
+            //             'message' => 'Login berhasil'
+            //         ]);
+            //     } else if ($user->bisnis_id === 2) {
+            //         return response()->json([
+            //             'success' => true,
+            //             'redirect' => $redirectUrlKasir,
+            //             'message' => 'Login berhasil'
+            //         ]);
+            //     }
+            // }
         }
 
         return response()->json(['message' => 'Username atau Password salah!', $user], 401);

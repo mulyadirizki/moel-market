@@ -66,6 +66,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
+                        <input type="hidden" id="id_pengeluaran">
                         <div class="col-lg-4">
                             <div class="form-group">
                             <label class="form-label" for="tglpengeluaran">Tgl Pengeluaran</label>
@@ -148,6 +149,7 @@
         }
 
         function pembayaranSave() {
+            var id_pengeluaran = $('#id_pengeluaran').val();
             var tgl_pengeluaran = $('#tglpengeluaran').val();
             var nama_barang = $('#namabarang').val();
             var harga_barang = $('#hargabarang').val();
@@ -160,6 +162,7 @@
                 url: "{{ route('pengeluaran.add') }}",
                 dataType: "JSON",
                 data: {
+                    id_pengeluaran: id_pengeluaran,
                     tgl_pengeluaran: tgl_pengeluaran,
                     nama_barang: nama_barang,
                     harga_barang: harga_barang,
@@ -184,8 +187,9 @@
                         setTimeout(function() {
                             $('#modalAddPengeluaran').modal('hide');
                             resetInputData();
-                            getDataPengeluaran();
+                            table.ajax.reload();
                         }, 1000);
+                        window.location.reload();
                     }
                 },
                 error: function(err) {
@@ -222,6 +226,23 @@
                 }
             })
         }
+
+        $('body').on('click', '.btn-edit', function () {
+            var id_pengeluaran = $(this).attr("dataId");
+            $.get("{{ route('pengeluaran.getById', ['id' => ':id']) }}".replace(':id', id_pengeluaran), function(response) {
+                console.log(response)
+                if (response.success == true) {
+                    $('#modalAddPengeluaran').modal('show');
+
+                    $('#id_pengeluaran').val(response.data.id_pengeluaran);
+                    $('#tglpengeluaran').val(response.data.tgl_pengeluaran);
+                    $('#namabarang').val(response.data.nama_barang);
+                    $('#hargabarang').val(response.data.harga_barang);
+                    $('#jenispembayaran').val(response.data.jenis_pembayaran);
+                    $('#keterangan').val(response.data.keterangan);
+                }
+            })
+        })
 
         $('body').on('click', '.btn-delete', function () {
 

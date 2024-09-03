@@ -589,7 +589,10 @@ class FrontController extends Controller
             ], 400);
         }
 
-        $pengeluaran = Pengeluaran::create(
+        $pengeluaran = Pengeluaran::updateOrCreate(
+            [
+                'id_pengeluaran'   => $request->id_pengeluaran,
+            ],
             [
                 'toko_id'        => auth()->user()->toko_id,
                 'norec_user'        => auth()->user()->noregistrasi,
@@ -612,6 +615,15 @@ class FrontController extends Controller
                 'message'   => 'Pengeluaran failed to add'
             ], 400);
         }
+    }
+
+    public function pengeluaranGetById($id_pengeluaran) {
+        $pengeluaran = Pengeluaran::where('id_pengeluaran', $id_pengeluaran)->first();
+
+        return response()->json([
+            'success' => true,
+            'data'    => $pengeluaran
+        ], 200);
     }
 
     public function pengeluaranDelete($id_pengeluaran) {

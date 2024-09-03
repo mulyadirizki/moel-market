@@ -13,4 +13,14 @@ class HomeController extends Controller
     {
         return view('market.backend.home');
     }
+
+    public function indexManajemenMarket()
+    {
+        return view('market.manajemen.home');
+    }
+
+    public function dataPenjualan()
+    {
+        return view('market.manajemen.penjualan');
+    }
 }

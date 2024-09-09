@@ -16,8 +16,10 @@ class PenjualanMarketDet extends Model
     protected $fillable = [
         'id_penjualan_market_det',
         'id_penjualan_market',
+        'statusenabled',
         'tgl_penjualan',
         'id_barang',
+        'tgl_expired',
         'qty',
         'harga_jual_default',
         'sub_total',

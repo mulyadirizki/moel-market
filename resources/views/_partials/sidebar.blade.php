@@ -54,10 +54,26 @@
                         </li>
                     <?php } else if($globalUser->roles == 3) { ?>
                         <li class="pc-item pc-hasmenu">
-                            <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-menu"></i></span><span class="pc-mtext">Laporan</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                            <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-shopping-cart"></i></span><span class="pc-mtext">Laporan Penjualan</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
                             <ul class="pc-submenu">
                                 <li class="pc-item">
-                                    <a class="pc-link" href="{{ route('manajemen.penjualan') }}">Data Penjualan</a>
+                                    <a class="pc-link" href="{{ route('manajemen.penjualan') }}">Data Penjualan Selesai</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-database"></i></span><span class="pc-mtext">Data Stok</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                            <ul class="pc-submenu">
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('manajemen.stok.barang') }}">Data Stok Barang</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="pc-item pc-hasmenu">
+                            <a href="#" class="pc-link"><span class="pc-micon"><i class="ti ti-timer"></i></span><span class="pc-mtext">Laporan Pendapatan</span><span class="pc-arrow"><i data-feather="chevron-right"></i></span></a>
+                            <ul class="pc-submenu">
+                                <li class="pc-item">
+                                    <a class="pc-link" href="{{ route('manajemen.laba.pendapatan') }}">Data Laba Pendapatan</a>
                                 </li>
                             </ul>
                         </li>

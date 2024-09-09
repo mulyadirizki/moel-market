@@ -121,6 +121,8 @@ Route::group([ 'prefix' => 'backend', 'middleware' => ['auth', 'checkrole:1,3', 
         Route::get('/', [HomeController::class, 'indexManajemenMarket'])->name('market.manajemen');
 
         Route::get('/data-penjualan', [HomeController::class, 'dataPenjualan'])->name('manajemen.penjualan');
+        Route::get('/data-stok-barang', [HomeController::class, 'dataStokBarang'])->name('manajemen.stok.barang');
+        Route::get('/data-laba-pendapatan', [HomeController::class, 'dataLabaPendapatan'])->name('manajemen.laba.pendapatan');
     });
 });
 

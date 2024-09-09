@@ -130,7 +130,7 @@
         aria-expanded="false"
       >
         <img src="{{ url('assets/images/user/avatar-2.jpg') }}" alt="user-image" class="user-avtar">
-        <span>Stebin Ben</span>
+        <span>{{ auth()->user()->username }}</span>
       </a>
       <div class="dropdown-menu dropdown-user-profile dropdown-menu-end pc-h-dropdown">
         <div class="dropdown-header">

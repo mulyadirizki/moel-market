@@ -120,20 +120,52 @@ class MarketPenjualanController extends Controller
         });
     }
 
-    public function historyTransaksi() {
+    public function historyTransaksi(Request $request) {
         if (request()->ajax()) {
-            $historyPenjualan = PenjualanMarket::select('*')
-                ->where('toko_id', auth()->user()->toko_id)
-                ->where('statusenabled', 1)
-                ->orderBy('t_penjualan_market.tgl_nota', 'ASC')
-                ->get();
+            $page       = $request->get('page');
+            $limit      = $request->get('limit');
+            $sort       = $request->get('sort');
 
-            return DataTables::of($historyPenjualan)
+            $column = preg_replace("/\W/", "", $sort);
+            $asc    = substr($sort, 0, 1);
+            $ascdsc = $asc == '-' ? 'ASC' : 'DESC';
+
+            $data = DB::table('t_penjualan_market_det AS pmd')
+                ->select(
+                    'pmd.id_penjualan_market',
+                    'pmd.id_penjualan_market_det',
+                    'pmd.tgl_penjualan',
+                    'pmd.id_barang',
+                    'brg.nama_barang',
+                    'st.desc_satuan',
+                    'pmd.qty',
+                    'pmd.harga_jual_default',
+                    'pmd.sub_total',
+                    'usr.nama'
+                )
+                ->join('m_barang AS brg', 'pmd.id_barang', '=', 'brg.id_barang')
+                ->leftJoin('m_satuan AS st', 'brg.id_satuan', '=', 'st.id_satuan')
+                ->leftJoin('users AS usr', 'pmd.user', '=', 'usr.noregistrasi')
+                ->where('pmd.statusenabled', 1)
+                ->where('pmd.toko_id', auth()->user()->toko_id)
+                ->where('pmd.user', auth()->user()->noregistrasi);
+
+            if(isset($request->tgl_penjualan) && $request->tgl_penjualan !== "" && $request->tgl_penjualan != "undefined" ) {
+                $data = $data->whereRaw("DATE_FORMAT(pmd.tgl_penjualan, '%Y-%m-%d %H:%i') >= ?", [$request->tgl_penjualan]);
+            }
+
+            if(isset($request->tgl_penjualanAkhir) && $request->tgl_penjualanAkhir !== "" && $request->tgl_penjualanAkhir != "undefined" ) {
+                $data = $data->whereRaw("DATE_FORMAT(pmd.tgl_penjualan, '%Y-%m-%d %H:%i') <= ?", [$request->tgl_penjualanAkhir]);
+            }
+
+            $item = $data->offset(($page * $limit) - $limit)->limit($limit)->get();
+
+            return DataTables::of($item)
                 ->addIndexColumn()
                 ->addColumn('action', function($row) {
-                    $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  dataId="'.$row->id_penjualan_market.'" data-original-title="Edit" class="edit btn btn-primary btn-sm btn-edit">Edit</a>';
+                    // $btn = '<a href="javascript:void(0)" data-toggle="tooltip"  dataId="'.$row->id_penjualan_market_det.'" data-original-title="Edit" class="edit btn btn-primary btn-sm btn-edit">Edit</a>';
 
-                    $btn = $btn.' <a href="javascript:void(0)" data-toggle="tooltip"  dataId="'. $row->id_penjualan_market .'" data-original-title="Delete" class="btn btn-danger btn-sm btn-delete">Delete</a>';
+                    $btn = ' <a href="javascript:void(0)" data-toggle="tooltip" brgId="'.$row->id_barang.'" qtyId="'.$row->qty.'"  dataId="'. $row->id_penjualan_market_det .'" data-original-title="Delete" class="btn btn-danger btn-sm btn-delete">Delete</a>';
 
                     return $btn;
                 })
@@ -145,9 +177,21 @@ class MarketPenjualanController extends Controller
 
     public function historyTransaksiDelete(Request $request) {
         $data = json_decode($request->getContent(), true);
-        $saveData = PenjualanMarket::updateOrCreate(
+
+        $initialQty = $data['dataObj']['qty'];
+        $idBarang = $data['dataObj']['id_barang'];
+
+        $totalStokBarang = StokBarang::where('id_barang', $idBarang)->first();
+        if ($totalStokBarang) {
+            $totalStokBarang->total_stok += $initialQty; // tambahkan stok total dengan nilai awal qty
+            $totalStokBarang->save();
+        } else {
+            // Tambahan: Handle error jika total stok barang tidak ditemukan
+            throw new \Exception("Total stok barang tidak ditemukan untuk ID barang: $idBarang");
+        }
+        $saveData = PenjualanMarketDet::updateOrCreate(
             [
-                'id_penjualan_market'  => $data['dataObj']['id_penjualan_market'],
+                'id_penjualan_market_det'  => $data['dataObj']['id_penjualan_market_det'],
             ],
             [
                 'keteranganhapus'    => $data['dataObj']['keteranganhapus'],

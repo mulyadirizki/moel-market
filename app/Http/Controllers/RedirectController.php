@@ -26,7 +26,7 @@ class RedirectController extends Controller
             } else if (auth()->user()->roles === 3) {
                 return redirect('/backend/market/manajemen');
             } else {
-                return redirect()->route('logout');
+                return redirect('/logout');
             }
         } else if($user->bisnis_id === 2)  {
             $request->session()->regenerate();

@@ -76,7 +76,7 @@ class HomeController extends Controller
     public function dataStokBarang(Request $request) {
         if ($request->ajax()) {
             $item = DB::table('t_total_stok_barang as tsb')
-                ->leftJoin('m_barang as mb', 'tsb.id_barang', '=', 'mb.id_barang')
+                ->join('m_barang as mb', 'tsb.id_barang', '=', 'mb.id_barang')
                 ->leftJoin('m_satuan as st', 'mb.id_satuan', '=', 'st.id_satuan')
                 ->select(
                     'tsb.id_stok_barang',

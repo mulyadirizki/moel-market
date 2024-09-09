@@ -52,7 +52,7 @@ Route::group(['middleware' => 'guest'], function() {
     Route::post('/register', [RegisterController::class, 'doregister'])->name('doregister');
 });
 
-Route::group(['middleware' => ['auth', 'checkrole:1,2']], function() {
+Route::group(['middleware' => ['auth', 'checkrole:1,2,3']], function() {
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout')->middleware('no-cache');
     Route::get('/redirect', [RedirectController::class, 'cek']);
 });

@@ -15,9 +15,29 @@ class LoginController extends Controller
 {
     public function login()
     {
-        if (Auth::check() && $user = Auth::user()) {
-            if ($user->roles == 2) {
-                return redirect()->intended('kasir');
+        $loggedInUser = auth()->user();
+        if ($loggedInUser != null) {
+            $userData = DB::table('users')
+                ->leftJoin('m_toko', 'users.toko_id', '=', 'm_toko.norectoko')
+                ->where('users.noregistrasi', $loggedInUser->noregistrasi)
+                ->select('users.*', 'm_toko.*')
+                ->first();
+            if (Auth::check() && $user = Auth::user()) {
+                if ($userData->bisnis_id === 1) {
+                    if ($user->roles == 1) {
+                        return redirect()->intended('admin.market');
+                    } else if ($user->roles == 2) {
+                        return redirect()->intended('market.kasir');
+                    } else if ($user->roles == 3) {
+                        return redirect()->intended('market.manajemen');
+                    }
+                } else if ($userData->bisnis_id === 2) {
+                    if ($user->roles == 2) {
+                        return redirect()->intended('kasir');
+                    }
+                }
+            } else {
+                return view('auth.login');
             }
         } else {
             return view('auth.login');

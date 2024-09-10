@@ -60,8 +60,8 @@
                             </div>
                         </div>
                         <br>
-                        <div class="dt-responsive table-responsive">
-                            <table id="data-penjualan-selesai" class="table table-striped table-bordered nowrap">
+                        <div class="dt-responsive">
+                            <table id="data-penjualan-selesai" class="table table-responsive table-striped table-bordered nowrap">
                                 <thead>
                                     <tr>
                                         <th>ID Barang</th>

@@ -61,7 +61,7 @@
                         </div>
                         <br>
                         <div class="dt-responsive">
-                            <table id="data-penjualan-selesai" class="table table-striped table-bordered nowrap">
+                            <table id="data-penjualan-selesai" class="table table-striped table-bordered table-responsive nowrap">
                                 <thead>
                                     <tr>
                                         <th>ID Barang</th>

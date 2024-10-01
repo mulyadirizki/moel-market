@@ -21,6 +21,7 @@ class PenjualanDet extends Model
         'id_penjualan',
         'tgl_penjualan',
         'id_item',
+        'id_variant',
         'qty',
         'harga_peritem',
         'sub_total',

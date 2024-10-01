@@ -136,6 +136,7 @@ class FrontController extends Controller
                             'id_penjualan'   => $id_penjualan,
                             'tgl_penjualan'  => $list['tgl_penjualan'],
                             'id_item'        => $list['id_item'],
+                            'id_variant'     => $list['id_variant'],
                             'qty'            => $list['qty'],
                             'harga_peritem'  => $list['harga_peritem'],
                             'sub_total'      => $list['subtotal'],
@@ -385,89 +386,76 @@ class FrontController extends Controller
 
     public function activityDetail($id_penjualan)
     {
-        $datPenjualan = DB::table('m_variant as vr')
-            ->leftJoin('m_item as itm', 'vr.id_item', '=', 'itm.id_item')
-            ->join('t_penjualan_det as pjd', 'pjd.id_item', '=', 'itm.id_item')
-            ->select(
-                'itm.item_name',
-                'pjd.harga_peritem',
-                'vr.variant_name',
-            )
+        // Query 1: Mengambil detail penjualan dengan varian yang benar
+        $datPenjualan = DB::table('t_penjualan_det as pjd')
+            ->leftJoin('m_item as itm', 'pjd.id_item', '=', 'itm.id_item')
+            ->leftJoin('m_variant as vr', function($join) {
+                $join->on('pjd.id_variant', '=', 'vr.id_variant')  // Sesuaikan id_variant di t_penjualan_det dengan m_variant
+                    ->on('vr.id_item', '=', 'itm.id_item');        // Pastikan varian juga sesuai dengan item
+            })
+            ->select('itm.item_name', 'pjd.harga_peritem', 'vr.variant_name')
             ->where('pjd.id_penjualan', $id_penjualan)
             ->get();
-        // $datPenjualan = DB::table('t_penjualan AS pj')
-        //     ->join('users as usr', 'pj.norec_user', '=', 'usr.noregistrasi')
-        //     ->select(
-        //         'pj.no_nota',
-        //         'pj.tgl_nota',
-        //         'usr.nama',
-        //         'pj.total',
-        //         'pj.uang_bayar',
-        //         'pj.uang_kembali',
-        //         'pj.nm_pelanggan',
-        //         DB::raw('CASE
-        //                     WHEN pj.status = 1 THEN "Cash"
-        //                     WHEN pj.status = 2 THEN "Pay Later"
-        //                     WHEN pj.status = 3 THEN "QRIS"
-        //                     ELSE ""
-        //                 END AS payment_method')
-        //     )->where('pj.id_penjualan', $id_penjualan)
-        //     ->first();
 
-            $result = DB::table('t_penjualan_det AS pjd')
-                ->join('m_item AS itm', 'pjd.id_item', '=', 'itm.id_item')
-                ->join('m_category AS ct', 'itm.category_id', '=', 'ct.id_category')
-                ->leftJoin('m_variant', 'itm.id_item', '=', 'm_variant.id_item')
-                ->select(
-                    'pjd.id_penjualan_det',
-                    'pjd.id_penjualan',
-                    'pjd.qty',
-                    'pjd.harga_peritem',
-                    'pjd.sub_total',
-                    'itm.item_name',
-                    'itm.category_id',
-                    'ct.category_name',
-                    'm_variant.variant_name'
-                )
-                ->where('pjd.id_penjualan', '=', $id_penjualan)
-                ->groupBy(
-                    'pjd.id_penjualan_det',
-                    'pjd.id_penjualan',
-                    'pjd.qty',
-                    'pjd.harga_peritem',
-                    'pjd.sub_total',
-                    'itm.item_name',
-                    'itm.category_id',
-                    'ct.category_name',
-                    'm_variant.variant_name'
-                )
-                ->get()
-                ->groupBy('category_name') // Mengelompokkan hasil berdasarkan array
-                ->toArray();
+        // Query 2: Menampilkan result dan mengelompokkan data berdasarkan kategori
+        $result = DB::table('t_penjualan_det AS pjd')
+            ->join('m_item AS itm', 'pjd.id_item', '=', 'itm.id_item')
+            ->join('m_category AS ct', 'itm.category_id', '=', 'ct.id_category')
+            ->leftJoin('m_variant as vr', function($join) {
+                $join->on('pjd.id_variant', '=', 'vr.id_variant')  // Filter varian sesuai dengan item
+                    ->on('vr.id_item', '=', 'itm.id_item');       // Tambahkan kondisi agar varian yang tepat muncul
+            })
+            ->select(
+                'pjd.id_penjualan_det',
+                'pjd.id_penjualan',
+                'pjd.qty',
+                'pjd.harga_peritem',
+                'pjd.sub_total',
+                'itm.item_name',
+                'itm.category_id',
+                'ct.category_name',
+                'vr.variant_name'
+            )
+            ->where('pjd.id_penjualan', '=', $id_penjualan)
+            ->groupBy(
+                'pjd.id_penjualan_det',
+                'pjd.id_penjualan',
+                'pjd.qty',
+                'pjd.harga_peritem',
+                'pjd.sub_total',
+                'itm.item_name',
+                'itm.category_id',
+                'ct.category_name',
+                'vr.variant_name'
+            )
+            ->get()
+            ->groupBy('category_name') // Mengelompokkan hasil berdasarkan nama kategori
+            ->toArray();
 
+        // Query 3: Mengambil detail transaksi penjualan
         $dataPenj = DB::table('t_penjualan as pj')
-                ->select(
-                    DB::raw('CASE
+            ->select(
+                DB::raw('CASE
                             WHEN pj.status = 1 THEN "Cash"
                             WHEN pj.status = 2 THEN "Pay Later"
                             WHEN pj.status = 3 THEN "QRIS"
                             ELSE ""
                         END AS payment_method'),
-                    'pj.nm_pelanggan',
-                    'pj.status',
-                    'pj.no_nota',
-                    'pj.tgl_nota',
-                    'pj.total',
-                    'pj.uang_bayar',
-                    'pj.uang_kembali',
-                    'pj.tgl_pembayaran'
-                )
-                ->where('pj.id_penjualan', $id_penjualan)
-                ->first();
+                'pj.nm_pelanggan',
+                'pj.status',
+                'pj.no_nota',
+                'pj.tgl_nota',
+                'pj.total',
+                'pj.uang_bayar',
+                'pj.uang_kembali',
+                'pj.tgl_pembayaran'
+            )
+            ->where('pj.id_penjualan', $id_penjualan)
+            ->first();
 
+        // Mengembalikan respon JSON jika request berupa JSON, atau mengarahkan ke view
         if (request()->expectsJson()) {
             return response()->json([
-                // 'dtpj' => $detPenjualan,
                 'dtitm' => $dataPenj,
                 'result' => $result
             ], 200);
@@ -475,6 +463,7 @@ class FrontController extends Controller
             return view('koffe.frontend.activity.activityDetail', compact('datPenjualan', 'dataPenj', 'result'));
         }
     }
+
 
     public function changePaymentMethod(Request $request)
     {

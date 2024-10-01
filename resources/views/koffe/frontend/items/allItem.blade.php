@@ -94,6 +94,7 @@
                                     <textarea class="form-control" id="notes"></textarea>
                                 </div>
                                 <input type="hidden" id="id_item">
+                                <input type="hidden" id="id_variant">
                                 <input type="hidden" id="item_name">
                                 <input type="hidden" id="price">
                                 <input type="hidden" id="sku">
@@ -206,6 +207,7 @@
                         });
 
                         if (data_dipilih.id_variant) {
+                            $('#id_variant').val(data_dipilih.id_variant);
                             $('#id_item').val(data_dipilih.item_id);
                             $('#item_name').val(data_dipilih.item_name);
                             $('#price').val(data_dipilih.price);
@@ -237,16 +239,17 @@
         });
 
         function saveOrder() {
-            var id_variant = $('input[name="btnvarian"]:checked').attr('id');
+            // var id_variant = $('input[name="btnvarian"]:checked').attr('id');
             var qty = $('#qty').val();
             var notes = $('#notes').val();
+            var id_variant = $('#id_variant').val();
             var id_item = $('#id_item').val();
             var item_name = $('#item_name').val();
             var price = $('#price').val();
             var sku = $('#sku').val();
             var variant_name = $('#variant_name').val();
 
-            if (id_variant != undefined) {
+            if (id_variant != "") {
                 var OrderTemp = {
                     "item_name": item_name,
                     "item_id": id_item,
@@ -281,6 +284,7 @@
                     width: 150,
                 });
                 $('#modalAddVariant').modal('hide');
+                $('#id_variant').val('');
                 countCart();
             } else {
                 $.Toast("Failed", 'No data selected', "error", {

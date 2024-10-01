@@ -197,6 +197,7 @@
         dataOrderArr.forEach(function(e) {
           total += parseFloat(e.price) * parseInt(e.qty);
           barang.push({
+            id_variant: e.id_variant,
             id_item: e.item_id,
             qty: e.qty,
             subtotal: (e.price * e.qty),

@@ -89,6 +89,7 @@ class KoffePenjualanController extends Controller
             $asc    = substr($sort, 0, 1);
             $ascdsc = $asc == '-' ? 'ASC' : 'DESC';
 
+            // Query dengan join yang diperbaiki
             $data = DB::table('t_penjualan_det as pjd')
                 ->select(
                     'pjd.id_penjualan_det',
@@ -108,25 +109,32 @@ class KoffePenjualanController extends Controller
                 ->leftJoin('t_penjualan as pj', 'pjd.id_penjualan', '=', 'pj.id_penjualan')
                 ->leftJoin('m_item as itm', 'pjd.id_item', '=', 'itm.id_item')
                 ->leftJoin('m_category as ct', 'itm.category_id', '=', 'ct.id_category')
-                ->leftJoin('m_variant as vr', 'vr.id_item', '=', 'itm.id_item')
+                ->leftJoin('m_variant as vr', function($join) {
+                    $join->on('pjd.id_variant', '=', 'vr.id_variant')  // Filter varian berdasarkan id_variant di t_penjualan_det
+                        ->on('vr.id_item', '=', 'itm.id_item');       // Pastikan varian juga sesuai dengan item
+                })
                 ->where('pj.toko_id', auth()->user()->toko_id)
                 ->where('pj.statusenabled', true)
-                ->where('pj.status', '<>', '2')
+                ->where('pj.status', '<>', '2')  // Status '2' tidak ditampilkan
                 ->when($request->filled('carabayar'), function ($query) use ($request) {
                     $query->where('pj.status', $request->carabayar);
                 })
                 ->where('itm.category_id', 'like', '%' . $category . '%');
 
+            // Filter berdasarkan tanggal penjualan awal
             if(isset($request->tgl_penjualan) && $request->tgl_penjualan !== "" && $request->tgl_penjualan != "undefined" ) {
                 $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d %H:%i') >= ?", [$request->tgl_penjualan]);
             }
 
+            // Filter berdasarkan tanggal penjualan akhir
             if(isset($request->tgl_penjualanAkhir) && $request->tgl_penjualanAkhir !== "" && $request->tgl_penjualanAkhir != "undefined" ) {
                 $data = $data->whereRaw("DATE_FORMAT(pjd.tgl_penjualan, '%Y-%m-%d %H:%i') <= ?", [$request->tgl_penjualanAkhir]);
             }
 
+            // Pagination
             $item = $data->offset(($page * $limit) - $limit)->limit($limit)->get();
 
+            // Datatables respon
             return DataTables::of($item)
                 ->addIndexColumn()
                 ->editColumn('statuspayment', function($row) {

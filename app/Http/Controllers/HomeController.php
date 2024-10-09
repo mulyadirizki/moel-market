@@ -121,8 +121,8 @@ class HomeController extends Controller
                 ->selectRaw('
                     DATE(pmd.tgl_penjualan) as tgl_penjualan,
                     SUM(pmd.sub_total) as total_penjualan,
-                    SUM(pmd.qty * mb.harga_pokok) as total_harga_pokok,
-                    (SUM(pmd.sub_total) - SUM(pmd.qty * mb.harga_pokok)) as laba
+                    SUM(pmd.qty * mb.harga_jual) as total_harga_pokok,
+                    (SUM(pmd.sub_total) - SUM(pmd.qty * mb.harga_jual)) as laba
                 ')
                 ->where('pmd.statusenabled', 1)
                 ->where('pmd.toko_id', auth()->user()->toko_id)

@@ -439,14 +439,29 @@
     }
 
     document.addEventListener('keydown', function(event) {
+        const total = $("#grand_total").val();
+        $('#total_belanja').val(total);
+        const totalConvert = total.replace(/\D/g, '');
+        const bayar = parseInt($('#bayar').val());
+        const totalConvParse = parseInt(totalConvert)
+        console.log(bayar)
+        if (!isNaN(bayar)) {
+            if(event.keyCode == 13) {
+                saveTransaksi() //enter
+            }
+        }
+        // if (isNaN(bayar) || bayar < totalConvParse) {
+        //     if(event.keyCode == 13) {
+        //         saveTransaksi() //enter
+        //     }
+        // }
+
         if(event.keyCode == 119) {
             simpan()
         } else if (event.key === "Escape" || event.keyCode === 27) {
             btnClose()
         } else if (event.keyCode == 120) {
             btnUangPas()
-        } else if(event.keyCode == 13) {
-            saveTransaksi() //enter
         } else if(event.keyCode == 122) {
             btnPrint()
         }
@@ -500,7 +515,7 @@
                         width: 150,
                     });
                     // $('#exampleModalCenter').modal('hide');
-                    // location.reload();
+                    location.reload();
                 } else {
                     alert('Gagal menyimpan transaksi.');
                 }

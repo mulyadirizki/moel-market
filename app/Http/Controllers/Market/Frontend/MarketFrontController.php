@@ -14,7 +14,8 @@ class MarketFrontController extends Controller
 
     public function getDataBarang(Request $request) {
         $query = Barang::with('totalStok')
-            ->select('id_barang', 'kode_barcode', 'nama_barang')
+            ->select('id_barang', 'kode_barcode', 'nama_barang', 'statusenabled')
+            ->where('statusenabled', 1)
             ->where('toko_id', auth()->user()->toko_id);
 
         if ($request->has('q') && !empty($request->q)) {

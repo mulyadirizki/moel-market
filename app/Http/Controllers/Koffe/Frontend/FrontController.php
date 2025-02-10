@@ -227,62 +227,31 @@ class FrontController extends Controller
             ->groupBy(DB::raw('DATE(tgl_nota)'), 'status', 'statusenabled')
             ->get();
 
-            // $results = DB::table('t_penjualan_det AS pjd')
-            //     ->join('m_item AS itm', 'pjd.id_item', '=', 'itm.id_item')
-            //     ->join('m_category AS ct', 'itm.category_id', '=', 'ct.id_category')
-            //     ->leftJoin('m_variant', 'itm.id_item', '=', 'm_variant.id_item')
-            //     ->select(
-            //         'pjd.id_penjualan_det',
-            //         'pjd.id_penjualan',
-            //         'pjd.qty',
-            //         'pjd.harga_peritem',
-            //         'pjd.sub_total',
-            //         'itm.item_name',
-            //         'itm.category_id',
-            //         'ct.category_name',
-            //         DB::raw('DATE(pjd.tgl_penjualan) AS tgl_penjualan'),
-            //         'm_variant.variant_name'
-            //     )
-            //     ->whereDate('tgl_penjualan', $tgl_transaksi)
-            //     ->groupBy(
-            //         'pjd.id_penjualan_det',
-            //         'pjd.id_penjualan',
-            //         'pjd.qty',
-            //         'pjd.harga_peritem',
-            //         'pjd.sub_total',
-            //         'itm.item_name',
-            //         'itm.category_id',
-            //         'ct.category_name',
-            //         'tgl_penjualan',
-            //         'm_variant.variant_name'
-            //     )
-            //     ->get()
-            //     ->groupBy('category_name') // Mengelompokkan hasil berdasarkan array
-            //     ->toArray();
-            //     return $results;
-
-                $results = DB::table('t_penjualan_det AS pjd')
-                ->select(
-                    'itm.item_name',
-                    'mv.variant_name',
-                    DB::raw('SUM(pjd.qty) AS total_qty'),
-                    'pjd.harga_peritem',
-                    DB::raw('SUM(pjd.sub_total) AS total_sub_total'),
-                    'ct.category_name'
-                )
-                ->leftJoin('m_item AS itm', 'pjd.id_item', '=', 'itm.id_item')
-                ->join('m_category AS ct', 'itm.category_id', '=', 'ct.id_category')
-                ->leftJoin('m_variant AS mv', 'itm.id_item', '=', 'mv.id_item')
-                ->whereDate('pjd.tgl_penjualan', '=', '2024-05-02')
-                ->groupBy('itm.item_name', 'mv.variant_name', 'pjd.harga_peritem', 'ct.category_name')
-                ->orderBy('itm.item_name')
-                ->orderBy('mv.variant_name')
-                ->orderBy('pjd.harga_peritem')
-                ->orderBy('total_sub_total')
-                ->orderBy('ct.category_name')
-                ->get()
-                ->groupBy('category_name')
-                ->toArray();
+            $results = DB::table('t_penjualan_det AS pjd')
+            ->select(
+                'itm.item_name',
+                'vr.variant_name', // Gunakan alias yang sesuai di select()
+                DB::raw('SUM(pjd.qty) AS total_qty'),
+                'pjd.harga_peritem',
+                DB::raw('SUM(pjd.sub_total) AS total_sub_total'),
+                'ct.category_name'
+            )
+            ->leftJoin('m_item AS itm', 'pjd.id_item', '=', 'itm.id_item')
+            ->join('m_category AS ct', 'itm.category_id', '=', 'ct.id_category')
+            ->leftJoin('m_variant AS vr', function ($join) {
+                $join->on('pjd.id_variant', '=', 'vr.id_variant')  // Hubungkan dengan id_variant di t_penjualan_det
+                     ->on('vr.id_item', '=', 'itm.id_item');      // Pastikan varian juga sesuai dengan item
+            })
+            ->whereDate('pjd.tgl_penjualan', '=', $tgl_transaksi)
+            ->groupBy('itm.item_name', 'vr.variant_name', 'pjd.harga_peritem', 'ct.category_name')
+            ->orderBy('itm.item_name')
+            ->orderBy('vr.variant_name')
+            ->orderBy('pjd.harga_peritem')
+            ->orderBy(DB::raw('SUM(pjd.sub_total)')) // Perbaikan pemakaian total_sub_total dalam ORDER BY
+            ->orderBy('ct.category_name')
+            ->get()
+            ->groupBy('category_name')
+            ->toArray();
                 // return $results;
 
         $formattedPenjualan = [];

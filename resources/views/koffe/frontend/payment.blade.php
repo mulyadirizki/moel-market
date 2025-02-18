@@ -51,6 +51,12 @@
             <div class="row">
               <div class="col-lg-4">
                 <div class="form-group">
+                  <label class="form-label" for="tgl_nota">Tgl Penjualan</label>
+                  <input type="datetime-local" class="form-control" id="tgl_nota">
+                </div>
+              </div>
+              <div class="col-lg-4">
+                <div class="form-group">
                   <label class="form-label" for="nonota">No Nota</label>
                   <input type="text" class="form-control" id="nonota" disabled>
                 </div>
@@ -114,6 +120,9 @@
 @push('script')
   <script>
     function orderPayment() {
+      const dateTime = new Date();
+      const formattedDate = `${dateTime.getFullYear()}-${String(dateTime.getMonth() + 1).padStart(2, '0')}-${String(dateTime.getDate()).padStart(2, '0')} ${String(dateTime.getHours()).padStart(2, '0')}:${String(dateTime.getMinutes()).padStart(2, '0')}:${String(dateTime.getSeconds()).padStart(2, '0')}`;
+      $('#tgl_nota').val(formattedDate);
       const result = Math.floor(Math.random() * 1000000000);
       $('#nonota').val(result)
 
@@ -190,6 +199,7 @@
       let date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
       let time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds()
       let dateTime = date + ' ' + time;
+      var tgl_nota = $('#tgl_nota').val();
       if (dataOrderArr) {
 
         var total = 0;
@@ -215,7 +225,7 @@
         var jsonSave =
           {
             nonota: nonota,
-            tgl_nota: dateTime,
+            tgl_nota: tgl_nota,
             total: total,
             item: barang,
             cash: cash,

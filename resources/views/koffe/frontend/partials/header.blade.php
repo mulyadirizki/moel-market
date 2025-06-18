@@ -405,61 +405,81 @@
         @push('script')
     <script>
 
-        function countCart() {
+        window.countCart = function () {
             var dataOrder = sessionStorage.getItem('dataOrderTemp');
-            var dataOrderArr = JSON.parse(dataOrder)
+            var dataOrderArr = JSON.parse(dataOrder);
 
             $('#datacart').empty();
 
             var link = document.getElementById('idRoutePayment');
+            var btnCharge = document.getElementById('btnAddCharge');
 
-            if (dataOrderArr) {
-                link.setAttribute('href', "{{ route('payment.order') }}");
+            if (dataOrderArr && dataOrderArr.length > 0) {
+                let subtotal = 0;
                 $('#countCart').text(dataOrderArr.length);
-                var subtotal = 0;
+
                 dataOrderArr.forEach(function(itm) {
                     subtotal += parseFloat(itm.price) * parseInt(itm.qty);
 
-                    var itemElement = '<a class="list-group-item list-group-item-action">'
-                    itemElement += '<div class="d-flex">';
-                    itemElement += '<div class="flex-shrink-0">';
-                    itemElement += '<div class="user-avtar bg-light-success">';
-                    itemElement += '<i class="ti ti-gift"></i>';
-                    itemElement += '</div>';
-                    itemElement += '</div>';
-                    itemElement += '<div class="flex-grow-1 ms-1" >';
-                    itemElement += '<button class="btn btn-sm float-end text-muted" style="margin-left: 5px;" onclick="deleteItem()"><i class="ti ti-x text-danger"></i></button>';
-                    itemElement += '<span class="float-end text-muted"><span style="margin-right: 5px;">x'+ itm.qty +'</span>'+' Rp. '+ (itm.price * itm.qty).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") +'</span>';
-                    itemElement += '<p class="text-body mb-1"><b>'+ itm.item_name +'</b></p>';
-                    itemElement += '<span class="text-muted">'+ itm.variant_name +'</span>';
-                    itemElement += '</div>';
-                    itemElement += '</div>';
-                    itemElement += '</a>';
+                    let itemElement = `
+                        <a class="list-group-item list-group-item-action">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <div class="user-avtar bg-light-success">
+                                        <i class="ti ti-gift"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1 ms-1">
+                                    <button class="btn btn-sm float-end text-muted" onclick="deleteItem()">
+                                        <i class="ti ti-x text-danger"></i>
+                                    </button>
+                                    <span class="float-end text-muted">x${itm.qty} Rp. ${(itm.price * itm.qty).toLocaleString("id-ID")}</span>
+                                    <p class="text-body mb-1"><b>${itm.item_name}</b></p>
+                                    <span class="text-muted">${itm.variant_name}</span>
+                                </div>
+                            </div>
+                        </a>
+                    `;
 
                     $('#datacart').append(itemElement);
-
-                    $('#subtotal').text('Rp. ' + subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    $('#total').text('Rp. ' + subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-
-                    $('#btnAddCharge').text('Pay Rp. '+ subtotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","))
                 });
+
+                $('#subtotal').text('Rp. ' + subtotal.toLocaleString("id-ID"));
+                $('#total').text('Rp. ' + subtotal.toLocaleString("id-ID"));
+                
+                if ($('#btnAddCharge').length > 0) {
+                    $('#btnAddCharge').text('Pay Rp. ' + subtotal.toLocaleString("id-ID"));
+                    $('#btnAddCharge').prop('disabled', false);
+                }
+
+                if (link) {
+                    link.setAttribute('href', "{{ route('payment.order') }}");
+                    link.style.pointerEvents = 'auto';
+                    link.style.color = '';
+                }
+
             } else {
-
-                var itemElementEmpty = '<a class="list-group-item list-group-item-action">'
-                    itemElementEmpty += '<div class="d-flex">';
-                    itemElementEmpty += '<div class="flex-grow-1 ms-1" >';
-                    itemElementEmpty += '<p class="text-body mb-1"><b>Cart Empty</b></p>';
-                    itemElementEmpty += '</div>';
-                    itemElementEmpty += '</div>';
-                    itemElementEmpty += '</a>';
-                $('#datacart').append(itemElementEmpty);
+                $('#datacart').append(`
+                    <a class="list-group-item list-group-item-action">
+                        <div class="d-flex">
+                            <div class="flex-grow-1 ms-1">
+                                <p class="text-body mb-1"><b>Cart Empty</b></p>
+                            </div>
+                        </div>
+                    </a>
+                `);
                 $('#countCart').text('0');
+                if ($('#btnAddCharge').length > 0) {
+                    $('#btnAddCharge').prop('disabled', true).text("Charge Rp. 0");
+                }
 
-                link.setAttribute('href', 'javascript:void(0);');
-                link.style.pointerEvents = 'none';
-                link.style.color = '#999';
+                if (link) {
+                    link.setAttribute('href', 'javascript:void(0);');
+                    link.style.pointerEvents = 'none';
+                    link.style.color = '#999';
+                }
             }
-        }
+        };
 
         function deleteItem() {
             var itemToDelete = $(this).closest('.list-group-item');
@@ -501,8 +521,14 @@
             $('.btn-bayar').removeAttr('disabled');
         }
 
-        $(document).ready(function() {
-            countCart();
+        // Jalankan saat pertama kali halaman dimuat
+        $(document).ready(function () {
+            window.countCart();
+        });
+
+        // Dengarkan custom event
+        window.addEventListener("cart:updated", function () {
+            window.countCart();
         });
     </script>
 @endpush

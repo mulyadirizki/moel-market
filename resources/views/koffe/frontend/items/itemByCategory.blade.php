@@ -277,6 +277,9 @@
                 }
 
                 sessionStorage.setItem('dataOrderTemp', JSON.stringify(dataOrderTemp));
+                setTimeout(() => {
+                    window.dispatchEvent(new Event("cart:updated"));
+                }, 100);
 
                 $.Toast("Berhasil", 'Data berhasil ditambahkan', "success", {
                     has_icon:true,

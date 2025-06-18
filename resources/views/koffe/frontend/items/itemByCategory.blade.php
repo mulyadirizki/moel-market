@@ -192,12 +192,12 @@
                         $('#variantNameItem').text(firstItemName);
                         $('#countNameItem').text(count + ' Variant');
 
-                        var itemElement = '<div class="btn-group" role="group" style="width: 320px; margin-bottom: 10px;">';
+                        var itemElement = '<div class="btn-group" role="group" style="width: 100%; margin-bottom: 10px;">';
                         itemElement += '<input type="radio" class="btn-check btn-variant" id="'+ itm.id_variant +'" name="btnvarian">';
                         if (itm.variant_name != null) {
-                            itemElement += '<label class="btn btn-light-primary" for="'+ itm.id_variant +'"><span style="text-align: left;">'+ itm.variant_name + '</span>' + ' Rp. ' + itm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '</label>';
+                            itemElement += '<label class="btn btn-light-primary" for="'+ itm.id_variant +'"><span style="text-align: left;">'+ itm.variant_name + '</span>' + ' | Rp. ' + itm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '</label>';
                         } else {
-                            itemElement += '<label class="btn btn-light-primary" for="'+ itm.id_variant +'"><span style="text-align: left;">'+ itm.item_name + '</span>' + ' Rp. ' + itm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '</label>';
+                            itemElement += '<label class="btn btn-light-primary" for="'+ itm.id_variant +'"> <span style="text-align: left;">'+ itm.item_name + '</span>' + ' Rp. ' + itm.price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '</label>';
                         }
                         itemElement += '</div><br>';
 

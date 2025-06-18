@@ -16,6 +16,7 @@ class CategoryController extends Controller
         if (request()->ajax()) {
             $category = Category::select('m_category.*')
                 ->where('id_category', '<>', 1)
+                ->where('statusenabled', 1)
                 ->get();
 
             return DataTables::of($category)
@@ -90,23 +91,22 @@ class CategoryController extends Controller
     public function manageCategoryDelete($id)
     {
         $category = Category::find($id);
-        if($category) {
-            $category->delete();
 
-            if($category) {
-                $data = Category::where('m_category.id_category', $id)
-                    ->select('m_category.*')
-                    ->first();
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Data deleted successfully',
-                    'data'    => $data
-                ], 200);
-            }
+        if ($category) {
+            // Update statusenabled menjadi 0, bukan delete
+            $category->statusenabled = 0;
+            $category->save();
+
             return response()->json([
-                'success'   => false,
-                'message'   => 'data deleted Failed'
-            ], 422);
+                'success' => true,
+                'message' => 'Data updated successfully (statusenabled = 0)',
+                'data'    => $category
+            ], 200);
         }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Data not found'
+        ], 404);
     }
 }

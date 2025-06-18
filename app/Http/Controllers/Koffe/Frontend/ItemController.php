@@ -20,6 +20,7 @@ class ItemController extends Controller
     {
         $category = Category::where('toko_id', auth()->user()->toko_id)
                         ->select('m_category.*')
+                        ->where('m_category.statusenabled', 1)
                         ->get();
         return view('koffe.frontend.items.createItem', compact('category'));
     }

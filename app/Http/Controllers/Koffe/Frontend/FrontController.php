@@ -22,6 +22,7 @@ class FrontController extends Controller
     {
         $category = Category::where('toko_id', auth()->user()->toko_id)
             ->select('m_category.*')
+            ->where('statusenabled', '1')
             ->get();
         return view('koffe.frontend.home', compact('category'));
     }
@@ -66,6 +67,7 @@ class FrontController extends Controller
                 'm_variant.id_item',
                 'm_item.item_name',
             )
+            ->where('m_item.statusenabled', 1)
             ->orderBy('m_item.item_name', 'asc')
             ->get();
 

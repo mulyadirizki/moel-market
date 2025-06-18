@@ -21,6 +21,7 @@ class Item extends Model
         'toko_id',
         'item_name',
         'category_id',
+        'statusenabled'
     ];
 
     // protected static function boot()

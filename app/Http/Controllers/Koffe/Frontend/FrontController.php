@@ -325,13 +325,13 @@ class FrontController extends Controller
                 'pj.total',
                 'pj.status',
                 'pj.statusenabled',
-                DB::raw('GROUP_CONCAT(itm.item_name) AS item_names'),
-                DB::raw('GROUP_CONCAT(pj.total) AS totals')
+                DB::raw('GROUP_CONCAT(itm.item_name SEPARATOR ", ") AS item_names')
             )
-            ->groupBy('tanggal_nota', 'jam_nota', 'pj.id_penjualan')
+            ->where('pj.statusenabled', true)
+            ->where('itm.statusenabled', true)
+            ->groupBy('tanggal_nota', 'jam_nota', 'pj.id_penjualan', 'pj.total', 'pj.status', 'pj.statusenabled')
             ->orderBy('tanggal_nota', 'desc')
             ->orderBy('jam_nota', 'asc')
-            ->where('pj.statusenabled', true)
             ->get();
 
         $groupedData = [];

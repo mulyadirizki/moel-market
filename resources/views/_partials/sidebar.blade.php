@@ -3,7 +3,7 @@
         <div class="m-header">
             <a href="{{ route('admin') }}" class="b-brand text-primary">
                 <!-- ========   Change your logo from here   ============ -->
-                <img src="{{ url('assets/images/img-navbar-card.png') }}" class="img-fluid logo-lg" alt="logo">
+                <!-- <img src="{{ url('assets/images/img-navbar-card.png') }}" class="img-fluid logo-lg" alt="logo"> -->
             </a>
         </div>
         <div class="navbar-content">
